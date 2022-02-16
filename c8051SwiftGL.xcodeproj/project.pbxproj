@@ -18,6 +18,7 @@
 		025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D6277339AE00A45ADB /* Shader.fsh */; };
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		025AE9DB277339C700A45ADB /* crate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9DA277339C700A45ADB /* crate.jpg */; };
+		974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,8 @@
 		025AE9D6277339AE00A45ADB /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		025AE9D7277339AF00A45ADB /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		025AE9DA277339C700A45ADB /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
+		974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PhysicsWrapper.cpp; sourceTree = "<group>"; };
+		974F6A1C27BD9C8D008ED294 /* PhysicsWrapper.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PhysicsWrapper.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +87,8 @@
 				025AE9C6277337E200A45ADB /* LaunchScreen.storyboard */,
 				025AE9C9277337E200A45ADB /* Info.plist */,
 				025AE9CF2773396200A45ADB /* c8051SwiftGL-Bridging-Header.h */,
+				974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */,
+				974F6A1C27BD9C8D008ED294 /* PhysicsWrapper.hpp */,
 			);
 			path = c8051SwiftGL;
 			sourceTree = "<group>";
@@ -164,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */,
+				974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */,
 				025AE9C0277337DF00A45ADB /* ViewController.swift in Sources */,
 				025AE9BC277337DF00A45ADB /* AppDelegate.swift in Sources */,
 				025AE9D42773396300A45ADB /* Renderer.mm in Sources */,
