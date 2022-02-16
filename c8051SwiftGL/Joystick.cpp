@@ -35,6 +35,64 @@ Joystick::Joystick(float uJoystickXPosition, float uJoystickYPosition, const cha
 
     //7. set the vertex and UV coordinates for both joystick elements
     setJoystickBackgroundVertexAndUVCoords();
-    setJoystickDriverVertexAndUVCoords();
+    //setJoystickDriverVertexAndUVCoords();
 
 }
+
+void Joystick::setJoystickBackgroundVertexAndUVCoords()
+{
+    /*
+    //1. set the width, height and depth for the joystick background image rectangle
+    float width=joystickBackgroundWidth/screenWidth;
+    float height=joystickBackgroundHeight/screenHeight;
+    float depth=0.0;
+
+    //2. Set the value for each vertex into an array
+
+    //Upper-Right Corner vertex of rectangle
+    joystickBackgroundVertices[0]=width;
+    joystickBackgroundVertices[1]=height;
+    joystickBackgroundVertices[2]=depth;
+
+    //Lower-Right corner vertex of rectangle
+    joystickBackgroundVertices[3]=width;
+    joystickBackgroundVertices[4]=-height;
+    joystickBackgroundVertices[5]=depth;
+
+    //Lower-Left corner vertex of rectangle
+    joystickBackgroundVertices[6]=-width;
+    joystickBackgroundVertices[7]=-height;
+    joystickBackgroundVertices[8]=depth;
+
+    //Upper-Left corner vertex of rectangle
+    joystickBackgroundVertices[9]=-width;
+    joystickBackgroundVertices[10]=height;
+    joystickBackgroundVertices[11]=depth;
+
+
+    //3. Set the value for each uv coordinate into an array
+
+    joystickBackgroundUVCoords[0]=1.0;
+    joystickBackgroundUVCoords[1]=0.0;
+
+    joystickBackgroundUVCoords[2]=1.0;
+    joystickBackgroundUVCoords[3]=1.0;
+
+    joystickBackgroundUVCoords[4]=0.0;
+    joystickBackgroundUVCoords[5]=1.0;
+
+    joystickBackgroundUVCoords[6]=0.0;
+    joystickBackgroundUVCoords[7]=0.0;
+
+    //4. set the value for each index into an array
+
+    joystickBackgroundIndex[0]=0;
+    joystickBackgroundIndex[1]=1;
+    joystickBackgroundIndex[2]=2;
+
+    joystickBackgroundIndex[3]=2;
+    joystickBackgroundIndex[4]=3;
+    joystickBackgroundIndex[5]=0;
+    */
+}
+

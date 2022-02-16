@@ -16,6 +16,8 @@ private:
     
     const char* joystickImage;
     const char* joystickBackgroundImage;
+    
+    void setJoystickBackgroundVertexAndUVCoords();
 };
 
 #endif /* GLESRenderer_hpp */
