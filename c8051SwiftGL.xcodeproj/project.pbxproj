@@ -18,6 +18,7 @@
 		025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D6277339AE00A45ADB /* Shader.fsh */; };
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		025AE9DB277339C700A45ADB /* crate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9DA277339C700A45ADB /* crate.jpg */; };
+		3B3842D927BD93B1005B676F /* Joystick.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B3842D827BD93B1005B676F /* Joystick.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,8 @@
 		025AE9D6277339AE00A45ADB /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		025AE9D7277339AF00A45ADB /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		025AE9DA277339C700A45ADB /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
+		3B3842D827BD93B1005B676F /* Joystick.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Joystick.mm; sourceTree = "<group>"; };
+		3B3842DA27BD93EE005B676F /* Joystick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Joystick.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +72,8 @@
 		025AE9BA277337DF00A45ADB /* c8051SwiftGL */ = {
 			isa = PBXGroup;
 			children = (
+				3B3842DA27BD93EE005B676F /* Joystick.h */,
+				3B3842D827BD93B1005B676F /* Joystick.mm */,
 				025AE9D32773396300A45ADB /* GLESRenderer.cpp */,
 				025AE9D02773396300A45ADB /* GLESRenderer.hpp */,
 				025AE9D12773396300A45ADB /* Renderer.h */,
@@ -164,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */,
+				3B3842D927BD93B1005B676F /* Joystick.mm in Sources */,
 				025AE9C0277337DF00A45ADB /* ViewController.swift in Sources */,
 				025AE9BC277337DF00A45ADB /* AppDelegate.swift in Sources */,
 				025AE9D42773396300A45ADB /* Renderer.mm in Sources */,
