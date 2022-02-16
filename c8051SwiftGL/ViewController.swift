@@ -1,12 +1,10 @@
-//
-//  Copyright © Borna Noureddin. All rights reserved.
-//
-
 import GLKit    // use GLKit to treat the iOS display as one that can receive GL draw commands
 
 // This enables using the GLKit update method to call our own update
-extension ViewController: GLKViewControllerDelegate {
-    func glkViewControllerUpdate(_ controller: GLKViewController) {
+extension ViewController: GLKViewControllerDelegate
+{
+    func glkViewControllerUpdate(_ controller: GLKViewController)
+    {
         glesRenderer.update();
         
     }
@@ -15,31 +13,43 @@ extension ViewController: GLKViewControllerDelegate {
 class ViewController: GLKViewController {
     
     private var context: EAGLContext?       // EAGL context for GL draw commands
-    private var glesRenderer: Renderer!     // our own C++ GLES renderer object
+    private var glesRenderer: Renderer!     // our own C++ GLES renderer object, which is connected through the objective-c renderer.mm class
     var initialCenter = CGPoint()  // The initial center point of the view.
 
+    //Any renderable objects using swift UI (the positioning of these items would be in their Cpp class)
     
-    private func setupGL() {
-        // Set up the GL context and initialize and setup our GLES renderer object
+    
+    
+    //_________________________ Instantiate View ______________________________
+    
+    //*** Set up the GL context and initialize and setup our GLES renderer object
+    private func setupGL()
+    {
         context = EAGLContext(api: .openGLES3)
         EAGLContext.setCurrent(context)
-        if let view = self.view as? GLKView, let context = context {
-            view.context = context
-            delegate = self as GLKViewControllerDelegate
-            glesRenderer = Renderer()
-            glesRenderer.setup(view)
-            glesRenderer.loadModels()
-        }
+        if let view = self.view as? GLKView,
+            let context = context
+            {
+                view.context = context
+                delegate = self as GLKViewControllerDelegate
+                
+                //Initialize the renderer.mm class (objective c based) to have access to the Cpp gameobjects
+                glesRenderer = Renderer()
+                glesRenderer.setup(view)
+                glesRenderer.loadModels()
+            }
     }
     
-    
-    override func viewDidLoad() {
-        // This gets called as soon as the view is loaded
+    //*** This gets called as soon as the view is loaded
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         setupGL()   // call this to set up our GL environment
         
         //view.addSubview(pannableView)
         //pannableView.center = view.center
+        
+        //**Instantiate different gesture recognizers and their associated 'selector' functions to perform different tasks when action is performed.
         
         // Set up a double-tap gesture recognizer
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
@@ -54,6 +64,11 @@ class ViewController: GLKViewController {
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(doPinch(_:)))
         self.view.addGestureRecognizer(pinch)
         
+        
+        
+        //Create different UI elements
+        
+        
         // make the button
         let button = UIButton(frame: CGRect(x: 100, y: 75, width: 100, height: 50))
         button.setTitle("Reset", for: .normal)
@@ -62,7 +77,11 @@ class ViewController: GLKViewController {
         
     }
     
-    override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+    //_________________________ Render View ______________________________
+    
+    //***Draw all objects that should be displayed on screen
+    override func glkView(_ view: GLKView, drawIn rect: CGRect)
+    {
         glesRenderer.draw(rect);    // use our custom GLES renderer object to make the actual GL draw calls
         
         // make label
@@ -85,6 +104,9 @@ class ViewController: GLKViewController {
         self.view.addSubview(label)
         
     }
+    
+    
+    //_________________________ Swift Functions ______________________________
     
     @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
         // Handle double tap gesture
