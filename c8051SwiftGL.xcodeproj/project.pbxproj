@@ -21,6 +21,7 @@
 		974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */; };
 		977F3A5027C560B500AB8A7B /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A4E27C560B500AB8A7B /* Camera.cpp */; };
 		977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A5127C5619A00AB8A7B /* Transform.cpp */; };
+		97F20BBF27C6AA8D00D25008 /* GOController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 97F20BBD27C6AA8D00D25008 /* GOController.cpp */; };
 		E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917551D27C60FF800FA6B90 /* GameObject.cpp */; };
 		E917552227C6121F00FA6B90 /* Renderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552027C6121F00FA6B90 /* Renderable.cpp */; };
 		E917552527C61CA000FA6B90 /* CubeRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552327C61CA000FA6B90 /* CubeRender.cpp */; };
@@ -49,6 +50,8 @@
 		977F3A4F27C560B500AB8A7B /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		977F3A5127C5619A00AB8A7B /* Transform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
 		977F3A5227C5619A00AB8A7B /* Transform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Transform.hpp; sourceTree = "<group>"; };
+		97F20BBD27C6AA8D00D25008 /* GOController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GOController.cpp; sourceTree = "<group>"; };
+		97F20BBE27C6AA8D00D25008 /* GOController.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GOController.hpp; sourceTree = "<group>"; };
 		E917551D27C60FF800FA6B90 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
 		E917551E27C60FF800FA6B90 /* GameObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GameObject.hpp; sourceTree = "<group>"; };
 		E917552027C6121F00FA6B90 /* Renderable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Renderable.cpp; sourceTree = "<group>"; };
@@ -114,6 +117,8 @@
 				E917552127C6121F00FA6B90 /* Renderable.hpp */,
 				E917552327C61CA000FA6B90 /* CubeRender.cpp */,
 				E917552427C61CA000FA6B90 /* CubeRender.hpp */,
+				97F20BBD27C6AA8D00D25008 /* GOController.cpp */,
+				97F20BBE27C6AA8D00D25008 /* GOController.hpp */,
 			);
 			path = c8051SwiftGL;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				E917552227C6121F00FA6B90 /* Renderable.cpp in Sources */,
 				025AE9BE277337DF00A45ADB /* SceneDelegate.swift in Sources */,
 				E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */,
+				97F20BBF27C6AA8D00D25008 /* GOController.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

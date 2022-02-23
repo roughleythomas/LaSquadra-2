@@ -14,7 +14,8 @@ class Renderable
 {
 public:
     Renderable(int numVertices, int numNormals, int numTexCoords, int numIndices);
-    ~Renderable();
+    Renderable(const Renderable& obj);
+    virtual ~Renderable();
     
     // Load data for vertices, normals, and texture coordinates
     // void-pointer allows for type-casting for flexibilty in dealing with info

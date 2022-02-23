@@ -16,7 +16,7 @@ class Transform
 {
 public:
     Transform();
-    Transform(Transform& obj);
+    Transform(const Transform& obj);
     ~Transform();
     
     //Translates object by input

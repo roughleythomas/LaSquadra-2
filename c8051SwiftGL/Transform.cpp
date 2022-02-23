@@ -12,7 +12,7 @@ Transform::Transform() {}
 
 Transform::~Transform() {}
 
-Transform::Transform(Transform& other)
+Transform::Transform(const Transform& other)
 {
     position = other.position;
     quaternion = other.quaternion;

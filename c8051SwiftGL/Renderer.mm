@@ -10,6 +10,7 @@
 
 #include "Camera.hpp"
 #include "CubeRender.hpp"
+#include "GOController.hpp"
 
 // These are GL indices for uniform variables used by GLSL shaders.
 // You can add additional ones, for example for a normal matrix,
@@ -58,6 +59,7 @@ enum
     float rotAngle;
     
     CubeRender* cube;
+    GOController* cubeController;
 }
 
 @end
@@ -129,7 +131,7 @@ enum
     camera->getTransform()->translate(glm::vec4(0, 0, -5.0f, 0));
     
     cube = new CubeRender();
-    
+    cubeController = new GOController(new GameObject(), cube);
     
     /*vertices = new float[24 * 3];
     normals = new float[24 * 3];
@@ -198,11 +200,16 @@ enum
 
 - (void)draw:(CGRect)drawRect;
 {
-    vertices = cube->getVertices();
+    vertices = cubeController->getRenderable()->getVertices();
+    normals = cubeController->getRenderable()->getNormals();
+    texCoords = cubeController->getRenderable()->getTextureCoordinates();
+    indices = cubeController->getRenderable()->getIndices();
+    numIndices = cubeController->getRenderable()->getNumberOfIndices();
+    /*vertices = cube->getVertices();
     normals = cube->getNormals();
     texCoords = cube->getTextureCoordinates();
     indices = cube->getIndices();
-    numIndices = cube->getNumberOfIndices();
+    numIndices = cube->getNumberOfIndices();*/
     
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)mvp.m);
     // ### load any additional uniforms with relevant data here

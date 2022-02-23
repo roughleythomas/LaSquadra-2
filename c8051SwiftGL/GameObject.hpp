@@ -17,6 +17,9 @@ public:
     GameObject();
     GameObject(const GameObject& obj);
     ~GameObject();
+    
+    //Should obfusicate transform into different methods
+    Transform* getTransform();
 protected:
 private:
     Transform* transform;
