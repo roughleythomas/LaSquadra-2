@@ -99,7 +99,7 @@ enum
     rotAngle = 0.0f;
     rotX = 0.0;
     rotY = 0.0;
-    isRotating = 1;
+    isRotating = 0;
     scale = 1;
 
     // ### you should also load any textures needed here (you can use the setupTexture method below to load in a JPEG image and assign it to a GL texture)
@@ -131,6 +131,9 @@ enum
     // Set up a perspective view
     mvp = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5.0);
     // ### add any other transformations here (e.g., adding a rotation for a cube, or setting up a normal matrix for the shader)
+    // translate as per buttons
+    mvp = GLKMatrix4Translate(mvp, panX, panY, 0.0);
+    
     mvp = GLKMatrix4Translate(mvp, panX/80, panY/-80, 0.0);
     mvp = GLKMatrix4Scale(mvp, scale, scale, scale);
     
