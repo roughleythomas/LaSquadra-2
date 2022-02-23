@@ -19,6 +19,8 @@
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		025AE9DB277339C700A45ADB /* crate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9DA277339C700A45ADB /* crate.jpg */; };
 		974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */; };
+		977F3A5027C560B500AB8A7B /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A4E27C560B500AB8A7B /* Camera.cpp */; };
+		977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A5127C5619A00AB8A7B /* Transform.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +42,10 @@
 		025AE9DA277339C700A45ADB /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
 		974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PhysicsWrapper.cpp; sourceTree = "<group>"; };
 		974F6A1C27BD9C8D008ED294 /* PhysicsWrapper.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PhysicsWrapper.hpp; sourceTree = "<group>"; };
+		977F3A4E27C560B500AB8A7B /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		977F3A4F27C560B500AB8A7B /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		977F3A5127C5619A00AB8A7B /* Transform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
+		977F3A5227C5619A00AB8A7B /* Transform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Transform.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +95,10 @@
 				025AE9CF2773396200A45ADB /* c8051SwiftGL-Bridging-Header.h */,
 				974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */,
 				974F6A1C27BD9C8D008ED294 /* PhysicsWrapper.hpp */,
+				977F3A4E27C560B500AB8A7B /* Camera.cpp */,
+				977F3A4F27C560B500AB8A7B /* Camera.hpp */,
+				977F3A5127C5619A00AB8A7B /* Transform.cpp */,
+				977F3A5227C5619A00AB8A7B /* Transform.hpp */,
 			);
 			path = c8051SwiftGL;
 			sourceTree = "<group>";
@@ -170,6 +180,8 @@
 			files = (
 				025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */,
 				974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */,
+				977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */,
+				977F3A5027C560B500AB8A7B /* Camera.cpp in Sources */,
 				025AE9C0277337DF00A45ADB /* ViewController.swift in Sources */,
 				025AE9BC277337DF00A45ADB /* AppDelegate.swift in Sources */,
 				025AE9D42773396300A45ADB /* Renderer.mm in Sources */,
