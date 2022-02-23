@@ -20,11 +20,11 @@ public:
     ~Transform();
     
     //Translates object by input
-    glm::vec4 translate(glm::vec3 delta);
+    glm::vec4 translate(glm::vec4 delta);
     //Rotates object about axis by angle
     glm::quat rotate(float angle, glm::vec3 axis);
     //Scales object along the given axis (x,y,z) by inputed amount
-    glm::vec4 resize(glm::vec3 weights);
+    glm::vec4 resize(glm::vec4 weights);
     
     //---- Getters & Setters ----
     void setPosition(glm::vec4 position);

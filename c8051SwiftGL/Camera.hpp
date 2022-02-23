@@ -29,6 +29,8 @@ public:
     void setNearZ(float nearZ);
     void setFarZ(float farZ);
     
+    //Should probably change this to more setter/getters that better expose transform
+    Transform* getTransform();
     glm::vec4 getUp();
     glm::vec4 getRight();
     glm::vec4 getLookAt();

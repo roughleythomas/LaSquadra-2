@@ -8,6 +8,9 @@
 #include <chrono>
 #include "GLESRenderer.hpp"
 
+#include "Camera.hpp"
+#include "CubeRender.hpp"
+
 // These are GL indices for uniform variables used by GLSL shaders.
 // You can add additional ones, for example for a normal matrix,
 //  textures, toggles, or for any other data to pass on to the shaders.
@@ -53,6 +56,8 @@ enum
     
     // ### add any other variables (e.g., current rotation angle for auto-rotating cube) here
     float rotAngle;
+    
+    CubeRender* cube;
 }
 
 @end
@@ -77,7 +82,7 @@ enum
 {
 //    numIndices = glesRenderer.GenSquare(1.0f, &vertices, &indices);
     // ### instead of a cube, you can load any other model
-    numIndices = glesRenderer.GenCube(1.0f, &vertices, &normals, &texCoords, &indices);
+    //numIndices = glesRenderer.GenCube(1.0f, &vertices, &normals, &texCoords, &indices);
 }
 
 - (void)setup:(GLKView *)view
@@ -112,6 +117,28 @@ enum
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f ); // background color
     glEnable(GL_DEPTH_TEST);
     lastTime = std::chrono::steady_clock::now();
+    
+    //float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
+    float fov = 60.0f * M_PI / 180.0f;
+    
+    Camera* camera = Camera::GetInstance();
+    camera->setFarZ(20.0f);
+    camera->setNearZ(1.0f);
+    //camera->setAspectRatio(aspect);
+    camera->setFieldOfView(fov);
+    camera->getTransform()->translate(glm::vec4(0, 0, -5.0f, 0));
+    
+    cube = new CubeRender();
+    
+    
+    /*vertices = new float[24 * 3];
+    normals = new float[24 * 3];
+    texCoords = new float[24 * 2];
+    indices = new int[36];*/
+    //for(int i = 0; i < cube->getNumberOfVertices(); i++) { vertices[i] = cube->getVertices()[i]; }
+    /*for(int i = 0; i < cube->getNumberOfNormals(); i++) { normals[i] = cube->getNormals()[i]; }
+    for(int i = 0; i < cube->getNumberOfTexCoordinates(); i++) { texCoords[i] = cube->getTextureCoordinates()[i]; }
+    for(int i = 0; i < cube->getNumberOfIndices(); i++) { indices[i] = cube->getIndices()[i]; }*/
 }
 
 - (void)update
@@ -120,6 +147,7 @@ enum
     auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
     lastTime = currentTime;
     
+    Camera* camera = camera->GetInstance();
     // ### do any other updating (e.g., changing the rotation angle of an auto-rotating cube) here
     if (isRotating)
     {
@@ -129,7 +157,9 @@ enum
     }
 
     // Set up a perspective view
-    mvp = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5.0);
+    glm::vec4 position = camera->getTransform()->getPosition();
+    mvp = GLKMatrix4Translate(GLKMatrix4Identity, position.x, position.y, position.z);
+    //mvp = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5.0);
     // ### add any other transformations here (e.g., adding a rotation for a cube, or setting up a normal matrix for the shader)
     mvp = GLKMatrix4Translate(mvp, panX/80, panY/-80, 0.0);
     mvp = GLKMatrix4Scale(mvp, scale, scale, scale);
@@ -156,14 +186,24 @@ enum
     
     normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(mvp), NULL);
 
+    //Camera* camera = Camera::GetInstance();
+    
     float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
-    GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
-
+    camera->setAspectRatio(aspect);
+    //GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
+    GLKMatrix4 perspective = GLKMatrix4MakePerspective(camera->getFieldOfView(), camera->getAspectRatio(), camera->getNearZ(), camera->getFarZ());
+    
     mvp = GLKMatrix4Multiply(perspective, mvp);
 }
 
 - (void)draw:(CGRect)drawRect;
 {
+    vertices = cube->getVertices();
+    normals = cube->getNormals();
+    texCoords = cube->getTextureCoordinates();
+    indices = cube->getIndices();
+    numIndices = cube->getNumberOfIndices();
+    
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)mvp.m);
     // ### load any additional uniforms with relevant data here
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, normalMatrix.m);
@@ -175,7 +215,7 @@ enum
     glUseProgram ( programObject );
 
     glVertexAttribPointer ( 0, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
+                           GL_FALSE, 3 * sizeof ( GLfloat ), vertices);
     glEnableVertexAttribArray ( 0 );
     // ### set up and enable any additional vertex attributes (e.g., normals, texture coordinates, etc.) here
 

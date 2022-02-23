@@ -19,7 +19,7 @@ Transform::Transform(Transform& other)
     scale = other.scale;
 }
 
-glm::vec4 Transform::translate(glm::vec3 delta)
+glm::vec4 Transform::translate(glm::vec4 delta)
 {
     position += delta;
     

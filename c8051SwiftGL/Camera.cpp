@@ -7,12 +7,22 @@
 
 #include "Camera.hpp"
 
+Camera* Camera::INSTANCE = new Camera();
+
 glm::vec4 Camera::UP = glm::vec4(0,1,0,0);
 glm::vec4 Camera::RIGHT = glm::vec4(1,0,0,0);
 glm::vec4 Camera::FACING = glm::vec4(0,0,1,0);
 
+Camera* Camera::GetInstance()
+{
+    if(INSTANCE == 0)
+        INSTANCE = new Camera();
+    
+    return INSTANCE;
+}
+
 Camera::Camera()
-:transform(new Transform()), facing(glm::vec4(0,0,1,0)), right(glm::vec4(1,0,0,0)), up(glm::vec4(0,1,0,0))
+:transform(new Transform()), facing(FACING), right(RIGHT), up(UP)
 {
     
 }
@@ -33,9 +43,15 @@ void Camera::lookAt(glm::vec4 point)
 void Camera::rotate(float angle, glm::vec3 axis)
 {
     glm::quat rotation = transform->rotate(angle, axis);
+    
     glm::quat rotConj = glm::conjugate(rotation);
     glm::vec4 newFacing = rotation * facing * rotConj;
     glm::vec4 newRight = rotation * right * rotConj;
+    glm::vec4 newUp = rotation * up * rotConj;
+    
+    facing = newFacing;
+    right = newRight;
+    up = newUp;
 }
 
 void Camera::setAspectRatio(float ratio)
@@ -74,6 +90,7 @@ void Camera::setFarZ(float newZ)
     }
 }
 
+Transform* Camera::getTransform() { return transform; }
 glm::vec4 Camera::getUp() { return up; }
 glm::vec4 Camera::getRight() { return right; }
 glm::vec4 Camera::getLookAt() { return facing; }
