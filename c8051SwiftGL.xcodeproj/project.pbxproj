@@ -19,6 +19,9 @@
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		025AE9DB277339C700A45ADB /* crate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9DA277339C700A45ADB /* crate.jpg */; };
 		3C86153F27BDA845001D3485 /* Joystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C86153D27BDA845001D3485 /* Joystick.cpp */; };
+		A46F058A27C4A88C00E689FB /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46F058927C4A88C00E689FB /* StartViewController.swift */; };
+		A46F059127C4B6B200E689FB /* DialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46F058F27C4B6B200E689FB /* DialogViewController.swift */; };
+		A46F059227C4B6B200E689FB /* DialogViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A46F059027C4B6B200E689FB /* DialogViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +43,9 @@
 		025AE9DA277339C700A45ADB /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
 		3C86153D27BDA845001D3485 /* Joystick.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Joystick.cpp; sourceTree = "<group>"; };
 		3C86153E27BDA845001D3485 /* Joystick.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Joystick.hpp; sourceTree = "<group>"; };
+		A46F058927C4A88C00E689FB /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		A46F058F27C4B6B200E689FB /* DialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewController.swift; sourceTree = "<group>"; };
+		A46F059027C4B6B200E689FB /* DialogViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DialogViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +78,41 @@
 		025AE9BA277337DF00A45ADB /* c8051SwiftGL */ = {
 			isa = PBXGroup;
 			children = (
+				A46F059527C4B6F400E689FB /* OpenGL */,
+				A46F059427C4B6D000E689FB /* Controllers */,
+				A46F059327C4B6C300E689FB /* Dialog */,
+				025AE9BB277337DF00A45ADB /* AppDelegate.swift */,
+				025AE9BD277337DF00A45ADB /* SceneDelegate.swift */,
+				025AE9C1277337DF00A45ADB /* Main.storyboard */,
+				025AE9C4277337E200A45ADB /* Assets.xcassets */,
+				025AE9C6277337E200A45ADB /* LaunchScreen.storyboard */,
+				025AE9C9277337E200A45ADB /* Info.plist */,
+				025AE9CF2773396200A45ADB /* c8051SwiftGL-Bridging-Header.h */,
+			);
+			path = c8051SwiftGL;
+			sourceTree = "<group>";
+		};
+		A46F059327C4B6C300E689FB /* Dialog */ = {
+			isa = PBXGroup;
+			children = (
+				A46F058F27C4B6B200E689FB /* DialogViewController.swift */,
+				A46F059027C4B6B200E689FB /* DialogViewController.xib */,
+			);
+			path = Dialog;
+			sourceTree = "<group>";
+		};
+		A46F059427C4B6D000E689FB /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A46F058927C4A88C00E689FB /* StartViewController.swift */,
+				025AE9BF277337DF00A45ADB /* ViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		A46F059527C4B6F400E689FB /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
 				3C86153D27BDA845001D3485 /* Joystick.cpp */,
 				3C86153E27BDA845001D3485 /* Joystick.hpp */,
 				025AE9D32773396300A45ADB /* GLESRenderer.cpp */,
@@ -81,16 +122,8 @@
 				025AE9D6277339AE00A45ADB /* Shader.fsh */,
 				025AE9D7277339AF00A45ADB /* Shader.vsh */,
 				025AE9DA277339C700A45ADB /* crate.jpg */,
-				025AE9BB277337DF00A45ADB /* AppDelegate.swift */,
-				025AE9BD277337DF00A45ADB /* SceneDelegate.swift */,
-				025AE9BF277337DF00A45ADB /* ViewController.swift */,
-				025AE9C1277337DF00A45ADB /* Main.storyboard */,
-				025AE9C4277337E200A45ADB /* Assets.xcassets */,
-				025AE9C6277337E200A45ADB /* LaunchScreen.storyboard */,
-				025AE9C9277337E200A45ADB /* Info.plist */,
-				025AE9CF2773396200A45ADB /* c8051SwiftGL-Bridging-Header.h */,
 			);
-			path = c8051SwiftGL;
+			path = OpenGL;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,6 +185,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A46F059227C4B6B200E689FB /* DialogViewController.xib in Resources */,
 				025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */,
 				025AE9C8277337E200A45ADB /* LaunchScreen.storyboard in Resources */,
 				025AE9C5277337E200A45ADB /* Assets.xcassets in Resources */,
@@ -169,8 +203,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */,
+				A46F058A27C4A88C00E689FB /* StartViewController.swift in Sources */,
 				025AE9C0277337DF00A45ADB /* ViewController.swift in Sources */,
 				025AE9BC277337DF00A45ADB /* AppDelegate.swift in Sources */,
+				A46F059127C4B6B200E689FB /* DialogViewController.swift in Sources */,
 				025AE9D42773396300A45ADB /* Renderer.mm in Sources */,
 				025AE9BE277337DF00A45ADB /* SceneDelegate.swift in Sources */,
 				3C86153F27BDA845001D3485 /* Joystick.cpp in Sources */,

@@ -7,7 +7,6 @@
 #import <GLKit/GLKit.h>
 #include <chrono>
 #include "GLESRenderer.hpp"
-#include "Joystick.hpp"
 
 // These are GL indices for uniform variables used by GLSL shaders.
 // You can add additional ones, for example for a normal matrix,
@@ -34,13 +33,9 @@ enum
     NUM_ATTRIBUTES
 };
 
-//Renderer interface used to interact with C++ objects.
 @interface Renderer () {
     GLKView *theView;   // used to access view properties (e.g., its size)
     GLESRenderer glesRenderer;  // our GLES renderer object
-    
-    //Joystick object with x, y coords, background image and w/h, joystick image and w/h, and screen w/h
-    Joystick joystick; //Joystick object
     GLuint programObject;   // GLSL shader program that has the vertex and fragment shaders
     std::chrono::time_point<std::chrono::steady_clock> lastTime;
 
@@ -89,8 +84,6 @@ enum
 {
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     
-    joystick = Joystick(0.0f,0.0f,5.0f,5.0f,5.0f,5.0f,10.0f,10.0f);
-    
     if (!view.context) {
         NSLog(@"Failed to create ES context");
     }
@@ -111,19 +104,11 @@ enum
 
     // ### you should also load any textures needed here (you can use the setupTexture method below to load in a JPEG image and assign it to a GL texture)
     crateTexture = [self setupTexture:@"crate.jpg"];
-    joystick.joystickCont = [self setupTexture:@"crate.jpg"];
-    joystick.joystickBack = [self setupTexture:@"crate.jpg"];
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, crateTexture);
     glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D,joystick.joystickCont);
-    
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D,joystick.joystickBack);
-    
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f ); // background color
     glEnable(GL_DEPTH_TEST);
     lastTime = std::chrono::steady_clock::now();
@@ -172,14 +157,11 @@ enum
     normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(mvp), NULL);
 
     float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
-    joystick.screenWidth = (float)theView.drawableWidth;
-    joystick.screenHeight = (float)theView.drawableHeight;
     GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
 
     mvp = GLKMatrix4Multiply(perspective, mvp);
 }
 
-//Draw function that requires a CGRect parameter called drawRect, functionally acting as the canvas for this program.
 - (void)draw:(CGRect)drawRect;
 {
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)mvp.m);
@@ -195,8 +177,6 @@ enum
     glVertexAttribPointer ( 0, 3, GL_FLOAT,
                            GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
     glEnableVertexAttribArray ( 0 );
-    
-    
     // ### set up and enable any additional vertex attributes (e.g., normals, texture coordinates, etc.) here
 
     glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
@@ -213,17 +193,7 @@ enum
     else
         glVertexAttrib4f ( 1, 0.0f, 1.0f, 0.0f, 1.0f );
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)mvp.m);
-    
-    
-    glActiveTexture(GL_TEXTURE0);
-    
-    //Draw numIndicies number of triangles, and use indices as the data
     glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
-    
-    glActiveTexture(GL_TEXTURE1);
-    
-    joystick.draw();
-    
 }
 
 
