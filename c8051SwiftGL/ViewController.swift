@@ -1,3 +1,51 @@
+//
+//  Copyright © Borna Noureddin. All rights reserved.
+//
+
+import GLKit
+
+extension ViewController: GLKViewControllerDelegate {
+    func glkViewControllerUpdate(_ controller: GLKViewController) {
+        glesRenderer.update();
+        
+    }
+}
+
+class ViewController: GLKViewController {
+    
+    private var context: EAGLContext?
+    private var glesRenderer: Renderer!
+    
+    private func setupGL() {
+        context = EAGLContext(api: .openGLES3)
+        EAGLContext.setCurrent(context)
+        if let view = self.view as? GLKView, let context = context {
+            view.context = context
+            delegate = self as GLKViewControllerDelegate
+            glesRenderer = Renderer()
+            glesRenderer.setup(view)
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupGL()
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2;
+        view.addGestureRecognizer(doubleTap)
+    }
+    
+    override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+        glesRenderer.draw(rect);
+    }
+    
+    @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
+        glesRenderer.isRotating = !glesRenderer.isRotating;
+    }
+}
+
+/*
+Old view controller
 import GLKit    // use GLKit to treat the iOS display as one that can receive GL draw commands
 
 // This enables using the GLKit update method to call our own update
@@ -22,7 +70,7 @@ class ViewController: GLKViewController {
     
     //_________________________ Instantiate View ______________________________
     
-    //*** Set up the GL context and initialize and setup our GLES renderer object
+    // Set up the GL context and initialize and setup our GLES renderer object
     private func setupGL()
     {
         context = EAGLContext(api: .openGLES3)
@@ -40,7 +88,7 @@ class ViewController: GLKViewController {
             }
     }
     
-    //*** This gets called as soon as the view is loaded
+    // This gets called as soon as the view is loaded
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -49,7 +97,7 @@ class ViewController: GLKViewController {
         //view.addSubview(pannableView)
         //pannableView.center = view.center
         
-        //**Instantiate different gesture recognizers and their associated 'selector' functions to perform different tasks when action is performed.
+        //Instantiate different gesture recognizers and their associated 'selector' functions to perform different tasks when action is performed.
         
         // Set up a double-tap gesture recognizer
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
@@ -79,7 +127,7 @@ class ViewController: GLKViewController {
     
     //_________________________ Render View ______________________________
     
-    //***Draw all objects that should be displayed on screen
+    //Draw all objects that should be displayed on screen
     override func glkView(_ view: GLKView, drawIn rect: CGRect)
     {
         glesRenderer.draw(rect);    // use our custom GLES renderer object to make the actual GL draw calls
@@ -149,3 +197,4 @@ class ViewController: GLKViewController {
 
     
 }
+*/
