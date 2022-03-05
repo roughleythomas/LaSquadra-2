@@ -7,8 +7,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <iostream>
-#include "glm/gtx/string_cast.hpp"
+#include "glm-master/glm/gtx/string_cast.hpp"
 #include "GLESRenderer.hpp"
+#include "CubeRender.hpp"
 
 
 // ----------------------------------------------------------------
@@ -52,23 +53,30 @@ GLESRenderer::~GLESRenderer()
 // ----------------------------------------------------------------
 void GLESRenderer::Update()
 {
-    auto currentTime = std::chrono::steady_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
-    lastTime = currentTime;
-    
-    if (isRotating)
-    {
-        rotAngle += 0.001f * elapsedTime;
-        if (rotAngle >= 360.0f)
-            rotAngle = 0.0f;
-    }
+    if(!updatedOnce){
+        updatedOnce = true;
+        
+        /*
+        auto currentTime = std::chrono::steady_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
+        lastTime = currentTime;
+        
+        if (isRotating)
+        {
+            rotAngle += 0.001f * elapsedTime;
+            if (rotAngle >= 360.0f)
+                rotAngle = 0.0f;
+        }
+        */
 
-    mvp = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -5));
-    mvp = glm::rotate(mvp, rotAngle, glm::vec3(1, 0, 1));
-    normalMatrix = glm::inverseTranspose(glm::mat3(mvp));
-    float aspect = (float)vpWidth / (float)vpHeight;
-    glm::mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
-    mvp = perspective * mvp;
+        //update view transform
+        mvp = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -5));
+        mvp = glm::rotate(mvp, rotAngle, glm::vec3(1, 0, 1));
+        normalMatrix = glm::inverseTranspose(glm::mat3(mvp));
+        float aspect = (float)vpWidth / (float)vpHeight;
+        glm::mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
+        mvp = perspective * mvp;
+    }
 }
 
 void GLESRenderer::Draw()
@@ -82,22 +90,34 @@ void GLESRenderer::Draw()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
 
-    glVertexAttribPointer ( 0, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
-    glEnableVertexAttribArray ( 0 );
+    for(GOController object : objects){
+        /*float *vertices, *normals, *texCoords;
+        int *indices, numIndices;*/
+        Renderable* r = object.getRenderable();
+        float *vertices = r->getVertices(), *normals = r->getNormals(), *texCoords = r->getTextureCoords();
+        int *indices = r->getIndices(), numIndices = r->getNumIndices();
+        
+        glVertexAttribPointer ( 0, 3, GL_FLOAT,
+                               GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
+        glEnableVertexAttribArray ( 0 );
 
-    glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
+        glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
 
-    glVertexAttribPointer ( 2, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), normals );
-    glEnableVertexAttribArray ( 2 );
+        glVertexAttribPointer ( 2, 3, GL_FLOAT,
+                               GL_FALSE, 3 * sizeof ( GLfloat ), normals );
+        glEnableVertexAttribArray ( 2 );
 
-    glVertexAttribPointer ( 3, 2, GL_FLOAT,
-                           GL_FALSE, 2 * sizeof ( GLfloat ), texCoords );
-    glEnableVertexAttribArray ( 3 );
-    
-    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, glm::value_ptr(mvp));
-    glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
+        glVertexAttribPointer ( 3, 2, GL_FLOAT,
+                               GL_FALSE, 2 * sizeof ( GLfloat ), texCoords );
+        glEnableVertexAttribArray ( 3 );
+        
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, glm::value_ptr(mvp));
+        glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
+    }
+}
+
+void GLESRenderer::addObject(Renderable* r){
+    objects.push_back(GOController(new GameObject(), r));
 }
 
 
@@ -105,199 +125,13 @@ void GLESRenderer::Draw()
 
 
 // ----------------------------------------------------------------
-// Model loading
+// Model loading - ADD RENDERABLES HERE
 // ----------------------------------------------------------------
 void GLESRenderer::LoadModels()
 {
-    numIndices = GenCube(1.0f, &vertices, &normals, &texCoords, &indices);
+    //numIndices = GenCube(1.0f, &vertices, &normals, &texCoords, &indices);
+    addObject(new CubeRender());
 }
-
-
-int GLESRenderer::GenSquare(float scale, float **vertices, int **indices)
-{
-    int i;
-    int numVertices = 4;
-    int numIndices = 6;
-    
-    float cubeVerts[] =
-    {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, 0.5f,  0.0f,
-        -0.5f, 0.5f,  0.0f,
-        0.5f, -0.5f,  0.0f,
-    };
-    
-    // Allocate memory for buffers
-    if ( vertices != NULL )
-    {
-        *vertices = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
-        
-        for ( i = 0; i < numVertices * 3; i++ )
-        {
-            ( *vertices ) [i] *= scale;
-        }
-    }
-    
-    // Generate the indices
-    if ( indices != NULL )
-    {
-        GLuint cubeIndices[] =
-        {
-            0, 1, 2,
-            0, 3, 1,
-        };
-        
-        *indices = (int *)malloc ( sizeof ( int ) * numIndices );
-        memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
-    }
-    
-    return numIndices;
-}
-
-
-int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
-                          float **texCoords, int **indices)
-{
-    int i;
-    int numVertices = 24;
-    int numIndices = 36;
-    
-    float cubeVerts[] =
-    {
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, 0.5f,
-        -0.5f,  0.5f, 0.5f,
-        0.5f,  0.5f, 0.5f,
-        0.5f, -0.5f, 0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f, -0.5f,
-    };
-    
-    float cubeNormals[] =
-    {
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        -1.0f, 0.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-    };
-    
-    float cubeTex[] =
-    {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-    };
-    
-    // Allocate memory for buffers
-    if ( vertices != NULL )
-    {
-        *vertices = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
-        
-        for ( i = 0; i < numVertices * 3; i++ )
-        {
-            ( *vertices ) [i] *= scale;
-        }
-    }
-    
-    if ( normals != NULL )
-    {
-        *normals = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *normals, cubeNormals, sizeof ( cubeNormals ) );
-    }
-    
-    if ( texCoords != NULL )
-    {
-        *texCoords = (float *)malloc ( sizeof ( float ) * 2 * numVertices );
-        memcpy ( *texCoords, cubeTex, sizeof ( cubeTex ) ) ;
-    }
-    
-    
-    // Generate the indices
-    if ( indices != NULL )
-    {
-        GLuint cubeIndices[] =
-        {
-            0, 2, 1,
-            0, 3, 2,
-            4, 5, 6,
-            4, 6, 7,
-            8, 9, 10,
-            8, 10, 11,
-            12, 15, 14,
-            12, 14, 13,
-            16, 17, 18,
-            16, 18, 19,
-            20, 23, 22,
-            20, 22, 21
-        };
-        
-        *indices = (int *)malloc ( sizeof ( int ) * numIndices );
-        memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
-    }
-    
-    return numIndices;
-}
-
 
 // ========================================================================================
 

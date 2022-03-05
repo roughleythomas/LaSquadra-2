@@ -24,14 +24,14 @@ public:
     virtual bool loadTextureCoords(void* info) = 0;
     virtual bool loadIndices(void* info) = 0;
     
-    int getNumberOfVertices();
-    int getNumberOfNormals();
-    int getNumberOfTexCoordinates();
-    int getNumberOfIndices();
+    int getNumVertices();
+    int getNumNormals();
+    int getNumTexCoords();
+    int getNumIndices();
     int* getIndices();
     float* getVertices();
     float* getNormals();
-    float* getTextureCoordinates();
+    float* getTextureCoords();
 protected:
     int numVertices, numNormals, numTexCoords, numIndices;
     int* indices;

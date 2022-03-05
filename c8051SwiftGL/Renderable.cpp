@@ -67,11 +67,11 @@ Renderable::~Renderable()
         delete texCoords;
 }
 
-int Renderable::getNumberOfVertices() { return numVertices; }
-int Renderable::getNumberOfNormals() { return numNormals; }
-int Renderable::getNumberOfTexCoordinates() { return numTexCoords; }
-int Renderable::getNumberOfIndices() { return numIndices; }
+int Renderable::getNumVertices() { return numVertices; }
+int Renderable::getNumNormals() { return numNormals; }
+int Renderable::getNumTexCoords() { return numTexCoords; }
+int Renderable::getNumIndices() { return numIndices; }
 int* Renderable::getIndices() { return indices; }
 float* Renderable::getVertices() { return vertices; }
 float* Renderable::getNormals() { return normals; }
-float* Renderable::getTextureCoordinates() { return texCoords; }
+float* Renderable::getTextureCoords() { return texCoords; }

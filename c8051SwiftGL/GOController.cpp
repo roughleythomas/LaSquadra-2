@@ -7,17 +7,22 @@
 
 #include "GOController.hpp"
 
-GOController::GOController(GameObject* object, Renderable* render)
+/*GOController::GOController(GameObject* object, Renderable* render)
 :gameObject(object), renderable(render)
 {
     
+}*/
+
+GOController::GOController(GameObject* gameObject, Renderable* renderable){
+    this->gameObject = gameObject;
+    this->renderable = renderable;
 }
 
-GOController::~GOController()
+/*GOController::~GOController()
 {
     delete gameObject;
     delete renderable;
-}
+}*/
 
 void GOController::update(std::chrono::milliseconds& deltaTime) {}
 void GOController::draw(std::chrono::milliseconds& deltaTime) {}

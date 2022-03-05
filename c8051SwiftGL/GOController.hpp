@@ -19,7 +19,7 @@ class GOController
 public:
     //Should be private with factory method invocation
     GOController(GameObject* gameObject, Renderable* renderable);
-    ~GOController();
+    //~GOController();
     
     //Update object based on
     virtual void update(std::chrono::milliseconds& deltaTime);
