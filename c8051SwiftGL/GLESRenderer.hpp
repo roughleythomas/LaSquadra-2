@@ -14,6 +14,7 @@
 #include "glm-master/glm/ext.hpp"
 #include "Renderable.hpp"
 #include "GOController.hpp"
+#include "Maze.hpp"
 
 using namespace std;
 

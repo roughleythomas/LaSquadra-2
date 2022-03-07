@@ -131,6 +131,8 @@ void GLESRenderer::LoadModels()
 {
     //numIndices = GenCube(1.0f, &vertices, &normals, &texCoords, &indices);
     addObject(new CubeRender());
+    Maze* maze = new Maze(20);
+    maze->print();
 }
 
 // ========================================================================================
