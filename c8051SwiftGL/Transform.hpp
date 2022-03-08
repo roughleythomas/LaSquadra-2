@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "glm-master/glm/glm.hpp"
 #include "glm-master/glm/ext/quaternion_float.hpp"
+#include <iostream>
 
 class Transform
 {
@@ -20,28 +21,28 @@ public:
     ~Transform();
     
     //Translates object by input
-    glm::vec4 translate(glm::vec4 delta);
+    glm::vec3 translate(glm::vec3 delta);
     //Rotates object about axis by angle
     glm::quat rotate(float angle, glm::vec3 axis);
     //Scales object along the given axis (x,y,z) by inputed amount
-    glm::vec4 resize(glm::vec4 weights);
+    glm::vec3 resize(glm::vec3 weights);
     
     //---- Getters & Setters ----
-    void setPosition(glm::vec4 position);
+    void setPosition(glm::vec3 position);
     void setQuaternion(glm::quat quaternion);
-    void setScale(glm::vec4 scale);
+    void setScale(glm::vec3 scale);
     
-    glm::vec4& getPosition();
+    glm::vec3& getPosition();
     glm::quat& getQuaternion();
-    glm::vec4& getScale();
+    glm::vec3& getScale();
 protected:
 private:
     //Location of the game object
-    glm::vec4 position;
+    glm::vec3 position;
     //Quaternion used for rotation calculations
     glm::quat quaternion;
     //Scale of game object
-    glm::vec4 scale;
+    glm::vec3 scale;
 };
 
 #endif /* Transform_hpp */

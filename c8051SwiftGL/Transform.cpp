@@ -8,7 +8,17 @@
 #include "Transform.hpp"
 #include "glm-master/glm/ext/quaternion_trigonometric.hpp"
 
-Transform::Transform() {}
+Transform::Transform() {
+    position.x = 0;
+    position.y = 0;
+    position.z = 0;
+    scale.x = 1;
+    scale.y = 1;
+    scale.z = 1;
+    quaternion.x = 0;
+    quaternion.y = 0;
+    quaternion.z = 0;
+}
 
 Transform::~Transform() {}
 
@@ -19,7 +29,7 @@ Transform::Transform(const Transform& other)
     scale = other.scale;
 }
 
-glm::vec4 Transform::translate(glm::vec4 delta)
+glm::vec3 Transform::translate(glm::vec3 delta)
 {
     position += delta;
     
@@ -34,7 +44,7 @@ glm::quat Transform::rotate(float angle, glm::vec3 axis)
     return quaternion;
 }
 
-void Transform::setPosition(glm::vec4 location)
+void Transform::setPosition(glm::vec3 location)
 {
     position = location;
 }
@@ -44,6 +54,10 @@ void Transform::setQuaternion(glm::quat rotations)
     quaternion = rotations;
 }
 
-glm::vec4& Transform::getPosition() { return position; }
+void Transform::setScale(glm::vec3 scale){
+    this->scale = scale;
+}
+
+glm::vec3& Transform::getPosition() { return position; }
 glm::quat& Transform::getQuaternion() { return quaternion; }
-glm::vec4& Transform::getScale() { return scale; }
+glm::vec3& Transform::getScale() { return scale; }

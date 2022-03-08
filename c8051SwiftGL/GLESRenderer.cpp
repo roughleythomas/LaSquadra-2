@@ -28,9 +28,9 @@ GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentSha
 
     if (spriteData && (width > 0) && (height > 0))
     {
-        crateTexture = SetupTexture(spriteData, width, height);
+        groundTexture = SetupTexture(spriteData, width, height);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, crateTexture);
+        glBindTexture(GL_TEXTURE_2D, groundTexture);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
     }
 
@@ -68,10 +68,11 @@ void GLESRenderer::Update()
                 rotAngle = 0.0f;
         }
         */
+        rotAngle = 0.f;
 
         //update view transform
         mvp = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -5));
-        mvp = glm::rotate(mvp, rotAngle, glm::vec3(1, 0, 1));
+        mvp = glm::rotate(mvp, rotAngle, glm::vec3(1, 0, 0));
         normalMatrix = glm::inverseTranspose(glm::mat3(mvp));
         float aspect = (float)vpWidth / (float)vpHeight;
         glm::mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
@@ -91,8 +92,6 @@ void GLESRenderer::Draw()
     glUseProgram ( programObject );
 
     for(GOController object : objects){
-        /*float *vertices, *normals, *texCoords;
-        int *indices, numIndices;*/
         Renderable* r = object.getRenderable();
         float *vertices = r->getVertices(), *normals = r->getNormals(), *texCoords = r->getTextureCoords();
         int *indices = r->getIndices(), numIndices = r->getNumIndices();
@@ -111,7 +110,12 @@ void GLESRenderer::Draw()
                                GL_FALSE, 2 * sizeof ( GLfloat ), texCoords );
         glEnableVertexAttribArray ( 3 );
         
-        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, glm::value_ptr(mvp));
+        //object's properties
+        glm::mat4 position = glm::translate(mvp, object.transform->getPosition())
+            * glm::mat4(object.transform->getQuaternion());
+        glm::mat4 transform = glm::scale(position, object.transform->getScale());
+        
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, glm::value_ptr(transform));
         glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
     }
 }
@@ -129,10 +133,11 @@ void GLESRenderer::addObject(Renderable* r){
 // ----------------------------------------------------------------
 void GLESRenderer::LoadModels()
 {
-    //numIndices = GenCube(1.0f, &vertices, &normals, &texCoords, &indices);
     addObject(new CubeRender());
-    Maze* maze = new Maze(20);
-    maze->print();
+    objects[0].transform->translate(glm::vec3(0.5, 1, 0));
+    objects[0].transform->setScale(glm::vec3(1.f, 0.5f, 0.5f));
+    /*Maze* maze = new Maze(5);
+    maze->print();*/
 }
 
 // ========================================================================================

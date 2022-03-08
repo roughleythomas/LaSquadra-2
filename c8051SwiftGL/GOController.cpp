@@ -16,6 +16,7 @@
 GOController::GOController(GameObject* gameObject, Renderable* renderable){
     this->gameObject = gameObject;
     this->renderable = renderable;
+    transform = this->gameObject->getTransform();
 }
 
 /*GOController::~GOController()

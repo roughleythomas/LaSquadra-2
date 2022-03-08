@@ -41,9 +41,9 @@
     //  load in the image (possibly using some other API/library).
     // Note in that case the need still to construct the path to the file in the iOS bundle
     //  just like in the case of the shader files (see below).
-    CGImageRef textureImage = [UIImage imageNamed:@"crate.jpg"].CGImage;
+    CGImageRef textureImage = [UIImage imageNamed:@"dirt.jpg"].CGImage;
     if (!textureImage) {
-        NSLog(@"Failed to load image %@", @"crate.jpg");
+        NSLog(@"Failed to load image %@", @"dirt.jpg");
         exit(1);
     }
     size_t textureWidth = CGImageGetWidth(textureImage);

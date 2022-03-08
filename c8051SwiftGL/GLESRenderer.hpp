@@ -59,7 +59,7 @@ private:
     // GL variables
     GLint uniforms[NUM_UNIFORMS];
     GLuint programObject;
-    GLuint crateTexture;
+    GLuint groundTexture;
     glm::mat4 mvp;
     glm::mat3 normalMatrix;
 

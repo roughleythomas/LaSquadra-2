@@ -18,7 +18,7 @@ public:
     ~Camera();
     
     //Orients camera to look at specified point
-    void lookAt(glm::vec4 point);
+    void lookAt(glm::vec3 point);
     //Rotates camera by specified angles (in degrees) about specified axis
     void rotate(float angle, glm::vec3 axis);
     
@@ -31,9 +31,9 @@ public:
     
     //Should probably change this to more setter/getters that better expose transform
     Transform* getTransform();
-    glm::vec4 getUp();
-    glm::vec4 getRight();
-    glm::vec4 getLookAt();
+    glm::vec3 getUp();
+    glm::vec3 getRight();
+    glm::vec3 getLookAt();
     float getAspectRatio();
     float getFieldOfView();
     float getNearZ();
@@ -42,7 +42,7 @@ public:
     //Singleton object getter
     static Camera* GetInstance();
     //Orthagonal vectors that describe the camera
-    static glm::vec4 UP, RIGHT, FACING;
+    static glm::vec3 UP, RIGHT, FACING;
 protected:
 private:
     //Private C'tor to prevent accidental instantiation
@@ -54,7 +54,7 @@ private:
     //Transforms of camera
     Transform* transform;
     //Vector representation of defining vectors
-    glm::vec4 facing, right, up;
+    glm::vec3 facing, right, up;
     float aspectRatio;
     float fieldOfView;
     float nearZ, farZ;

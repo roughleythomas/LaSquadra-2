@@ -17,8 +17,9 @@
 		025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 025AE9D32773396300A45ADB /* GLESRenderer.cpp */; };
 		025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D6277339AE00A45ADB /* Shader.fsh */; };
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
-		025AE9DB277339C700A45ADB /* crate.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9DA277339C700A45ADB /* crate.jpg */; };
+		6409220927D6D89E009DD9F0 /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6409220827D6D89E009DD9F0 /* dirt.jpg */; };
 		642CBB2327D669FE00448432 /* Maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 642CBB2127D669FE00448432 /* Maze.cpp */; };
+		642CBB2727D6B0C100448432 /* iron.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 642CBB2527D6B0C100448432 /* iron.jpg */; };
 		974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */; };
 		977F3A5027C560B500AB8A7B /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A4E27C560B500AB8A7B /* Camera.cpp */; };
 		977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A5127C5619A00AB8A7B /* Transform.cpp */; };
@@ -44,9 +45,10 @@
 		025AE9D32773396300A45ADB /* GLESRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLESRenderer.cpp; sourceTree = "<group>"; };
 		025AE9D6277339AE00A45ADB /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		025AE9D7277339AF00A45ADB /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
-		025AE9DA277339C700A45ADB /* crate.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = crate.jpg; sourceTree = "<group>"; };
+		6409220827D6D89E009DD9F0 /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dirt.jpg; path = ../../../../Downloads/dirt.jpg; sourceTree = "<group>"; };
 		642CBB2127D669FE00448432 /* Maze.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Maze.cpp; sourceTree = "<group>"; };
 		642CBB2227D669FE00448432 /* Maze.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Maze.hpp; sourceTree = "<group>"; };
+		642CBB2527D6B0C100448432 /* iron.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = iron.jpg; path = ../../../../Downloads/iron.jpg; sourceTree = "<group>"; };
 		974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PhysicsWrapper.cpp; sourceTree = "<group>"; };
 		974F6A1C27BD9C8D008ED294 /* PhysicsWrapper.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PhysicsWrapper.hpp; sourceTree = "<group>"; };
 		977F3A4E27C560B500AB8A7B /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
@@ -99,7 +101,6 @@
 				025AE9D22773396300A45ADB /* Renderer.mm */,
 				025AE9D6277339AE00A45ADB /* Shader.fsh */,
 				025AE9D7277339AF00A45ADB /* Shader.vsh */,
-				025AE9DA277339C700A45ADB /* crate.jpg */,
 				025AE9BB277337DF00A45ADB /* AppDelegate.swift */,
 				025AE9BD277337DF00A45ADB /* SceneDelegate.swift */,
 				025AE9BF277337DF00A45ADB /* ViewController.swift */,
@@ -124,6 +125,8 @@
 				97F20BBE27C6AA8D00D25008 /* GOController.hpp */,
 				642CBB2127D669FE00448432 /* Maze.cpp */,
 				642CBB2227D669FE00448432 /* Maze.hpp */,
+				642CBB2527D6B0C100448432 /* iron.jpg */,
+				6409220827D6D89E009DD9F0 /* dirt.jpg */,
 			);
 			path = c8051SwiftGL;
 			sourceTree = "<group>";
@@ -190,8 +193,9 @@
 				025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */,
 				025AE9C8277337E200A45ADB /* LaunchScreen.storyboard in Resources */,
 				025AE9C5277337E200A45ADB /* Assets.xcassets in Resources */,
-				025AE9DB277339C700A45ADB /* crate.jpg in Resources */,
+				642CBB2727D6B0C100448432 /* iron.jpg in Resources */,
 				025AE9C3277337DF00A45ADB /* Main.storyboard in Resources */,
+				6409220927D6D89E009DD9F0 /* dirt.jpg in Resources */,
 				025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

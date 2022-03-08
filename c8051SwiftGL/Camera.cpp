@@ -9,9 +9,9 @@
 
 Camera* Camera::INSTANCE = new Camera();
 
-glm::vec4 Camera::UP = glm::vec4(0,1,0,0);
-glm::vec4 Camera::RIGHT = glm::vec4(1,0,0,0);
-glm::vec4 Camera::FACING = glm::vec4(0,0,1,0);
+glm::vec3 Camera::UP = glm::vec3(0,1,0);//glm::vec4(0,1,0,0)
+glm::vec3 Camera::RIGHT = glm::vec3(1,0,0);//glm::vec4(1,0,0,0)
+glm::vec3 Camera::FACING = glm::vec3(0,0,1);//glm::vec4(0,0,1,0)
 
 Camera* Camera::GetInstance()
 {
@@ -32,12 +32,10 @@ Camera::~Camera()
     delete transform;
 }
 
-void Camera::lookAt(glm::vec4 point)
+void Camera::lookAt(glm::vec3 point)
 {
-    glm::vec4 lookAt = point - transform->getPosition();
+    glm::vec3 lookAt = point - transform->getPosition();
     lookAt -= facing;
-    
-    
 }
 
 void Camera::rotate(float angle, glm::vec3 axis)
@@ -45,9 +43,9 @@ void Camera::rotate(float angle, glm::vec3 axis)
     glm::quat rotation = transform->rotate(angle, axis);
     
     glm::quat rotConj = glm::conjugate(rotation);
-    glm::vec4 newFacing = rotation * facing * rotConj;
-    glm::vec4 newRight = rotation * right * rotConj;
-    glm::vec4 newUp = rotation * up * rotConj;
+    glm::vec3 newFacing = rotation * facing * rotConj;
+    glm::vec3 newRight = rotation * right * rotConj;
+    glm::vec3 newUp = rotation * up * rotConj;
     
     facing = newFacing;
     right = newRight;
@@ -91,9 +89,9 @@ void Camera::setFarZ(float newZ)
 }
 
 Transform* Camera::getTransform() { return transform; }
-glm::vec4 Camera::getUp() { return up; }
-glm::vec4 Camera::getRight() { return right; }
-glm::vec4 Camera::getLookAt() { return facing; }
+glm::vec3 Camera::getUp() { return up; }
+glm::vec3 Camera::getRight() { return right; }
+glm::vec3 Camera::getLookAt() { return facing; }
 float Camera::getAspectRatio() { return aspectRatio; }
 float Camera::getFieldOfView() { return fieldOfView; }
 float Camera::getNearZ() { return nearZ; }
