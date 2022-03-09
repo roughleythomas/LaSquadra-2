@@ -18,6 +18,9 @@ Transform::Transform() {
     quaternion.x = 0;
     quaternion.y = 0;
     quaternion.z = 0;
+    angles.x = 0;
+    angles.y = 0;
+    angles.z = 0;
 }
 
 Transform::~Transform() {}
@@ -44,6 +47,11 @@ glm::quat Transform::rotate(float angle, glm::vec3 axis)
     return quaternion;
 }
 
+glm::vec3 Transform::rotate(glm::vec3 angles){
+    this->angles += angles;
+    return this->angles;
+}
+
 void Transform::setPosition(glm::vec3 location)
 {
     position = location;
@@ -60,4 +68,5 @@ void Transform::setScale(glm::vec3 scale){
 
 glm::vec3& Transform::getPosition() { return position; }
 glm::quat& Transform::getQuaternion() { return quaternion; }
+glm::vec3& Transform::getAngles() { return angles; }
 glm::vec3& Transform::getScale() { return scale; }

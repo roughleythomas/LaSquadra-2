@@ -67,6 +67,35 @@ Renderable::~Renderable()
         delete texCoords;
 }
 
+void Renderable::updateTransform(Transform& transform){
+    glm::mat4 pos = glm::translate(glm::mat4(1.0f), transform.getPosition());
+    glm::vec3 angles = transform.getAngles();
+    glm::mat4 rot = glm::rotate(glm::mat4(1.0), glm::radians(angles.x), glm::vec3(1, 0, 0));
+    rot = glm::rotate(rot, glm::radians(angles.y), glm::vec3(0, 1, 0));
+    rot = glm::rotate(rot, glm::radians(angles.z), glm::vec3(0, 0, 1));
+    transformMatrix = glm::scale(pos * rot, transform.getScale());
+}
+
+glm::mat4 Renderable::draw(glm::mat4 mvp){
+    glVertexAttribPointer ( 0, 3, GL_FLOAT,
+                           GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
+    glEnableVertexAttribArray ( 0 );
+
+    glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
+
+    glVertexAttribPointer ( 2, 3, GL_FLOAT,
+                           GL_FALSE, 3 * sizeof ( GLfloat ), normals );
+    glEnableVertexAttribArray ( 2 );
+
+    glVertexAttribPointer ( 3, 2, GL_FLOAT,
+                           GL_FALSE, 2 * sizeof ( GLfloat ), texCoords );
+    glEnableVertexAttribArray ( 3 );
+    
+    //object's properties
+    glm::mat4 transform = mvp * transformMatrix;
+    return transform;
+}
+
 int Renderable::getNumVertices() { return numVertices; }
 int Renderable::getNumNormals() { return numNormals; }
 int Renderable::getNumTexCoords() { return numTexCoords; }

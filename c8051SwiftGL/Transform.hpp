@@ -10,7 +10,9 @@
 
 #include <stdio.h>
 #include "glm-master/glm/glm.hpp"
-#include "glm-master/glm/ext/quaternion_float.hpp"
+//#include "glm-master/glm/ext/quaternion_float.hpp"
+#include "glm-master/glm/gtc/quaternion.hpp"
+#include "glm-master/glm/gtx/quaternion.hpp"
 #include <iostream>
 
 class Transform
@@ -24,6 +26,7 @@ public:
     glm::vec3 translate(glm::vec3 delta);
     //Rotates object about axis by angle
     glm::quat rotate(float angle, glm::vec3 axis);
+    glm::vec3 rotate(glm::vec3 angles);
     //Scales object along the given axis (x,y,z) by inputed amount
     glm::vec3 resize(glm::vec3 weights);
     
@@ -34,6 +37,7 @@ public:
     
     glm::vec3& getPosition();
     glm::quat& getQuaternion();
+    glm::vec3& getAngles();
     glm::vec3& getScale();
 protected:
 private:
@@ -41,6 +45,7 @@ private:
     glm::vec3 position;
     //Quaternion used for rotation calculations
     glm::quat quaternion;
+    glm::vec3 angles;
     //Scale of game object
     glm::vec3 scale;
 };

@@ -9,6 +9,11 @@
 #define Renderable_hpp
 
 #include <stdio.h>
+#include "Transform.hpp"
+#include <OpenGLES/ES3/gl.h>
+#include "glm-master/glm/ext.hpp"
+#include "glm-master/glm/gtc/quaternion.hpp"
+#include "glm-master/glm/gtx/quaternion.hpp"
 
 class Renderable
 {
@@ -24,6 +29,9 @@ public:
     virtual bool loadTextureCoords(void* info) = 0;
     virtual bool loadIndices(void* info) = 0;
     
+    void updateTransform(Transform&);
+    glm::mat4 draw(glm::mat4 mvp);
+    
     int getNumVertices();
     int getNumNormals();
     int getNumTexCoords();
@@ -38,6 +46,7 @@ protected:
     float* vertices;
     float* normals;
     float* texCoords;
+    glm::mat4 transformMatrix;
 };
 
 #endif /* Renderable_hpp */

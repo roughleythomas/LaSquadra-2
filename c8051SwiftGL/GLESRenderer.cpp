@@ -53,37 +53,11 @@ GLESRenderer::~GLESRenderer()
 // ----------------------------------------------------------------
 void GLESRenderer::Update()
 {
-    if(!updatedOnce){
-        updatedOnce = true;
-        
-        /*
-        auto currentTime = std::chrono::steady_clock::now();
-        auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
-        lastTime = currentTime;
-        
-        if (isRotating)
-        {
-            rotAngle += 0.001f * elapsedTime;
-            if (rotAngle >= 360.0f)
-                rotAngle = 0.0f;
-        }
-        */
-        rotAngle = 0.f;
-
-        //update view transform
-        mvp = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -5));
-        mvp = glm::rotate(mvp, rotAngle, glm::vec3(1, 0, 0));
-        normalMatrix = glm::inverseTranspose(glm::mat3(mvp));
-        float aspect = (float)vpWidth / (float)vpHeight;
-        glm::mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
-        mvp = perspective * mvp;
-    }
+    
 }
 
 void GLESRenderer::Draw()
 {
-    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, glm::value_ptr(mvp));
-    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, GL_FALSE, glm::value_ptr(normalMatrix));
     glUniform1i(uniforms[UNIFORM_PASSTHROUGH], false);
     glUniform1i(uniforms[UNIFORM_SHADEINFRAG], true);
 
@@ -93,29 +67,18 @@ void GLESRenderer::Draw()
 
     for(GOController object : objects){
         Renderable* r = object.getRenderable();
-        float *vertices = r->getVertices(), *normals = r->getNormals(), *texCoords = r->getTextureCoords();
         int *indices = r->getIndices(), numIndices = r->getNumIndices();
+        mvp = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -5));
+        glm::mat4 transform = r->draw(mvp);
         
-        glVertexAttribPointer ( 0, 3, GL_FLOAT,
-                               GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
-        glEnableVertexAttribArray ( 0 );
-
-        glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
-
-        glVertexAttribPointer ( 2, 3, GL_FLOAT,
-                               GL_FALSE, 3 * sizeof ( GLfloat ), normals );
-        glEnableVertexAttribArray ( 2 );
-
-        glVertexAttribPointer ( 3, 2, GL_FLOAT,
-                               GL_FALSE, 2 * sizeof ( GLfloat ), texCoords );
-        glEnableVertexAttribArray ( 3 );
-        
-        //object's properties
-        glm::mat4 position = glm::translate(mvp, object.transform->getPosition())
-            * glm::mat4(object.transform->getQuaternion());
-        glm::mat4 transform = glm::scale(position, object.transform->getScale());
+        //Update(&transform);
+        normalMatrix = glm::inverseTranspose(glm::mat3(transform));
+        float aspect = (float)vpWidth / (float)vpHeight;
+        glm::mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
+        transform = perspective * transform;
         
         glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, glm::value_ptr(transform));
+        glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, GL_FALSE, glm::value_ptr(normalMatrix));
         glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
     }
 }
@@ -134,8 +97,10 @@ void GLESRenderer::addObject(Renderable* r){
 void GLESRenderer::LoadModels()
 {
     addObject(new CubeRender());
-    objects[0].transform->translate(glm::vec3(0.5, 1, 0));
-    objects[0].transform->setScale(glm::vec3(1.f, 0.5f, 0.5f));
+    //objects[0].transform->translate(glm::vec3(0.5, 1, 0));
+    objects[0].transform->rotate(glm::vec3(-25.0f, 20.f, 10.f));
+    //objects[0].transform->setScale(glm::vec3(0.75f, 0.5f, 0.5f));
+    objects[0].updateTransform();
     /*Maze* maze = new Maze(5);
     maze->print();*/
 }

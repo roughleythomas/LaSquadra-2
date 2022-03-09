@@ -28,5 +28,9 @@ GOController::GOController(GameObject* gameObject, Renderable* renderable){
 void GOController::update(std::chrono::milliseconds& deltaTime) {}
 void GOController::draw(std::chrono::milliseconds& deltaTime) {}
 
+void GOController::updateTransform(){
+    renderable->updateTransform(*transform);
+}
+
 GameObject* GOController::getGameObject() { return gameObject; }
 Renderable* GOController::getRenderable() { return renderable; }

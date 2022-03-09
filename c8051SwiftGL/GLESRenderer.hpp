@@ -12,6 +12,8 @@
 #include <OpenGLES/ES3/gl.h>
 
 #include "glm-master/glm/ext.hpp"
+#include "glm-master/glm/gtc/quaternion.hpp"
+#include "glm-master/glm/gtx/quaternion.hpp"
 #include "Renderable.hpp"
 #include "GOController.hpp"
 #include "Maze.hpp"
@@ -40,7 +42,7 @@ enum
 class GLESRenderer
 {
 public:
-    bool isRotating;    // publicly available member variable (in this case whether the cube is auto-rotating
+    bool isRotating;// publicly available member variable (in this case whether the cube is auto-rotating
 
     // Constructor and destructor
     GLESRenderer(const char *vertexShaderFile = NULL, const char *fragmentShaderFile = NULL,

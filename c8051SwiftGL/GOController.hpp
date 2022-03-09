@@ -17,6 +17,7 @@
 class GOController
 {
 public:
+    Transform* transform;//points to the game object's transform instance - note that it is public while the gameobject's instance is private for glesrenderer
     //Should be private with factory method invocation
     GOController(GameObject* gameObject, Renderable* renderable);
     //~GOController();
@@ -24,9 +25,9 @@ public:
     //Update object based on
     virtual void update(std::chrono::milliseconds& deltaTime);
     virtual void draw(std::chrono::milliseconds& deltaTime);
+    void updateTransform();
     
     //TEMPORARY accessor methods
-    Transform* transform;//points to the game object's transform instance - note that it is public while the gameobject's instance is private for glesrenderer
     GameObject* getGameObject();
     Renderable* getRenderable();
 protected:
