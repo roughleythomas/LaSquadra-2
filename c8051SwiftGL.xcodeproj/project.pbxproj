@@ -20,6 +20,7 @@
 		642CBB2327D669FE00448432 /* Maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 642CBB2127D669FE00448432 /* Maze.cpp */; };
 		648DD80327E232C800E9FBF0 /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80127E232C800E9FBF0 /* dirt.jpg */; };
 		648DD80427E232C800E9FBF0 /* crate front.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80227E232C800E9FBF0 /* crate front.jpg */; };
+		648DD80727E23FAC00E9FBF0 /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 648DD80527E23FAC00E9FBF0 /* Sphere.cpp */; };
 		977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A5127C5619A00AB8A7B /* Transform.cpp */; };
 		E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917551D27C60FF800FA6B90 /* GameObject.cpp */; };
 		E917552227C6121F00FA6B90 /* Drawable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552027C6121F00FA6B90 /* Drawable.cpp */; };
@@ -46,6 +47,8 @@
 		642CBB2227D669FE00448432 /* Maze.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Maze.hpp; sourceTree = "<group>"; };
 		648DD80127E232C800E9FBF0 /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dirt.jpg; sourceTree = "<group>"; };
 		648DD80227E232C800E9FBF0 /* crate front.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "crate front.jpg"; sourceTree = "<group>"; };
+		648DD80527E23FAC00E9FBF0 /* Sphere.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
+		648DD80627E23FAC00E9FBF0 /* Sphere.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Sphere.hpp; sourceTree = "<group>"; };
 		977F3A5127C5619A00AB8A7B /* Transform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
 		977F3A5227C5619A00AB8A7B /* Transform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Transform.hpp; sourceTree = "<group>"; };
 		E917551D27C60FF800FA6B90 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
@@ -108,6 +111,8 @@
 				E917552127C6121F00FA6B90 /* Drawable.hpp */,
 				E917552327C61CA000FA6B90 /* Cube.cpp */,
 				E917552427C61CA000FA6B90 /* Cube.hpp */,
+				648DD80527E23FAC00E9FBF0 /* Sphere.cpp */,
+				648DD80627E23FAC00E9FBF0 /* Sphere.hpp */,
 				642CBB2127D669FE00448432 /* Maze.cpp */,
 				642CBB2227D669FE00448432 /* Maze.hpp */,
 				648DD80227E232C800E9FBF0 /* crate front.jpg */,
@@ -199,6 +204,7 @@
 				025AE9C0277337DF00A45ADB /* ViewController.swift in Sources */,
 				025AE9BC277337DF00A45ADB /* AppDelegate.swift in Sources */,
 				025AE9D42773396300A45ADB /* Renderer.mm in Sources */,
+				648DD80727E23FAC00E9FBF0 /* Sphere.cpp in Sources */,
 				E917552227C6121F00FA6B90 /* Drawable.cpp in Sources */,
 				025AE9BE277337DF00A45ADB /* SceneDelegate.swift in Sources */,
 				E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */,

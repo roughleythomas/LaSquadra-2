@@ -122,7 +122,7 @@ void GLESRenderer::addWall(bool horizontal, float posX, float posY, float altern
 
 void GLESRenderer::reset(){
     cameraAngles = vec3(-45.f, 0.f, 90.f);
-    cameraPos = vec3(1.65f, 0, -1.25f);
+    cameraPos = vec3(2.5f, 0, -1.75f);
 }
 
 // ========================================================================================
@@ -136,25 +136,26 @@ void GLESRenderer::LoadModels()
     reset();
     
     //floor
+    
     addDrawable(new Cube());
-    objects[0]->setScale(vec3(1.f, 1.f, 0.1f));
+    objects[0]->setScale(vec3(2.f, 2.f, 0.1f));
     
     float wallNum = 10;
     Maze* maze = new Maze(wallNum);
     maze->print();
     
-    float sector = 1.f / wallNum;
-    addWall(true, 0.f, 1.f, 1.f);
-    addWall(false, -1.f, -sector, 1.f - sector);
+    float sector = 2.f / wallNum;
+    addWall(true, 0.f, 2.f, 2.f);
+    addWall(false, -2.f, -sector, 2.f - sector);
     for(int i = 0; i < wallNum; i++){
         int wallTypeHor = ((i > 0) ? 1 : 2),
             wallTypeVer = ((i > 0) ? 0 : 1);
         
         for(int j = 0; j < wallNum; j++){
             if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeHor))
-                addWall(true, -1.f + 2 * sector * (j + 1) - sector, 1.f - 2 * sector * (i + 1), sector);
+                addWall(true, -2.f + 2 * sector * (j + 1) - sector, 2.f - 2 * sector * (i + 1), sector);
             if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeVer))
-                addWall(false, -1.f + 2 * sector * (j + 1), 1.f - 2 * sector * (i + 1) + sector, sector);
+                addWall(false, -2.f + 2 * sector * (j + 1), 2.f - 2 * sector * (i + 1) + sector, sector);
         }
     }
     
