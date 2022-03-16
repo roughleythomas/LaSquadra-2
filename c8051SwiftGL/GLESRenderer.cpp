@@ -15,7 +15,7 @@
 // Constructor and destructor
 // ----------------------------------------------------------------
 GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentShaderFile,
-                           GLubyte *spriteData, size_t width, size_t height)
+                           /*GLubyte *spriteData, size_t width, size_t height*/ GLubyte **spriteData, size_t *width, size_t *height)
 {
     LoadModels();
 
@@ -25,13 +25,26 @@ GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentSha
             return;
     }
 
-    if (spriteData && (width > 0) && (height > 0))
+    /*if (spriteData && (width > 0) && (height > 0))
     {
         groundTexture = SetupTexture(spriteData, width, height);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, groundTexture);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
+    }*/
+    for(int i = 0; i < /*sizeof(spriteData) / sizeof(spriteData[0])*/2; i++){
+        GLuint textureId = SetupTexture(spriteData[i], width[i], height[i]);
+        /*if(i == 0)
+            glActiveTexture(GL_TEXTURE0);
+        else if(i == 1)
+            glActiveTexture(GL_TEXTURE1);*/
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
+        textureIds.push_back(textureId);
+        cout << "Texture id: " << textureId << endl;
     }
+    
+    //textureIds.push_back(groundTexture);
 
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
     glEnable(GL_DEPTH_TEST);
@@ -102,6 +115,8 @@ void GLESRenderer::Draw()
         
         glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, value_ptr(transform));
         glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, GL_FALSE, glm::value_ptr(normalMatrix));
+        glBindTexture(GL_TEXTURE_2D, textureIds[drawable->getTextureListIndex()]);
+        //glUniform1i(uniforms[UNIFORM_TEXTURE], textureIds[drawable->getTextureListIndex()]);
         glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
     }
 }
@@ -110,8 +125,8 @@ void GLESRenderer::addDrawable(Drawable* d){
     objects.push_back(d);
 }
 
-void GLESRenderer::addWall(bool horizontal, float posX, float posY, float alternateScale){
-    addDrawable(new Cube());
+void GLESRenderer::addWall(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex){
+    addDrawable(new Cube(1));
     int lindex = objects.size() - 1;
     objects[lindex]->setPosition(glm::vec3(posX, posY, 0.125f));
     if(horizontal)
@@ -137,7 +152,7 @@ void GLESRenderer::LoadModels()
     
     //floor
     
-    addDrawable(new Cube());
+    addDrawable(new Cube(0));
     objects[0]->setScale(vec3(2.f, 2.f, 0.1f));
     
     float wallNum = 10;
@@ -159,7 +174,7 @@ void GLESRenderer::LoadModels()
         }
     }
     
-    addDrawable(new Sphere(0.15f, 10, 10));
+    addDrawable(new Sphere(1, 0.15f, 10, 10));
     objects[objects.size() - 1]->setPosition(vec3(0, 0.15f, 0.5f));
     objects[objects.size() - 1]->assignAnimator(new Animator(vec3(0, 0, 0.000001f)));
     objects[objects.size() - 1]->anim->setEnabled(true);

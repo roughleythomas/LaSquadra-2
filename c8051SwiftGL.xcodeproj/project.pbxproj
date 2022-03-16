@@ -19,7 +19,7 @@
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		642CBB2327D669FE00448432 /* Maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 642CBB2127D669FE00448432 /* Maze.cpp */; };
 		648DD80327E232C800E9FBF0 /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80127E232C800E9FBF0 /* dirt.jpg */; };
-		648DD80427E232C800E9FBF0 /* crate front.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80227E232C800E9FBF0 /* crate front.jpg */; };
+		648DD80427E232C800E9FBF0 /* iron.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80227E232C800E9FBF0 /* iron.jpg */; };
 		648DD80727E23FAC00E9FBF0 /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 648DD80527E23FAC00E9FBF0 /* Sphere.cpp */; };
 		648DD81227E24CFE00E9FBF0 /* Animator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 648DD81027E24CFE00E9FBF0 /* Animator.cpp */; };
 		977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A5127C5619A00AB8A7B /* Transform.cpp */; };
@@ -47,7 +47,7 @@
 		642CBB2127D669FE00448432 /* Maze.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Maze.cpp; sourceTree = "<group>"; };
 		642CBB2227D669FE00448432 /* Maze.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Maze.hpp; sourceTree = "<group>"; };
 		648DD80127E232C800E9FBF0 /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dirt.jpg; sourceTree = "<group>"; };
-		648DD80227E232C800E9FBF0 /* crate front.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "crate front.jpg"; sourceTree = "<group>"; };
+		648DD80227E232C800E9FBF0 /* iron.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = iron.jpg; sourceTree = "<group>"; };
 		648DD80527E23FAC00E9FBF0 /* Sphere.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
 		648DD80627E23FAC00E9FBF0 /* Sphere.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Sphere.hpp; sourceTree = "<group>"; };
 		648DD81027E24CFE00E9FBF0 /* Animator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Animator.cpp; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 				642CBB2227D669FE00448432 /* Maze.hpp */,
 				648DD81027E24CFE00E9FBF0 /* Animator.cpp */,
 				648DD81127E24CFE00E9FBF0 /* Animator.hpp */,
-				648DD80227E232C800E9FBF0 /* crate front.jpg */,
+				648DD80227E232C800E9FBF0 /* iron.jpg */,
 				648DD80127E232C800E9FBF0 /* dirt.jpg */,
 			);
 			path = c8051SwiftGL;
@@ -190,7 +190,7 @@
 				025AE9C5277337E200A45ADB /* Assets.xcassets in Resources */,
 				648DD80327E232C800E9FBF0 /* dirt.jpg in Resources */,
 				025AE9C3277337DF00A45ADB /* Main.storyboard in Resources */,
-				648DD80427E232C800E9FBF0 /* crate front.jpg in Resources */,
+				648DD80427E232C800E9FBF0 /* iron.jpg in Resources */,
 				025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

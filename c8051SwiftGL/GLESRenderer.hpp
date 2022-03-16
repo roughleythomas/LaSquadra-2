@@ -50,7 +50,7 @@ public:
 
     // Constructor and destructor
     GLESRenderer(const char *vertexShaderFile = NULL, const char *fragmentShaderFile = NULL,
-                 GLubyte *spriteData = 0, size_t width = -1, size_t height = -1);
+                 /*GLubyte *spriteData = 0, size_t width = -1, size_t height = -1,*/ GLubyte **spriteData = 0, size_t *width = 0, size_t *height = 0);
     ~GLESRenderer();
     
     void SetViewport(int width, int height) { vpWidth = width; vpHeight = height; }
@@ -58,7 +58,7 @@ public:
     void updateTransform();
     void Draw();
     void addDrawable(Drawable* d);
-    void addWall(bool, float, float, float);
+    void addWall(bool, float, float, float, int = 1);
     void reset();
 
 private:
@@ -75,6 +75,7 @@ private:
 
     // model variables
     vector<Drawable*> objects;
+    vector<GLuint> textureIds;
 
     // used to calculate elapsed time between frames
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;

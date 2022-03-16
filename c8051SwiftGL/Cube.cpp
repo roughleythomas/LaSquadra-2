@@ -1,7 +1,7 @@
 #include "Cube.hpp"
 
-Cube::Cube()
-:Drawable(24, 24, 24, 36)
+Cube::Cube(int textureListIndex)
+:Drawable(textureListIndex, 24, 24, 24, 36)
 {
     loadVertices(0);
     loadNormals(0);

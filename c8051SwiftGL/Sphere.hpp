@@ -17,7 +17,7 @@ class Sphere : public Drawable {
     void loadAll();
     
 public:
-    Sphere(float, int, int);
+    Sphere(int, float, int, int);
     bool loadVertices(void* info);
     bool loadNormals(void* info);
     bool loadTextureCoords(void* info);

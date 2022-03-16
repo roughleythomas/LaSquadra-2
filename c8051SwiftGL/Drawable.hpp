@@ -15,7 +15,7 @@ using namespace std;
 class Drawable : public GameObject
 {
 public:
-    Drawable(int numVertices, int numNormals, int numTexCoords, int numIndices);
+    Drawable(int textureListIndex, int numVertices, int numNormals, int numTexCoords, int numIndices);
     Drawable(const Drawable& obj);
     virtual ~Drawable();
     
@@ -38,9 +38,11 @@ public:
     float* getVertices();
     float* getNormals();
     float* getTextureCoords();
+    int getTextureListIndex();
     Animator* anim = NULL;
 protected:
     
+    GLuint textureListIndex;
     int numVertices, numNormals, numTexCoords, numIndices;
     vector<int> indices;
     vector<float> vertices;

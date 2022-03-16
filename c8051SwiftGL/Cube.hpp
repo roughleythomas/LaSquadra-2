@@ -7,7 +7,7 @@
 class Cube: public Drawable
 {
 public:
-    Cube();
+    Cube(int);
     
     bool loadVertices(void* info);
     bool loadNormals(void* info);

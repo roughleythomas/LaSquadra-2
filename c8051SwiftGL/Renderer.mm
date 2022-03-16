@@ -43,28 +43,40 @@
     //  load in the image (possibly using some other API/library).
     // Note in that case the need still to construct the path to the file in the iOS bundle
     //  just like in the case of the shader files (see below).
-    CGImageRef textureImage = [UIImage imageNamed:@"dirt.jpg"].CGImage;
-    if (!textureImage) {
-        NSLog(@"Failed to load image %@", @"dirt.jpg");
-        exit(1);
+    vector<NSString*> textureNames;
+    textureNames.push_back(@"dirt.jpg");
+    textureNames.push_back(@"iron.jpg");
+    vector<GLubyte*> textureDataList;
+    vector<size_t> textureWidthList, textureHeightList;
+    
+    for(int i = 0; i < textureNames.size(); i++){
+        CGImageRef textureImage = [UIImage imageNamed:textureNames[i]].CGImage;
+        if (!textureImage) {
+            NSLog(@"Failed to load image %@", textureNames[i]);
+            exit(1);
+        }
+        //size_t textureWidth = CGImageGetWidth(textureImage);
+        //size_t textureHeight = CGImageGetHeight(textureImage);
+        textureWidthList.push_back(CGImageGetWidth(textureImage));
+        textureHeightList.push_back(CGImageGetHeight(textureImage));
+        GLubyte *textureData = (GLubyte *) calloc(textureWidthList[i]*textureHeightList[i]*4, sizeof(GLubyte));
+        CGContextRef textureContext = CGBitmapContextCreate(textureData, textureWidthList[i], textureHeightList[i], 8, textureWidthList[i]*4, CGImageGetColorSpace(textureImage), kCGImageAlphaPremultipliedLast);
+        CGContextDrawImage(textureContext, CGRectMake(0, 0, textureWidthList[i], textureHeightList[i]), textureImage);
+        CGContextRelease(textureContext);
+        textureDataList.push_back(textureData);
     }
-    size_t textureWidth = CGImageGetWidth(textureImage);
-    size_t textureHeight = CGImageGetHeight(textureImage);
-    GLubyte *textureData = (GLubyte *) calloc(textureWidth*textureHeight*4, sizeof(GLubyte));
-    CGContextRef textureContext = CGBitmapContextCreate(textureData, textureWidth, textureHeight, 8, textureWidth*4, CGImageGetColorSpace(textureImage), kCGImageAlphaPremultipliedLast);
-    CGContextDrawImage(textureContext, CGRectMake(0, 0, textureWidth, textureHeight), textureImage);
-    CGContextRelease(textureContext);
     
     // Construct the C++ object, passing in the path to the shader files and the one texture data
     glesRenderer = new GLESRenderer([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.vsh"] pathExtension]] cStringUsingEncoding:1],
                                     [[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.fsh"] pathExtension]] cStringUsingEncoding:1],
-                                    textureData, textureWidth, textureHeight);
+                                    textureDataList.data(), textureWidthList.data(), textureHeightList.data());
     isRotating = glesRenderer->isRotating;
     panX = glesRenderer->panX;
     panY = glesRenderer->panY;
 
     // Once we have passed on the data from the image file for the texture, we can free up the memory
-    free(textureData);
+    for(int i = 0; i < textureDataList.size(); i++)
+        free(textureDataList[i]);
 }
 
 - (void)update

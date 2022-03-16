@@ -9,8 +9,8 @@
 
 #define PI 3.14159265
 
-Sphere::Sphere(float radius, int stackCount, int sectorCount)
-:Drawable(24, 24, 24, 36)
+Sphere::Sphere(int textureListIndex, float radius, int stackCount, int sectorCount)
+:Drawable(textureListIndex, 24, 24, 24, 36)
 {
     this->radius = radius;
     this->stackCount = stackCount;
