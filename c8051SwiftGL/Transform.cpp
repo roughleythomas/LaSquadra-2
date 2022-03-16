@@ -21,6 +21,10 @@ void Transform::setAngles(vec3 angles){
     this->angles = angles;
 }
 
+void Transform::rotate(vec3 angles){
+    this->angles = vec3(this->angles.x + angles.x, this->angles.y + angles.y, this->angles.z + angles.z);
+}
+
 void Transform::setScale(vec3 scale){
     this->scale = scale;
 }

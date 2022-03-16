@@ -51,7 +51,15 @@ Drawable::~Drawable()
     texCoords.clear();
 }
 
+void Drawable::assignAnimator(Animator* anim){
+    this->anim = anim;
+    this->anim->assignTransform(this);
+}
+
 void Drawable::updateTransform(){
+    if(anim != NULL)
+        anim->update();
+    
     mat4 pos = glm::translate(glm::mat4(1.0f), getPosition());
     vec3 angles = getAngles();
     mat4 rot = glm::rotate(glm::mat4(1.0), glm::radians(angles.x), vec3(1, 0, 0));

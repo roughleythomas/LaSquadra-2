@@ -8,6 +8,7 @@
 #include "glm-master/glm/ext.hpp"
 #include "glm-master/glm/gtc/quaternion.hpp"
 #include "glm-master/glm/gtx/quaternion.hpp"
+#include "Animator.hpp"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ public:
     virtual bool loadTextureCoords(void* info) = 0;
     virtual bool loadIndices(void* info) = 0;
     
+    void assignAnimator(Animator*);
     void updateTransform();
     glm::mat4 draw(glm::mat4 mvp);
     
@@ -37,12 +39,14 @@ public:
     float* getNormals();
     float* getTextureCoords();
 protected:
+    
     int numVertices, numNormals, numTexCoords, numIndices;
     vector<int> indices;
     vector<float> vertices;
     vector<float> normals;
     vector<float> texCoords;
     glm::mat4 transformMatrix;
+    Animator* anim = NULL;
 };
 
 #endif
