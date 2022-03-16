@@ -8,7 +8,7 @@
 #include "Transform.hpp"
 #include "glm-master/glm/ext/quaternion_trigonometric.hpp"
 
-Transform::Transform() {}
+using namespace glm;
 
 Transform::~Transform() {}
 
@@ -44,6 +44,17 @@ void Transform::setQuaternion(glm::quat rotations)
     quaternion = rotations;
 }
 
-glm::vec4& Transform::getPosition() { return position; }
-glm::quat& Transform::getQuaternion() { return quaternion; }
-glm::vec4& Transform::getScale() { return scale; }
+vec3 Transform::getPosition() { return pos; }
+vec3 Transform::getAngles() { return angles; }
+vec3 Transform::getScale() { return scale; }
+
+glm::mat4x4 getTransformMatrix()
+{
+    glm::mat4x4 transform(1.0f);
+    
+    transform = glm::scale(transform, scale);
+    transform = glm::rotate(transform, angles.x, vec)
+    transform = glm::translate(transform, pos);
+    
+    return transform;
+}
