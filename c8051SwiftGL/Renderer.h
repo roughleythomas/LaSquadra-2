@@ -11,10 +11,13 @@
 @interface Renderer : NSObject
 
 @property bool isRotating;  // example of variable that can be passed from Swift to C++ code
+@property float panX;
+@property float panY;
 
 - (void)setup:(GLKView *)view;  // do some basic GL setup
 - (void)update;                 // wrapper for C++ update function
 - (void)draw:(CGRect)drawRect;  // wrapper for C++ draw function
+- (void)reset;                  // wrapper for C++ reset function
 
 @end
 

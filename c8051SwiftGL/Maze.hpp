@@ -31,7 +31,8 @@ class MazeSector{
     
 public:
     MazeSector(int);
-    void setWallHidden(int);
+    void setWallHidden(int, bool=true);
+    bool getWallHidden(int);
     int getType();
     void print();
     bool printTop();
@@ -40,12 +41,12 @@ public:
 class Maze{
     vector<int> stack;
     vector<int> visited;
-    vector<MazeSector> maze;
     int size;
     int bridgeUnvisitedCell(int);
     void load();
     
 public:
+    vector<MazeSector> maze;
     Maze(int);
     void print();
 };

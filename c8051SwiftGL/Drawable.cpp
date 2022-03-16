@@ -1,14 +1,7 @@
-//
-//  Renderable.cpp
-//  c8051SwiftGL
-//
-//  Created by Thomas on 2022-02-22.
-//
+#include "Drawable.hpp"
 
-#include "Renderable.hpp"
-
-Renderable::Renderable(int vertNum, int normNum, int texNum, int indexNum)
-:vertices(0), normals(0), texCoords(0), indices(0), numIndices(indexNum), numVertices(vertNum), numNormals(normNum), numTexCoords(texNum)
+Drawable::Drawable(int vertNum, int normNum, int texNum, int indexNum)
+: GameObject(), vertices(0), normals(0), texCoords(0), indices(0), numIndices(indexNum), numVertices(vertNum), numNormals(normNum), numTexCoords(texNum)
 {
     if(vertNum > 0)
         vertices = new float[vertNum * 3];
@@ -20,8 +13,8 @@ Renderable::Renderable(int vertNum, int normNum, int texNum, int indexNum)
         indices = new int[indexNum];
 }
 
-Renderable::Renderable(const Renderable& obj)
-:vertices(0), normals(0), texCoords(0), indices(0), numIndices(obj.numIndices), numVertices(obj.numVertices), numNormals(obj.numNormals), numTexCoords(obj.numTexCoords)
+Drawable::Drawable(const Drawable& obj)
+: GameObject(), vertices(0), normals(0), texCoords(0), indices(0), numIndices(obj.numIndices), numVertices(obj.numVertices), numNormals(obj.numNormals), numTexCoords(obj.numTexCoords)
 {
     if(obj.vertices != 0)
     {
@@ -57,7 +50,7 @@ Renderable::Renderable(const Renderable& obj)
     }
 }
 
-Renderable::~Renderable()
+Drawable::~Drawable()
 {
     if(vertices)
         delete vertices;
@@ -67,16 +60,16 @@ Renderable::~Renderable()
         delete texCoords;
 }
 
-void Renderable::updateTransform(Transform& transform){
-    glm::mat4 pos = glm::translate(glm::mat4(1.0f), transform.getPosition());
-    glm::vec3 angles = transform.getAngles();
-    glm::mat4 rot = glm::rotate(glm::mat4(1.0), glm::radians(angles.x), glm::vec3(1, 0, 0));
-    rot = glm::rotate(rot, glm::radians(angles.y), glm::vec3(0, 1, 0));
-    rot = glm::rotate(rot, glm::radians(angles.z), glm::vec3(0, 0, 1));
-    transformMatrix = glm::scale(pos * rot, transform.getScale());
+void Drawable::updateTransform(){
+    mat4 pos = glm::translate(glm::mat4(1.0f), getPosition());
+    vec3 angles = getAngles();
+    mat4 rot = glm::rotate(glm::mat4(1.0), glm::radians(angles.x), vec3(1, 0, 0));
+    rot = glm::rotate(rot, glm::radians(angles.y), vec3(0, 1, 0));
+    rot = glm::rotate(rot, glm::radians(angles.z), vec3(0, 0, 1));
+    transformMatrix = glm::scale(pos * rot, getScale());
 }
 
-glm::mat4 Renderable::draw(glm::mat4 mvp){
+glm::mat4 Drawable::draw(glm::mat4 mvp){
     glVertexAttribPointer ( 0, 3, GL_FLOAT,
                            GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
     glEnableVertexAttribArray ( 0 );
@@ -96,11 +89,11 @@ glm::mat4 Renderable::draw(glm::mat4 mvp){
     return transform;
 }
 
-int Renderable::getNumVertices() { return numVertices; }
-int Renderable::getNumNormals() { return numNormals; }
-int Renderable::getNumTexCoords() { return numTexCoords; }
-int Renderable::getNumIndices() { return numIndices; }
-int* Renderable::getIndices() { return indices; }
-float* Renderable::getVertices() { return vertices; }
-float* Renderable::getNormals() { return normals; }
-float* Renderable::getTextureCoords() { return texCoords; }
+int Drawable::getNumVertices() { return numVertices; }
+int Drawable::getNumNormals() { return numNormals; }
+int Drawable::getNumTexCoords() { return numTexCoords; }
+int Drawable::getNumIndices() { return numIndices; }
+int* Drawable::getIndices() { return indices; }
+float* Drawable::getVertices() { return vertices; }
+float* Drawable::getNormals() { return normals; }
+float* Drawable::getTextureCoords() { return texCoords; }

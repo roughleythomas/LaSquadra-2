@@ -8,17 +8,19 @@
 #include <stdlib.h>
 #include <chrono>
 #include <vector>
+#include <cmath>
 
 #include <OpenGLES/ES3/gl.h>
 
 #include "glm-master/glm/ext.hpp"
 #include "glm-master/glm/gtc/quaternion.hpp"
 #include "glm-master/glm/gtx/quaternion.hpp"
-#include "Renderable.hpp"
-#include "GOController.hpp"
+#include "Drawable.hpp"
 #include "Maze.hpp"
+#include "Cube.hpp"
 
 using namespace std;
+using namespace glm;
 
 // Uniform variables
 enum
@@ -43,6 +45,7 @@ class GLESRenderer
 {
 public:
     bool isRotating;// publicly available member variable (in this case whether the cube is auto-rotating
+    float panX = 0, panY = 0;
 
     // Constructor and destructor
     GLESRenderer(const char *vertexShaderFile = NULL, const char *fragmentShaderFile = NULL,
@@ -51,8 +54,11 @@ public:
     
     void SetViewport(int width, int height) { vpWidth = width; vpHeight = height; }
     void Update();
+    void updateTransform();
     void Draw();
-    void addObject(Renderable* r);
+    void addDrawable(Drawable* d);
+    void addWall(bool, float, float, float);
+    void reset();
 
 private:
     int vpWidth, vpHeight;  // viewport width/height
@@ -64,12 +70,13 @@ private:
     GLuint groundTexture;
     glm::mat4 mvp;
     glm::mat3 normalMatrix;
+    glm::vec3 cameraPos, cameraAngles;
 
     // model variables
-    vector<GOController> objects;
+    vector<Drawable*> objects;
 
     // used to calculate elapsed time between frames
-    std::chrono::time_point<std::chrono::steady_clock> lastTime;
+    std::chrono::time_point<std::chrono::steady_clock> lastFrame;
 
     // angle of rotation of cube
     float rotAngle;

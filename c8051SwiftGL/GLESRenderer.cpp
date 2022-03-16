@@ -9,7 +9,6 @@
 #include <iostream>
 #include "glm-master/glm/gtx/string_cast.hpp"
 #include "GLESRenderer.hpp"
-#include "CubeRender.hpp"
 
 
 // ----------------------------------------------------------------
@@ -38,9 +37,6 @@ GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentSha
     glEnable(GL_DEPTH_TEST);
 
     rotAngle = 0.0f;
-    isRotating = true;
-
-    lastTime = std::chrono::steady_clock::now();
 }
 
 GLESRenderer::~GLESRenderer()
@@ -53,7 +49,28 @@ GLESRenderer::~GLESRenderer()
 // ----------------------------------------------------------------
 void GLESRenderer::Update()
 {
+    if(panX != 0 || panY != 0){
+        auto curTime = chrono::steady_clock::now();
+        auto elapsedTime = chrono::duration_cast<std::chrono::milliseconds>(curTime - lastFrame).count();
+        float ratio = elapsedTime * 0.000005f;
+        
+        if(abs(panY) >= abs(panX)){
+            cameraPos.x -= panY * ratio;
+            //cameraPos.y -= panY * ratio * 0.3f;
+        } else{
+            float hyp = sqrt(pow(panX, 2) + pow(panY, 2));
+            float asin = panX / hyp;
+            cameraAngles.z -= asin;
+        }
+        updateTransform();
+    }
     
+    lastFrame = std::chrono::steady_clock::now();
+}
+
+void GLESRenderer::updateTransform(){
+    for(Drawable* drawable : objects)
+        drawable->updateTransform();
 }
 
 void GLESRenderer::Draw()
@@ -65,28 +82,48 @@ void GLESRenderer::Draw()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
 
-    for(GOController object : objects){
-        Renderable* r = object.getRenderable();
-        int *indices = r->getIndices(), numIndices = r->getNumIndices();
-        mvp = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, -5));
-        glm::mat4 transform = r->draw(mvp);
+    mvp = translate(glm::mat4(1.0), cameraPos);
+    //mvp = rotate(mvp, radians(cameraAngles.x), vec3(1, 0, 0));
+    //mvp = rotate(mvp, radians(cameraAngles.y), vec3(0, 1, 0));
+    //mvp = rotate(mvp, radians(cameraAngles.z), vec3(0, 0, 1));
+    
+    for(Drawable *drawable : objects){
+        int *indices = drawable->getIndices(), numIndices = drawable->getNumIndices();
+        mat4 transform = drawable->draw(mvp);
         
         //Update(&transform);
         normalMatrix = glm::inverseTranspose(glm::mat3(transform));
         float aspect = (float)vpWidth / (float)vpHeight;
-        glm::mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
+        mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
+        perspective = glm::rotate(perspective, radians(cameraAngles.x), vec3(1, 0, 0));
+        perspective = glm::rotate(perspective, radians(cameraAngles.y), vec3(0, 1, 0));
+        perspective = glm::rotate(perspective, radians(cameraAngles.z), vec3(0, 0, 1));
         transform = perspective * transform;
         
-        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, glm::value_ptr(transform));
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, value_ptr(transform));
         glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, GL_FALSE, glm::value_ptr(normalMatrix));
         glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
     }
 }
 
-void GLESRenderer::addObject(Renderable* r){
-    objects.push_back(GOController(new GameObject(), r));
+void GLESRenderer::addDrawable(Drawable* d){
+    objects.push_back(d);
 }
 
+void GLESRenderer::addWall(bool horizontal, float posX, float posY, float alternateScale){
+    addDrawable(new Cube());
+    int lindex = objects.size() - 1;
+    objects[lindex]->setPosition(glm::vec3(posX, posY, 0.125f));
+    if(horizontal)
+        objects[lindex]->setScale(glm::vec3(alternateScale, 0.01f, 0.25f));
+    else
+        objects[lindex]->setScale(glm::vec3(0.01f, alternateScale, 0.25f));
+}
+
+void GLESRenderer::reset(){
+    cameraAngles = vec3(-45.f, 0.f, 90.f);
+    cameraPos = vec3(1.65f, 0, -1.25f);
+}
 
 // ========================================================================================
 
@@ -96,13 +133,32 @@ void GLESRenderer::addObject(Renderable* r){
 // ----------------------------------------------------------------
 void GLESRenderer::LoadModels()
 {
-    addObject(new CubeRender());
-    //objects[0].transform->translate(glm::vec3(0.5, 1, 0));
-    objects[0].transform->rotate(glm::vec3(-25.0f, 20.f, 10.f));
-    //objects[0].transform->setScale(glm::vec3(0.75f, 0.5f, 0.5f));
-    objects[0].updateTransform();
-    /*Maze* maze = new Maze(5);
-    maze->print();*/
+    reset();
+    
+    //floor
+    addDrawable(new Cube());
+    objects[0]->setScale(vec3(1.f, 1.f, 0.1f));
+    
+    float wallNum = 10;
+    Maze* maze = new Maze(wallNum);
+    maze->print();
+    
+    float sector = 1.f / wallNum;
+    addWall(true, 0.f, 1.f, 1.f);
+    addWall(false, -1.f, -sector, 1.f - sector);
+    for(int i = 0; i < wallNum; i++){
+        int wallTypeHor = ((i > 0) ? 1 : 2),
+            wallTypeVer = ((i > 0) ? 0 : 1);
+        
+        for(int j = 0; j < wallNum; j++){
+            if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeHor))
+                addWall(true, -1.f + 2 * sector * (j + 1) - sector, 1.f - 2 * sector * (i + 1), sector);
+            if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeVer))
+                addWall(false, -1.f + 2 * sector * (j + 1), 1.f - 2 * sector * (i + 1) + sector, sector);
+        }
+    }
+    
+    updateTransform();
 }
 
 // ========================================================================================

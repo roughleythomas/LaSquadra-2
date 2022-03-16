@@ -33,6 +33,8 @@ class ViewController: GLKViewController {
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
         doubleTap.numberOfTapsRequired = 2;
         view.addGestureRecognizer(doubleTap)
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(self.doPan(_:)))
+        view.addGestureRecognizer(pan)
     }
     
     override func glkView(_ view: GLKView, drawIn rect: CGRect) {
@@ -40,7 +42,21 @@ class ViewController: GLKViewController {
     }
     
     @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
-        glesRenderer.isRotating = !glesRenderer.isRotating;
+        glesRenderer.reset();
+    }
+    
+    @objc func doPan(_ sender: UIPanGestureRecognizer){
+        let changedDistance: CGPoint = sender.translation(in: view)
+        /*print("Change distance{")
+        print("X: \(changedDistance.x)\nY: \(changedDistance.y)")
+        print("}\n")*/
+        glesRenderer.panX = Float(-changedDistance.x)
+        glesRenderer.panY = Float(-changedDistance.y)
+        
+        if(sender.state == .ended){
+            glesRenderer.panX = 0;
+            glesRenderer.panY = 0;
+        }
     }
 }
 

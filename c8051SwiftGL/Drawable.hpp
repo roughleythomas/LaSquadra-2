@@ -1,26 +1,19 @@
-//
-//  Renderable.hpp
-//  c8051SwiftGL
-//
-//  Created by Thomas on 2022-02-22.
-//  An object that stores data on how to render an object
-
 #ifndef Renderable_hpp
 #define Renderable_hpp
 
 #include <stdio.h>
-#include "Transform.hpp"
+#include "GameObject.hpp"
 #include <OpenGLES/ES3/gl.h>
 #include "glm-master/glm/ext.hpp"
 #include "glm-master/glm/gtc/quaternion.hpp"
 #include "glm-master/glm/gtx/quaternion.hpp"
 
-class Renderable
+class Drawable : public GameObject
 {
 public:
-    Renderable(int numVertices, int numNormals, int numTexCoords, int numIndices);
-    Renderable(const Renderable& obj);
-    virtual ~Renderable();
+    Drawable(int numVertices, int numNormals, int numTexCoords, int numIndices);
+    Drawable(const Drawable& obj);
+    virtual ~Drawable();
     
     // Load data for vertices, normals, and texture coordinates
     // void-pointer allows for type-casting for flexibilty in dealing with info
@@ -29,7 +22,7 @@ public:
     virtual bool loadTextureCoords(void* info) = 0;
     virtual bool loadIndices(void* info) = 0;
     
-    void updateTransform(Transform&);
+    void updateTransform();
     glm::mat4 draw(glm::mat4 mvp);
     
     int getNumVertices();
@@ -49,4 +42,4 @@ protected:
     glm::mat4 transformMatrix;
 };
 
-#endif /* Renderable_hpp */
+#endif

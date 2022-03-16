@@ -1,14 +1,7 @@
-//
-//  CubeRender.cpp
-//  c8051SwiftGL
-//
-//  Created by Thomas on 2022-02-22.
-//
+#include "Cube.hpp"
 
-#include "CubeRender.hpp"
-
-CubeRender::CubeRender()
-:Renderable(24, 24, 24, 36)
+Cube::Cube()
+:Drawable(24, 24, 24, 36)
 {
     loadVertices(0);
     loadNormals(0);
@@ -16,9 +9,7 @@ CubeRender::CubeRender()
     loadIndices(0);
 }
 
-CubeRender::~CubeRender() {}
-
-bool CubeRender::loadVertices(void* info)
+bool Cube::loadVertices(void* info)
 {
     float cubeVerts[] =
     {
@@ -56,7 +47,7 @@ bool CubeRender::loadVertices(void* info)
     return true;
 }
 
-bool CubeRender::loadNormals(void* info)
+bool Cube::loadNormals(void* info)
 {
     float cubeNormals[] =
     {
@@ -94,7 +85,7 @@ bool CubeRender::loadNormals(void* info)
     return true;
 }
 
-bool CubeRender::loadTextureCoords(void* info)
+bool Cube::loadTextureCoords(void* info)
 {
     float cubeTex[] =
     {
@@ -132,7 +123,7 @@ bool CubeRender::loadTextureCoords(void* info)
     return true;
 }
 
-bool CubeRender::loadIndices(void* info)
+bool Cube::loadIndices(void* info)
 {
     int cubeIndices[] =
     {

@@ -26,8 +26,12 @@ MazeSector::MazeSector(int type){
         hidden.push_back(false);
 }
 
-void MazeSector::setWallHidden(int wall){
-    hidden[wall] = true;
+void MazeSector::setWallHidden(int wall, bool isHidden){
+    hidden[wall] = isHidden;
+}
+
+bool MazeSector::getWallHidden(int wall){
+    return hidden[wall];
 }
 
 int MazeSector::getType(){

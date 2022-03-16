@@ -17,16 +17,13 @@
 		025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 025AE9D32773396300A45ADB /* GLESRenderer.cpp */; };
 		025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D6277339AE00A45ADB /* Shader.fsh */; };
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
-		6409220927D6D89E009DD9F0 /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6409220827D6D89E009DD9F0 /* dirt.jpg */; };
 		642CBB2327D669FE00448432 /* Maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 642CBB2127D669FE00448432 /* Maze.cpp */; };
-		642CBB2727D6B0C100448432 /* iron.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 642CBB2527D6B0C100448432 /* iron.jpg */; };
-		974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */; };
-		977F3A5027C560B500AB8A7B /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A4E27C560B500AB8A7B /* Camera.cpp */; };
+		648DD80327E232C800E9FBF0 /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80127E232C800E9FBF0 /* dirt.jpg */; };
+		648DD80427E232C800E9FBF0 /* crate front.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80227E232C800E9FBF0 /* crate front.jpg */; };
 		977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A5127C5619A00AB8A7B /* Transform.cpp */; };
-		97F20BBF27C6AA8D00D25008 /* GOController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 97F20BBD27C6AA8D00D25008 /* GOController.cpp */; };
 		E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917551D27C60FF800FA6B90 /* GameObject.cpp */; };
-		E917552227C6121F00FA6B90 /* Renderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552027C6121F00FA6B90 /* Renderable.cpp */; };
-		E917552527C61CA000FA6B90 /* CubeRender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552327C61CA000FA6B90 /* CubeRender.cpp */; };
+		E917552227C6121F00FA6B90 /* Drawable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552027C6121F00FA6B90 /* Drawable.cpp */; };
+		E917552527C61CA000FA6B90 /* Cube.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552327C61CA000FA6B90 /* Cube.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,24 +42,18 @@
 		025AE9D32773396300A45ADB /* GLESRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLESRenderer.cpp; sourceTree = "<group>"; };
 		025AE9D6277339AE00A45ADB /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		025AE9D7277339AF00A45ADB /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
-		6409220827D6D89E009DD9F0 /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dirt.jpg; path = ../../../../Downloads/dirt.jpg; sourceTree = "<group>"; };
 		642CBB2127D669FE00448432 /* Maze.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Maze.cpp; sourceTree = "<group>"; };
 		642CBB2227D669FE00448432 /* Maze.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Maze.hpp; sourceTree = "<group>"; };
-		642CBB2527D6B0C100448432 /* iron.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = iron.jpg; path = ../../../../Downloads/iron.jpg; sourceTree = "<group>"; };
-		974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PhysicsWrapper.cpp; sourceTree = "<group>"; };
-		974F6A1C27BD9C8D008ED294 /* PhysicsWrapper.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PhysicsWrapper.hpp; sourceTree = "<group>"; };
-		977F3A4E27C560B500AB8A7B /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
-		977F3A4F27C560B500AB8A7B /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		648DD80127E232C800E9FBF0 /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dirt.jpg; sourceTree = "<group>"; };
+		648DD80227E232C800E9FBF0 /* crate front.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "crate front.jpg"; sourceTree = "<group>"; };
 		977F3A5127C5619A00AB8A7B /* Transform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
 		977F3A5227C5619A00AB8A7B /* Transform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Transform.hpp; sourceTree = "<group>"; };
-		97F20BBD27C6AA8D00D25008 /* GOController.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GOController.cpp; sourceTree = "<group>"; };
-		97F20BBE27C6AA8D00D25008 /* GOController.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GOController.hpp; sourceTree = "<group>"; };
 		E917551D27C60FF800FA6B90 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
 		E917551E27C60FF800FA6B90 /* GameObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GameObject.hpp; sourceTree = "<group>"; };
-		E917552027C6121F00FA6B90 /* Renderable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Renderable.cpp; sourceTree = "<group>"; };
-		E917552127C6121F00FA6B90 /* Renderable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Renderable.hpp; sourceTree = "<group>"; };
-		E917552327C61CA000FA6B90 /* CubeRender.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CubeRender.cpp; sourceTree = "<group>"; };
-		E917552427C61CA000FA6B90 /* CubeRender.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CubeRender.hpp; sourceTree = "<group>"; };
+		E917552027C6121F00FA6B90 /* Drawable.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Drawable.cpp; sourceTree = "<group>"; };
+		E917552127C6121F00FA6B90 /* Drawable.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Drawable.hpp; sourceTree = "<group>"; };
+		E917552327C61CA000FA6B90 /* Cube.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Cube.cpp; sourceTree = "<group>"; };
+		E917552427C61CA000FA6B90 /* Cube.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Cube.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,24 +100,18 @@
 				025AE9C6277337E200A45ADB /* LaunchScreen.storyboard */,
 				025AE9C9277337E200A45ADB /* Info.plist */,
 				025AE9CF2773396200A45ADB /* c8051SwiftGL-Bridging-Header.h */,
-				974F6A1B27BD9C8D008ED294 /* PhysicsWrapper.cpp */,
-				974F6A1C27BD9C8D008ED294 /* PhysicsWrapper.hpp */,
-				977F3A4E27C560B500AB8A7B /* Camera.cpp */,
-				977F3A4F27C560B500AB8A7B /* Camera.hpp */,
 				977F3A5127C5619A00AB8A7B /* Transform.cpp */,
 				977F3A5227C5619A00AB8A7B /* Transform.hpp */,
 				E917551D27C60FF800FA6B90 /* GameObject.cpp */,
 				E917551E27C60FF800FA6B90 /* GameObject.hpp */,
-				E917552027C6121F00FA6B90 /* Renderable.cpp */,
-				E917552127C6121F00FA6B90 /* Renderable.hpp */,
-				E917552327C61CA000FA6B90 /* CubeRender.cpp */,
-				E917552427C61CA000FA6B90 /* CubeRender.hpp */,
-				97F20BBD27C6AA8D00D25008 /* GOController.cpp */,
-				97F20BBE27C6AA8D00D25008 /* GOController.hpp */,
+				E917552027C6121F00FA6B90 /* Drawable.cpp */,
+				E917552127C6121F00FA6B90 /* Drawable.hpp */,
+				E917552327C61CA000FA6B90 /* Cube.cpp */,
+				E917552427C61CA000FA6B90 /* Cube.hpp */,
 				642CBB2127D669FE00448432 /* Maze.cpp */,
 				642CBB2227D669FE00448432 /* Maze.hpp */,
-				642CBB2527D6B0C100448432 /* iron.jpg */,
-				6409220827D6D89E009DD9F0 /* dirt.jpg */,
+				648DD80227E232C800E9FBF0 /* crate front.jpg */,
+				648DD80127E232C800E9FBF0 /* dirt.jpg */,
 			);
 			path = c8051SwiftGL;
 			sourceTree = "<group>";
@@ -193,9 +178,9 @@
 				025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */,
 				025AE9C8277337E200A45ADB /* LaunchScreen.storyboard in Resources */,
 				025AE9C5277337E200A45ADB /* Assets.xcassets in Resources */,
-				642CBB2727D6B0C100448432 /* iron.jpg in Resources */,
+				648DD80327E232C800E9FBF0 /* dirt.jpg in Resources */,
 				025AE9C3277337DF00A45ADB /* Main.storyboard in Resources */,
-				6409220927D6D89E009DD9F0 /* dirt.jpg in Resources */,
+				648DD80427E232C800E9FBF0 /* crate front.jpg in Resources */,
 				025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,19 +192,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E917552527C61CA000FA6B90 /* CubeRender.cpp in Sources */,
+				E917552527C61CA000FA6B90 /* Cube.cpp in Sources */,
 				025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */,
-				974F6A1D27BD9C8D008ED294 /* PhysicsWrapper.cpp in Sources */,
 				642CBB2327D669FE00448432 /* Maze.cpp in Sources */,
 				977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */,
-				977F3A5027C560B500AB8A7B /* Camera.cpp in Sources */,
 				025AE9C0277337DF00A45ADB /* ViewController.swift in Sources */,
 				025AE9BC277337DF00A45ADB /* AppDelegate.swift in Sources */,
 				025AE9D42773396300A45ADB /* Renderer.mm in Sources */,
-				E917552227C6121F00FA6B90 /* Renderable.cpp in Sources */,
+				E917552227C6121F00FA6B90 /* Drawable.cpp in Sources */,
 				025AE9BE277337DF00A45ADB /* SceneDelegate.swift in Sources */,
 				E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */,
-				97F20BBF27C6AA8D00D25008 /* GOController.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

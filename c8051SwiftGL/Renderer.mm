@@ -18,6 +18,8 @@
 @implementation Renderer
 
 @synthesize isRotating; // each public property needs to be synthesized
+@synthesize panX;
+@synthesize panY;
 
 - (void)dealloc
 {
@@ -58,6 +60,8 @@
                                     [[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.fsh"] pathExtension]] cStringUsingEncoding:1],
                                     textureData, textureWidth, textureHeight);
     isRotating = glesRenderer->isRotating;
+    panX = glesRenderer->panX;
+    panY = glesRenderer->panY;
 
     // Once we have passed on the data from the image file for the texture, we can free up the memory
     free(textureData);
@@ -67,12 +71,19 @@
 {
     glesRenderer->SetViewport(theView.drawableWidth, theView.drawableHeight);
     glesRenderer->isRotating = isRotating;
+    glesRenderer->panX = panX;
+    glesRenderer->panY = panY;
     glesRenderer->Update();
 }
 
 - (void)draw:(CGRect)drawRect;
 {
     glesRenderer->Draw();
+}
+
+- (void)reset
+{
+    glesRenderer->reset();
 }
 
 @end
