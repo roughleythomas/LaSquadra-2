@@ -32,3 +32,11 @@ void Transform::setScale(vec3 scale){
 vec3 Transform::getPosition() { return pos; }
 vec3 Transform::getAngles() { return angles; }
 vec3 Transform::getScale() { return scale; }
+
+mat4 Transform::getMatrix(){
+    mat4 scale = glm::scale(mat4(1.f), getScale());
+    mat4 rot = glm::rotate(glm::mat4(1.0), glm::radians(angles.x), vec3(1, 0, 0));
+    rot = glm::rotate(rot, glm::radians(angles.y), vec3(0, 1, 0));
+    rot = glm::rotate(rot, glm::radians(angles.z), vec3(0, 0, 1));
+    return glm::translate(scale * rot, getPosition());
+}

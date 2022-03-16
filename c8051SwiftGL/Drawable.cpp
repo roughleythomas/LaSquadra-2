@@ -62,12 +62,7 @@ void Drawable::updateTransform(){
     if(anim != NULL)
         anim->update();
     
-    mat4 pos = glm::translate(glm::mat4(1.0f), getPosition());
-    vec3 angles = getAngles();
-    mat4 rot = glm::rotate(glm::mat4(1.0), glm::radians(angles.x), vec3(1, 0, 0));
-    rot = glm::rotate(rot, glm::radians(angles.y), vec3(0, 1, 0));
-    rot = glm::rotate(rot, glm::radians(angles.z), vec3(0, 0, 1));
-    transformMatrix = glm::scale(pos * rot, getScale());
+    transformMatrix = getMatrix();
 }
 
 glm::mat4 Drawable::draw(glm::mat4 mvp){

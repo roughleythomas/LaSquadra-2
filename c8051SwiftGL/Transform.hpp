@@ -21,6 +21,7 @@ public:
     vec3 getPosition();
     vec3 getAngles();
     vec3 getScale();
+    mat4 getMatrix();
 private:
     vec3 pos;
     vec3 angles;
