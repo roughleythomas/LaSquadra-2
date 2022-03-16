@@ -109,9 +109,6 @@ void GLESRenderer::Draw()
         normalMatrix = glm::inverseTranspose(glm::mat3(transform));
         float aspect = (float)vpWidth / (float)vpHeight;
         mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
-        //perspective = glm::rotate(perspective, radians(cameraAngles.x), vec3(1, 0, 0));
-        //perspective = glm::rotate(perspective, radians(cameraAngles.y), vec3(0, 1, 0));
-        //perspective = glm::rotate(perspective, radians(cameraAngles.z), vec3(0, 0, 1));
         vec3 angles = camera->getTransform()->getAngles();
         perspective = glm::rotate(perspective, radians(angles.x), vec3(1, 0, 0));
         perspective = glm::rotate(perspective, radians(angles.y), vec3(0, 1, 0));
