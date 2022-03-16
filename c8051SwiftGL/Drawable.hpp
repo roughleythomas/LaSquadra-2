@@ -38,6 +38,7 @@ public:
     float* getVertices();
     float* getNormals();
     float* getTextureCoords();
+    Animator* anim = NULL;
 protected:
     
     int numVertices, numNormals, numTexCoords, numIndices;
@@ -46,7 +47,6 @@ protected:
     vector<float> normals;
     vector<float> texCoords;
     glm::mat4 transformMatrix;
-    Animator* anim = NULL;
 };
 
 #endif

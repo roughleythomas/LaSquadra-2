@@ -18,11 +18,13 @@ class Animator{
     Transform* contextTransform;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
     vec3 rotateSpeed;
+    bool enabled = false;
     
 public:
     Animator(vec3 = vec3(1.f, 1.f, 1.f));
     void assignTransform(Transform*);
     void update();
+    void setEnabled(bool);
 };
 
 #endif /* Animator_hpp */

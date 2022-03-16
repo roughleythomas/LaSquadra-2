@@ -161,7 +161,8 @@ void GLESRenderer::LoadModels()
     
     addDrawable(new Sphere(0.15f, 10, 10));
     objects[objects.size() - 1]->setPosition(vec3(0, 0.15f, 0.5f));
-    objects[objects.size() - 1]->assignAnimator(new Animator(vec3(0, 0.15f, 0)));
+    objects[objects.size() - 1]->assignAnimator(new Animator(vec3(0, 0, 0.000001f)));
+    objects[objects.size() - 1]->anim->setEnabled(true);
     
     updateTransform();
 }
