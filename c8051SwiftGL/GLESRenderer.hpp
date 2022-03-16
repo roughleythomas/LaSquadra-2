@@ -19,6 +19,7 @@
 #include "Maze.hpp"
 #include "Cube.hpp"
 #include "Sphere.hpp"
+#include "Camera.hpp"
 
 using namespace std;
 using namespace glm;
@@ -71,7 +72,9 @@ private:
     GLuint groundTexture;
     glm::mat4 mvp;
     glm::mat3 normalMatrix;
-    glm::vec3 cameraPos, cameraAngles;
+    //glm::vec3 cameraPos, cameraAngles;
+    //Transform* camera;
+    Camera* camera;
 
     // model variables
     vector<Drawable*> objects;

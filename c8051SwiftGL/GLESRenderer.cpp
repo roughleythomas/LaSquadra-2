@@ -68,12 +68,15 @@ void GLESRenderer::Update()
         float ratio = elapsedTime * 0.000005f;
         
         if(abs(panY) >= abs(panX)){
-            cameraPos.x -= panY * ratio;
-            //cameraPos.y -= panY * ratio * 0.3f;
+            camera->getTransform()->translate(vec3(-panY * ratio, 0, 0));
+            //cameraPos.x -= panY * ratio;
+            //camera->translate(vec3(-panY * ratio, 0, 0));
         } else{
             float hyp = sqrt(pow(panX, 2) + pow(panY, 2));
             float asin = panX / hyp;
-            cameraAngles.z -= asin;
+            camera->getTransform()->rotate(vec3(0, 0, -asin));
+            //cameraAngles.z -= asin;
+            //camera->rotate(vec3(0, 0, -asin));
         }
     }
     
@@ -95,10 +98,8 @@ void GLESRenderer::Draw()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
 
-    mvp = translate(glm::mat4(1.0), cameraPos);
-    //mvp = rotate(mvp, radians(cameraAngles.x), vec3(1, 0, 0));
-    //mvp = rotate(mvp, radians(cameraAngles.y), vec3(0, 1, 0));
-    //mvp = rotate(mvp, radians(cameraAngles.z), vec3(0, 0, 1));
+    //mvp = glm::translate(mat4(1.f), cameraPos);
+    mvp = glm::translate(mat4(1.f), camera->getTransform()->getPosition());
     
     for(Drawable *drawable : objects){
         int *indices = drawable->getIndices(), numIndices = drawable->getNumIndices();
@@ -108,9 +109,13 @@ void GLESRenderer::Draw()
         normalMatrix = glm::inverseTranspose(glm::mat3(transform));
         float aspect = (float)vpWidth / (float)vpHeight;
         mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
-        perspective = glm::rotate(perspective, radians(cameraAngles.x), vec3(1, 0, 0));
-        perspective = glm::rotate(perspective, radians(cameraAngles.y), vec3(0, 1, 0));
-        perspective = glm::rotate(perspective, radians(cameraAngles.z), vec3(0, 0, 1));
+        //perspective = glm::rotate(perspective, radians(cameraAngles.x), vec3(1, 0, 0));
+        //perspective = glm::rotate(perspective, radians(cameraAngles.y), vec3(0, 1, 0));
+        //perspective = glm::rotate(perspective, radians(cameraAngles.z), vec3(0, 0, 1));
+        vec3 angles = camera->getTransform()->getAngles();
+        perspective = glm::rotate(perspective, radians(angles.x), vec3(1, 0, 0));
+        perspective = glm::rotate(perspective, radians(angles.y), vec3(0, 1, 0));
+        perspective = glm::rotate(perspective, radians(angles.z), vec3(0, 0, 1));
         transform = perspective * transform;
         
         glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, value_ptr(transform));
@@ -136,8 +141,10 @@ void GLESRenderer::addWall(bool horizontal, float posX, float posY, float altern
 }
 
 void GLESRenderer::reset(){
-    cameraAngles = vec3(-45.f, 0.f, 90.f);
-    cameraPos = vec3(2.5f, 0, -1.75f);
+    //cameraAngles = vec3(-45.f, 0.f, 90.f);
+    //cameraPos = vec3(2.5f, 0, -1.75f);
+    camera->getTransform()->setPosition(vec3(2.5, 0.f, -1.75f));
+    camera->getTransform()->setAngles(vec3(-45.f, 0.f, 90.f));
 }
 
 // ========================================================================================
@@ -148,10 +155,11 @@ void GLESRenderer::reset(){
 // ----------------------------------------------------------------
 void GLESRenderer::LoadModels()
 {
+    //camera = new Transform();
+    camera = Camera::GetInstance();
     reset();
     
     //floor
-    
     addDrawable(new Cube(0));
     objects[0]->setScale(vec3(2.f, 2.f, 0.1f));
     

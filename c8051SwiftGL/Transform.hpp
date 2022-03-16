@@ -13,10 +13,10 @@ class Transform
 {
 public:
     Transform();
-    
+    void translate(vec3);
+    void rotate(vec3);
     void setPosition(vec3);
     void setAngles(vec3);
-    void rotate(vec3);
     void setScale(vec3);
     vec3 getPosition();
     vec3 getAngles();
