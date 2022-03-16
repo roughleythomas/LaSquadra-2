@@ -18,10 +18,10 @@ class Sphere : public Drawable {
     
 public:
     Sphere(float, int, int);
-    //bool loadVertices(void* info);
-    //bool loadNormals(void* info);
-    //bool loadTextureCoords(void* info);
-    //bool loadIndices(void* info);
+    bool loadVertices(void* info);
+    bool loadNormals(void* info);
+    bool loadTextureCoords(void* info);
+    bool loadIndices(void* info);
 };
 
 #endif /* Sphere_hpp */

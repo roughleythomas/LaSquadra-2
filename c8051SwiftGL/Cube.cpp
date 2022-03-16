@@ -41,7 +41,8 @@ bool Cube::loadVertices(void* info)
     
     for(int i = 0; i < numVertices * 3; i++)
     {
-        vertices[i] = cubeVerts[i];
+        //vertices[i] = cubeVerts[i];
+        vertices.push_back(cubeVerts[i]);
     }
     
     return true;
@@ -79,7 +80,8 @@ bool Cube::loadNormals(void* info)
     
     for(int i = 0; i < numNormals * 3; i++)
     {
-        normals[i] = cubeNormals[i];
+        //normals[i] = cubeNormals[i];
+        normals.push_back(cubeNormals[i]);
     }
     
     return true;
@@ -117,7 +119,8 @@ bool Cube::loadTextureCoords(void* info)
     
     for(int i = 0; i < numTexCoords * 2; i++)
     {
-        texCoords[i] = cubeTex[i];
+        //texCoords[i] = cubeTex[i];
+        texCoords.push_back(cubeTex[i]);
     }
     
     return true;
@@ -143,7 +146,8 @@ bool Cube::loadIndices(void* info)
     
     for(int i = 0; i < numIndices; i++)
     {
-        indices[i] = cubeIndices[i];
+        //indices[i] = cubeIndices[i];
+        indices.push_back(cubeIndices[i]);
     }
     
     return true;

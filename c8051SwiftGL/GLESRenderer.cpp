@@ -159,6 +159,9 @@ void GLESRenderer::LoadModels()
         }
     }
     
+    addDrawable(new Sphere(0.15f, 10, 10));
+    objects[objects.size() - 1]->setPosition(vec3(0, 0.15f, 0.5f));
+    
     updateTransform();
 }
 

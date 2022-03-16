@@ -2,11 +2,14 @@
 #define Renderable_hpp
 
 #include <stdio.h>
+#include <vector>
 #include "GameObject.hpp"
 #include <OpenGLES/ES3/gl.h>
 #include "glm-master/glm/ext.hpp"
 #include "glm-master/glm/gtc/quaternion.hpp"
 #include "glm-master/glm/gtx/quaternion.hpp"
+
+using namespace std;
 
 class Drawable : public GameObject
 {
@@ -35,10 +38,10 @@ public:
     float* getTextureCoords();
 protected:
     int numVertices, numNormals, numTexCoords, numIndices;
-    int* indices;
-    float* vertices;
-    float* normals;
-    float* texCoords;
+    vector<int> indices;
+    vector<float> vertices;
+    vector<float> normals;
+    vector<float> texCoords;
     glm::mat4 transformMatrix;
 };
 

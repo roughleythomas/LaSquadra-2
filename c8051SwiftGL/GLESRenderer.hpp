@@ -18,6 +18,7 @@
 #include "Drawable.hpp"
 #include "Maze.hpp"
 #include "Cube.hpp"
+#include "Sphere.hpp"
 
 using namespace std;
 using namespace glm;
