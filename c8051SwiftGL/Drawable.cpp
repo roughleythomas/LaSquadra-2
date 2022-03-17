@@ -55,14 +55,14 @@ Drawable::~Drawable()
 
 void Drawable::assignAnimator(Animator* anim){
     this->anim = anim;
-    this->anim->assignTransform(this);
+    this->anim->assignTransform(localTransform);
 }
 
 void Drawable::updateTransform(){
     if(anim != NULL)
         anim->update();
     
-    transformMatrix = getMatrix();
+    transformMatrix = globalTransform->getMatrix() * localTransform->getMatrix();
 }
 
 glm::mat4 Drawable::draw(glm::mat4 mvp){

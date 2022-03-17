@@ -25,26 +25,13 @@ GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentSha
             return;
     }
 
-    /*if (spriteData && (width > 0) && (height > 0))
-    {
-        groundTexture = SetupTexture(spriteData, width, height);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, groundTexture);
-        glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
-    }*/
-    for(int i = 0; i < /*sizeof(spriteData) / sizeof(spriteData[0])*/2; i++){
+    for(int i = 0; i < 2; i++){
         GLuint textureId = SetupTexture(spriteData[i], width[i], height[i]);
-        /*if(i == 0)
-            glActiveTexture(GL_TEXTURE0);
-        else if(i == 1)
-            glActiveTexture(GL_TEXTURE1);*/
         glBindTexture(GL_TEXTURE_2D, textureId);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
         textureIds.push_back(textureId);
         cout << "Texture id: " << textureId << endl;
     }
-    
-    //textureIds.push_back(groundTexture);
 
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
     glEnable(GL_DEPTH_TEST);
@@ -69,14 +56,10 @@ void GLESRenderer::Update()
         
         if(abs(panY) >= abs(panX)){
             camera->getTransform()->translate(vec3(-panY * ratio, 0, 0));
-            //cameraPos.x -= panY * ratio;
-            //camera->translate(vec3(-panY * ratio, 0, 0));
         } else{
             float hyp = sqrt(pow(panX, 2) + pow(panY, 2));
-            float asin = panX / hyp;
-            camera->getTransform()->rotate(vec3(0, 0, -asin));
-            //cameraAngles.z -= asin;
-            //camera->rotate(vec3(0, 0, -asin));
+            float sin = panX / hyp;
+            camera->getTransform()->rotate(vec3(0, 0, asin(-sin)));
         }
     }
     
@@ -130,11 +113,11 @@ void GLESRenderer::addDrawable(Drawable* d){
 void GLESRenderer::addWall(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex){
     addDrawable(new Cube(1));
     int lindex = objects.size() - 1;
-    objects[lindex]->setPosition(glm::vec3(posX, posY, 0.125f));
+    objects[lindex]->globalTransform->setPosition(glm::vec3(posX, posY, 0.125f));
     if(horizontal)
-        objects[lindex]->setScale(glm::vec3(alternateScale, 0.01f, 0.25f));
+        objects[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.01f, 0.25f));
     else
-        objects[lindex]->setScale(glm::vec3(0.01f, alternateScale, 0.25f));
+        objects[lindex]->globalTransform->setScale(glm::vec3(0.01f, alternateScale, 0.25f));
 }
 
 void GLESRenderer::reset(){
@@ -158,10 +141,11 @@ void GLESRenderer::LoadModels()
     
     //floor
     addDrawable(new Cube(0));
-    objects[0]->setScale(vec3(2.f, 2.f, 0.1f));
+    objects[0]->globalTransform->setScale(vec3(2.f, 2.f, 0.1f));
     
-    float wallNum = 10;
-    Maze* maze = new Maze(wallNum);
+    srand (time(NULL));
+    float wallNum = rand() % 6 + 6;
+    Maze* maze = new Maze(wallNum);//random maze size
     maze->print();
     
     float sector = 2.f / wallNum;
@@ -180,7 +164,7 @@ void GLESRenderer::LoadModels()
     }
     
     addDrawable(new Sphere(1, 0.15f, 10, 10));
-    objects[objects.size() - 1]->setPosition(vec3(0, 0.15f, 0.5f));
+    objects[objects.size() - 1]->globalTransform->setPosition(vec3(0, 0.15f, 0.5f));
     objects[objects.size() - 1]->assignAnimator(new Animator(vec3(0, 0, 0.000001f)));
     objects[objects.size() - 1]->anim->setEnabled(true);
     

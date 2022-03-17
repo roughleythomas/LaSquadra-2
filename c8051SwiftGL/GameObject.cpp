@@ -1,3 +1,6 @@
 #include "GameObject.hpp"
 
-GameObject::GameObject() : Transform() {}
+GameObject::GameObject() {
+    globalTransform = new Transform();
+    localTransform = new Transform();
+}
