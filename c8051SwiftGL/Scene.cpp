@@ -18,8 +18,10 @@ void Scene::addDrawable(Drawable *d){
 }
 
 void Scene::reset(){
-    camera->getTransform()->setPosition(vec3(2.5, 0.f, -1.75f));
-    camera->getTransform()->setAngles(vec3(-45.f, 0.f, 90.f));
+    //camera->getTransform()->setPosition(vec3(2.5, 0.f, -1.75f));
+    //camera->getTransform()->setAngles(vec3(-45.f, 0.f, 90.f));
+    camera->getTransform()->setPosition(vec3(0.f, -2.25f, -4.5f));
+    camera->getTransform()->setAngles(vec3(25.f, 0.f, 0.f));
 }
 
 void Scene::pan(float panX, float panY){
@@ -28,11 +30,11 @@ void Scene::pan(float panX, float panY){
     float ratio = elapsedTime * 0.000005f;
     
     if(abs(panY) >= abs(panX)){
-        camera->getTransform()->translate(vec3(-panY * ratio, 0, 0));
+        camera->getTransform()->translate(vec3(0, 0, panY * ratio));
     } else{
         float hyp = sqrt(pow(panX, 2) + pow(panY, 2));
         float sin = panX / hyp;
-        camera->getTransform()->rotate(vec3(0, 0, asin(-sin)));
+        camera->getTransform()->rotate(vec3(0, asin(-sin), 0));
     }
 }
 
@@ -64,7 +66,7 @@ void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform
         glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, value_ptr(transform));
         glUniformMatrix3fv(normalMatrixUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
         glBindTexture(GL_TEXTURE_2D, textureIds[drawable->getTextureListIndex()]);
-        //glUniform1i(uniforms[UNIFORM_TEXTURE], textureIds[drawable->getTextureListIndex()]);
+        //glUniform1i(textureUniform, textureIds[drawable->getTextureListIndex()]);
         glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
     }
 }
@@ -77,20 +79,20 @@ void Scene::loadModels(){
 void MazeScene::addWall(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex){
     addDrawable(new Cube(1));
     int lindex = drawables.size() - 1;
-    drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, posY, 0.125f));
+    drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
     if(horizontal)
-        drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.01f, 0.25f));
+        drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
     else
-        drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, alternateScale, 0.25f));
+        drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
 }
 
 void MazeScene::loadModels(){
     Scene::loadModels();
     addDrawable(new Cube(0));
-    drawables[0]->globalTransform->setScale(vec3(2.f, 2.f, 0.1f));
+    drawables[0]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
     
     srand (time(NULL));
-    float wallNum = rand() % 6 + 6;
+    float wallNum = rand() % 4 + 8;
     Maze* maze = new Maze(wallNum);//random maze size
     maze->print();
     
@@ -110,7 +112,7 @@ void MazeScene::loadModels(){
     }
     
     addDrawable(new Sphere(1, 0.15f, 10, 10));
-    drawables[drawables.size() - 1]->globalTransform->setPosition(vec3(0, 0.15f, 0.5f));
-    drawables[drawables.size() - 1]->assignAnimator(new Animator(vec3(0, 0, 0.000001f)));
+    drawables[drawables.size() - 1]->globalTransform->setPosition(vec3(0, 1.f, 0.f));
+    drawables[drawables.size() - 1]->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
     drawables[drawables.size() - 1]->anim->setEnabled(true);
 }
