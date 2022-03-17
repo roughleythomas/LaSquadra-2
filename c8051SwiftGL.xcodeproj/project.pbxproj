@@ -18,6 +18,7 @@
 		025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D6277339AE00A45ADB /* Shader.fsh */; };
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		6419068227E383DC00D8EA00 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6419068027E383DC00D8EA00 /* Scene.cpp */; };
+		6419068527E3903400D8EA00 /* SceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6419068327E3903400D8EA00 /* SceneManager.cpp */; };
 		642CBB2327D669FE00448432 /* Maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 642CBB2127D669FE00448432 /* Maze.cpp */; };
 		648DD80327E232C800E9FBF0 /* dirt.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80127E232C800E9FBF0 /* dirt.jpg */; };
 		648DD80427E232C800E9FBF0 /* iron.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 648DD80227E232C800E9FBF0 /* iron.jpg */; };
@@ -48,6 +49,8 @@
 		025AE9D7277339AF00A45ADB /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		6419068027E383DC00D8EA00 /* Scene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		6419068127E383DC00D8EA00 /* Scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
+		6419068327E3903400D8EA00 /* SceneManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SceneManager.cpp; sourceTree = "<group>"; };
+		6419068427E3903400D8EA00 /* SceneManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SceneManager.hpp; sourceTree = "<group>"; };
 		642CBB2127D669FE00448432 /* Maze.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Maze.cpp; sourceTree = "<group>"; };
 		642CBB2227D669FE00448432 /* Maze.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Maze.hpp; sourceTree = "<group>"; };
 		648DD80127E232C800E9FBF0 /* dirt.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dirt.jpg; sourceTree = "<group>"; };
@@ -102,6 +105,8 @@
 				025AE9D02773396300A45ADB /* GLESRenderer.hpp */,
 				6419068027E383DC00D8EA00 /* Scene.cpp */,
 				6419068127E383DC00D8EA00 /* Scene.hpp */,
+				6419068327E3903400D8EA00 /* SceneManager.cpp */,
+				6419068427E3903400D8EA00 /* SceneManager.hpp */,
 				025AE9D12773396300A45ADB /* Renderer.h */,
 				025AE9D22773396300A45ADB /* Renderer.mm */,
 				025AE9D6277339AE00A45ADB /* Shader.fsh */,
@@ -226,6 +231,7 @@
 				E917552227C6121F00FA6B90 /* Drawable.cpp in Sources */,
 				025AE9BE277337DF00A45ADB /* SceneDelegate.swift in Sources */,
 				E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */,
+				6419068527E3903400D8EA00 /* SceneManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,20 +8,42 @@
 #ifndef Scene_hpp
 #define Scene_hpp
 
+#include <OpenGLES/ES3/gl.h>
+#include "glm-master/glm/ext.hpp"
 #include <stdio.h>
 #include <chrono>
+#include "Cube.hpp"
+#include "Sphere.hpp"
+#include "Camera.hpp"
+#include "Maze.hpp"
 
-class Scene{
+using namespace glm;
+
+class Scene {
+    Camera* camera;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
+    mat4 mvp;
+    mat3 normalMatrix;
+    void updateTransform();
+    
+protected:
+    vector<Drawable*> drawables;
+    void addDrawable(Drawable* d);
+    
+public:
+    ~Scene();
+    void reset();
+    virtual void pan(float, float);
+    virtual void update();
+    virtual void draw(vector<GLuint>, float, GLint, GLint);
+    virtual void loadModels();
 };
 
-class SceneManager{
-    enum SceneName {
-        MENU,
-        MAZE,
-        CHEMISTRY_LAB,
-        OBSTACLE_COURSE
-    };
+class MazeScene : public Scene {
+    
+public:
+    void loadModels() override;
+    void addWall(bool, float, float, float, int = 1);
 };
 
 #endif /* Scene_hpp */

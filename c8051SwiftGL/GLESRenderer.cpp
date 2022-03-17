@@ -29,7 +29,7 @@ GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentSha
         GLuint textureId = SetupTexture(spriteData[i], width[i], height[i]);
         glBindTexture(GL_TEXTURE_2D, textureId);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
-        textureIds.push_back(textureId);
+        sceneManager.pushTexture(textureId);
         cout << "Texture id: " << textureId << endl;
     }
 
@@ -49,27 +49,10 @@ GLESRenderer::~GLESRenderer()
 // ----------------------------------------------------------------
 void GLESRenderer::Update()
 {
-    if(panX != 0 || panY != 0){
-        auto curTime = chrono::steady_clock::now();
-        auto elapsedTime = chrono::duration_cast<std::chrono::milliseconds>(curTime - lastFrame).count();
-        float ratio = elapsedTime * 0.000005f;
-        
-        if(abs(panY) >= abs(panX)){
-            camera->getTransform()->translate(vec3(-panY * ratio, 0, 0));
-        } else{
-            float hyp = sqrt(pow(panX, 2) + pow(panY, 2));
-            float sin = panX / hyp;
-            camera->getTransform()->rotate(vec3(0, 0, asin(-sin)));
-        }
-    }
+    if(panX != 0 || panY != 0)
+        sceneManager.pan(panX, panY);
     
-    updateTransform();
-    lastFrame = std::chrono::steady_clock::now();
-}
-
-void GLESRenderer::updateTransform(){
-    for(Drawable* drawable : objects)
-        drawable->updateTransform();
+    sceneManager.update();
 }
 
 void GLESRenderer::Draw()
@@ -81,50 +64,11 @@ void GLESRenderer::Draw()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
 
-    //mvp = glm::translate(mat4(1.f), cameraPos);
-    mvp = glm::translate(mat4(1.f), camera->getTransform()->getPosition());
-    
-    for(Drawable *drawable : objects){
-        int *indices = drawable->getIndices(), numIndices = drawable->getNumIndices();
-        mat4 transform = drawable->draw(mvp);
-        
-        //Update(&transform);
-        normalMatrix = glm::inverseTranspose(glm::mat3(transform));
-        float aspect = (float)vpWidth / (float)vpHeight;
-        mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
-        vec3 angles = camera->getTransform()->getAngles();
-        perspective = glm::rotate(perspective, radians(angles.x), vec3(1, 0, 0));
-        perspective = glm::rotate(perspective, radians(angles.y), vec3(0, 1, 0));
-        perspective = glm::rotate(perspective, radians(angles.z), vec3(0, 0, 1));
-        transform = perspective * transform;
-        
-        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, GL_FALSE, value_ptr(transform));
-        glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, GL_FALSE, glm::value_ptr(normalMatrix));
-        glBindTexture(GL_TEXTURE_2D, textureIds[drawable->getTextureListIndex()]);
-        //glUniform1i(uniforms[UNIFORM_TEXTURE], textureIds[drawable->getTextureListIndex()]);
-        glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
-    }
-}
-
-void GLESRenderer::addDrawable(Drawable* d){
-    objects.push_back(d);
-}
-
-void GLESRenderer::addWall(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex){
-    addDrawable(new Cube(1));
-    int lindex = objects.size() - 1;
-    objects[lindex]->globalTransform->setPosition(glm::vec3(posX, posY, 0.125f));
-    if(horizontal)
-        objects[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.01f, 0.25f));
-    else
-        objects[lindex]->globalTransform->setScale(glm::vec3(0.01f, alternateScale, 0.25f));
+    sceneManager.draw((float)vpWidth / (float)vpHeight, uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], uniforms[UNIFORM_NORMAL_MATRIX]);
 }
 
 void GLESRenderer::reset(){
-    //cameraAngles = vec3(-45.f, 0.f, 90.f);
-    //cameraPos = vec3(2.5f, 0, -1.75f);
-    camera->getTransform()->setPosition(vec3(2.5, 0.f, -1.75f));
-    camera->getTransform()->setAngles(vec3(-45.f, 0.f, 90.f));
+    sceneManager.reset();
 }
 
 // ========================================================================================
@@ -135,40 +79,7 @@ void GLESRenderer::reset(){
 // ----------------------------------------------------------------
 void GLESRenderer::LoadModels()
 {
-    //camera = new Transform();
-    camera = Camera::GetInstance();
-    reset();
-    
-    //floor
-    addDrawable(new Cube(0));
-    objects[0]->globalTransform->setScale(vec3(2.f, 2.f, 0.1f));
-    
-    srand (time(NULL));
-    float wallNum = rand() % 6 + 6;
-    Maze* maze = new Maze(wallNum);//random maze size
-    maze->print();
-    
-    float sector = 2.f / wallNum;
-    addWall(true, 0.f, 2.f, 2.f);
-    addWall(false, -2.f, -sector, 2.f - sector);
-    for(int i = 0; i < wallNum; i++){
-        int wallTypeHor = ((i > 0) ? 1 : 2),
-            wallTypeVer = ((i > 0) ? 0 : 1);
-        
-        for(int j = 0; j < wallNum; j++){
-            if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeHor))
-                addWall(true, -2.f + 2 * sector * (j + 1) - sector, 2.f - 2 * sector * (i + 1), sector);
-            if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeVer))
-                addWall(false, -2.f + 2 * sector * (j + 1), 2.f - 2 * sector * (i + 1) + sector, sector);
-        }
-    }
-    
-    addDrawable(new Sphere(1, 0.15f, 10, 10));
-    objects[objects.size() - 1]->globalTransform->setPosition(vec3(0, 0.15f, 0.5f));
-    objects[objects.size() - 1]->assignAnimator(new Animator(vec3(0, 0, 0.000001f)));
-    objects[objects.size() - 1]->anim->setEnabled(true);
-    
-    updateTransform();
+    sceneManager.assignScene(sceneManager.MAZE);
 }
 
 // ========================================================================================
