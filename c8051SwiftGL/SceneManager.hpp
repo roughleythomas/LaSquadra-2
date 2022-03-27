@@ -1,0 +1,37 @@
+//
+//  SceneManager.hpp
+//  c8051SwiftGL
+//
+//  Created by Michael Sinclair on 2022-03-17.
+//
+
+#ifndef SceneManager_hpp
+#define SceneManager_hpp
+
+#include <stdio.h>
+#include "Scene.hpp"
+
+class SceneManager{
+    Scene* scene;
+    vector<GLuint> textureIds;
+    
+public:
+    enum SceneName {
+        MENU,
+        MAZE,
+        CHEMISTRY_LAB,
+        OBSTACLE_COURSE
+    };
+    
+    void reset();
+    void assignScene(SceneName);
+    void pan(float, float);
+    void update();
+    void draw(float, GLint, GLint);
+    void pushTexture(GLuint);
+    
+private:
+    SceneName curSceneName;
+};
+
+#endif /* SceneManager_hpp */

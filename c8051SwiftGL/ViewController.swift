@@ -2,9 +2,8 @@
 //  Copyright © Borna Noureddin. All rights reserved.
 //
 
-import GLKit    // use GLKit to treat the iOS display as one that can receive GL draw commands
+import GLKit
 
-// This enables using the GLKit update method to call our own update
 extension ViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
         glesRenderer.update();
@@ -14,52 +13,125 @@ extension ViewController: GLKViewControllerDelegate {
 
 class ViewController: GLKViewController {
     
-    private var context: EAGLContext?       // EAGL context for GL draw commands
-    private var glesRenderer: Renderer!     // our own C++ GLES renderer object
-    var initialCenter = CGPoint();  // The initial center point of the view.
-    var upHeld = false;
-    var rightHeld = false;
-    var downHeld = false;
-    var leftHeld = false;
-    
-
+    private var context: EAGLContext?
+    private var glesRenderer: Renderer!
     
     private func setupGL() {
-        // Set up the GL context and initialize and setup our GLES renderer object
-        //1, Allocate a EAGLContext object and initialize a context with a specific version.
         context = EAGLContext(api: .openGLES3)
         EAGLContext.setCurrent(context)
-        
-        // Set view to size of screen I guess
-        //glkView.frame = CGRect(x: 0.0, y: 0.0, width: ScreenSize.width, height: ScreenSize.height)
-        
         if let view = self.view as? GLKView, let context = context {
             view.context = context
             delegate = self as GLKViewControllerDelegate
             glesRenderer = Renderer()
             glesRenderer.setup(view)
-            glesRenderer.loadModels()
         }
     }
     
-    
     override func viewDidLoad() {
-        // This gets called as soon as the view is loaded
+        super.viewDidLoad()
+        setupGL()
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2;
+        view.addGestureRecognizer(doubleTap)
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(self.doPan(_:)))
+        view.addGestureRecognizer(pan)
+    }
+    
+    override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+        glesRenderer.draw(rect);
+    }
+    
+    @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
+        glesRenderer.reset();
+    }
+    
+    @objc func doPan(_ sender: UIPanGestureRecognizer){
+        let changedDistance: CGPoint = sender.translation(in: view)
+        /*print("Change distance{")
+        print("X: \(changedDistance.x)\nY: \(changedDistance.y)")
+        print("}\n")*/
+        glesRenderer.panX = Float(-changedDistance.x)
+        glesRenderer.panY = Float(-changedDistance.y)
+        
+        if(sender.state == .ended){
+            glesRenderer.panX = 0;
+            glesRenderer.panY = 0;
+        }
+    }
+}
+
+/*
+Old view controller
+import GLKit    // use GLKit to treat the iOS display as one that can receive GL draw commands
+
+// This enables using the GLKit update method to call our own update
+extension ViewController: GLKViewControllerDelegate
+{
+    func glkViewControllerUpdate(_ controller: GLKViewController)
+    {
+        glesRenderer.update();
+        
+    }
+}
+
+class ViewController: GLKViewController {
+    
+    private var context: EAGLContext?       // EAGL context for GL draw commands
+    private var glesRenderer: Renderer!     // our own C++ GLES renderer object, which is connected through the objective-c renderer.mm class
+    var initialCenter = CGPoint()  // The initial center point of the view.
+
+    //Any renderable objects using swift UI (the positioning of these items would be in their Cpp class)
+    
+    
+    
+    //_________________________ Instantiate View ______________________________
+    
+    // Set up the GL context and initialize and setup our GLES renderer object
+    private func setupGL()
+    {
+        context = EAGLContext(api: .openGLES3)
+        EAGLContext.setCurrent(context)
+        if let view = self.view as? GLKView,
+            let context = context
+            {
+                view.context = context
+                delegate = self as GLKViewControllerDelegate
+                
+                //Initialize the renderer.mm class (objective c based) to have access to the Cpp gameobjects
+                glesRenderer = Renderer()
+                glesRenderer.setup(view)
+                glesRenderer.loadModels()
+            }
+    }
+    
+    // This gets called as soon as the view is loaded
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
         setupGL()   // call this to set up our GL environment
-        	
-//        // Set up a double-tap ge*sture recognizer
-//        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
-//        doubleTap.numberOfTapsRequired = 2;
-//        view.addGestureRecognizer(doubleTap)
         
-//        //Set up a pan gesture recognizer
-//        let pan = UIPanGestureRecognizer(target: self, action: #selector(doPan(_:)))
-//        view.addGestureRecognizer(pan)
+        //view.addSubview(pannableView)
+        //pannableView.center = view.center
+        
+        //Instantiate different gesture recognizers and their associated 'selector' functions to perform different tasks when action is performed.
+        
+        // Set up a double-tap gesture recognizer
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2;
+        view.addGestureRecognizer(doubleTap)
+        
+        //Set up a pan gesture recognizer
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(doPan(_:)))
+        view.addGestureRecognizer(pan)
         
         //Set up a pinch gesture recognizer
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(doPinch(_:)))
         self.view.addGestureRecognizer(pinch)
+        
+        
+        
+        //Create different UI elements
+        
         
         // make the button
         let button = UIButton(frame: CGRect(x: 100, y: 75, width: 100, height: 50))
@@ -67,51 +139,13 @@ class ViewController: GLKViewController {
         button.addTarget(self, action: #selector(buttPress), for: .touchUpInside)
         self.view.addSubview(button)
         
-        // MOVEMENT BUTTONS
-        let upButton = UIButton(frame: CGRect(x: 50, y: 400, width: 50, height: 50))
-        let upArrow = UIImage(named: "upArrow")
-        upButton.setImage(upArrow, for: UIControl.State())
-        upButton.addTarget(self, action: #selector(upPress), for: .touchDown)
-        upButton.addTarget(self, action: #selector(stopUp(_:)), for: .touchUpInside)
-        self.view.addSubview(upButton)
-        
-        let rightButton = UIButton(frame: CGRect(x: 100, y: 450, width: 50, height: 50))
-        let rightArrow = UIImage(named: "upArrow")
-        rightButton.setImage(rightArrow, for: UIControl.State())
-        rightButton.addTarget(self, action: #selector(rightPress), for: .touchDown)
-        rightButton.addTarget(self, action: #selector(stopRight(_:)), for: .touchUpInside)
-        self.view.addSubview(rightButton)
-        
-        let downButton = UIButton(frame: CGRect(x: 50, y: 500, width: 50, height: 50))
-        let downArrow = UIImage(named: "downArrow")
-        downButton.setImage(downArrow, for: UIControl.State())
-        downButton.addTarget(self, action: #selector(downPress), for: .touchDown)
-        downButton.addTarget(self, action: #selector(stopDown(_:)), for: .touchUpInside)
-        self.view.addSubview(downButton)
-        
-        let leftButton = UIButton(frame: CGRect(x: 0, y: 450, width: 50, height: 50))
-        let leftArrow = UIImage(named: "leftArrow")
-        leftButton.setImage(leftArrow, for: UIControl.State())
-        leftButton.addTarget(self, action: #selector(leftPress), for: .touchDown)
-        leftButton.addTarget(self, action: #selector(stopLeft(_:)), for: .touchUpInside)
-        self.view.addSubview(leftButton)
-        
     }
     
-    @IBAction func stopUp(_ sender: UIButton) {
-            upHeld = true
-        }
-    @IBAction func stopRight(_ sender: UIButton) {
-            rightHeld = true
-        }
-    @IBAction func stopDown(_ sender: UIButton) {
-            downHeld = true
-        }
-    @IBAction func stopLeft(_ sender: UIButton) {
-            leftHeld = true
-        }
+    //_________________________ Render View ______________________________
     
-    override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+    //Draw all objects that should be displayed on screen
+    override func glkView(_ view: GLKView, drawIn rect: CGRect)
+    {
         glesRenderer.draw(rect);    // use our custom GLES renderer object to make the actual GL draw calls
         
         // make label
@@ -134,6 +168,9 @@ class ViewController: GLKViewController {
         self.view.addSubview(label)
         
     }
+    
+    
+    //_________________________ Swift Functions ______________________________
     
     @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
         // Handle double tap gesture
@@ -173,50 +210,7 @@ class ViewController: GLKViewController {
         glesRenderer.panY = 0
         print("reset");
     }
-    
-    @objc func upPress(sender: UIButton!) {
-        var continueIt = false
-        DispatchQueue.global(qos: .userInitiated).async {
-            repeat {
-                continueIt = !self.upHeld
-                self.glesRenderer.panY += 0.0000001
-            } while continueIt
-        }
-        upHeld = false
-    }
-    
-    @objc func rightPress(sender: UIButton!) {
-        var continueIt = false
-        DispatchQueue.global(qos: .userInitiated).async {
-            repeat {
-                continueIt = !self.rightHeld
-                self.glesRenderer.panX += 0.0000001
-            } while continueIt
-        }
-        rightHeld = false
-    }
-    
-    @objc func downPress(sender: UIButton!) {
-        var continueIt = false
-        DispatchQueue.global(qos: .userInitiated).async {
-            repeat {
-                continueIt = !self.downHeld
-                self.glesRenderer.panY -= 0.0000001
-            } while continueIt
-        }
-        downHeld = false
-    }
-    
-    @objc func leftPress(sender: UIButton!) {
-        var continueIt = false
-        DispatchQueue.global(qos: .userInitiated).async {
-            repeat {
-                continueIt = !self.leftHeld
-                self.glesRenderer.panX -= 0.0000001
-            } while continueIt
-        }
-        leftHeld = false
-    }
 
     
 }
+*/

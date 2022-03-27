@@ -1,5 +1,7 @@
 //
 //  Copyright © Borna Noureddin. All rights reserved.
+//  This is a minimal wrapper class for the OpenGL ES C++ render class (GLESRenderer).
+//  It is used to bridge between Swift and C++.
 //
 
 #ifndef Renderer_h
@@ -8,22 +10,15 @@
 
 @interface Renderer : NSObject
 
-// To give an interface to Swift for variables, they need to be Objective-C properties. You can add additional ones, such as a toggle variable for auto-rotating a cube.
-@property bool isRed;
-@property bool isRotating;
-@property double rotX;
-@property double rotY;
-@property double panX;
-@property double panY;
-@property double scale;
+@property bool isRotating;  // example of variable that can be passed from Swift to C++ code
+@property float panX;
+@property float panY;
 
-- (void)setup:(GLKView *)view;
-- (void)loadModels;
-- (void)update;
-- (void)draw:(CGRect)drawRect;
+- (void)setup:(GLKView *)view;  // do some basic GL setup
+- (void)update;                 // wrapper for C++ update function
+- (void)draw:(CGRect)drawRect;  // wrapper for C++ draw function
+- (void)reset;                  // wrapper for C++ reset function
 
 @end
 
 #endif /* Renderer_h */
-
-
