@@ -7,8 +7,118 @@
 #include <stdarg.h>
 #include <string.h>
 #include <iostream>
+#include "glm-master/glm/gtx/string_cast.hpp"
 #include "GLESRenderer.hpp"
 
+
+// ----------------------------------------------------------------
+// Constructor and destructor
+// ----------------------------------------------------------------
+GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentShaderFile,
+                           /*GLubyte *spriteData, size_t width, size_t height*/ GLubyte **spriteData, size_t *width, size_t *height)
+{
+    LoadModels();
+
+    if (vertexShaderFile && fragmentShaderFile)
+    {
+        if (!SetupShaders(vertexShaderFile, fragmentShaderFile))
+            return;
+    }
+
+    for(int i = 0; i < 2; i++){
+        GLuint textureId = SetupTexture(spriteData[i], width[i], height[i]);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
+        sceneManager.pushTexture(textureId);
+        cout << "Texture id: " << textureId << endl;
+    }
+
+    glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
+    glEnable(GL_DEPTH_TEST);
+
+    rotAngle = 0.0f;
+}
+
+GLESRenderer::~GLESRenderer()
+{
+    glDeleteProgram(programObject);
+}
+
+// ----------------------------------------------------------------
+// Update and Draw public methods
+// ----------------------------------------------------------------
+void GLESRenderer::Update()
+{
+    if(panX != 0 || panY != 0)
+        sceneManager.pan(panX, panY);
+    
+    sceneManager.update();
+}
+
+void GLESRenderer::Draw()
+{
+    glUniform1i(uniforms[UNIFORM_PASSTHROUGH], false);
+    glUniform1i(uniforms[UNIFORM_SHADEINFRAG], true);
+
+    glViewport(0, 0, vpWidth, vpHeight);
+    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glUseProgram ( programObject );
+
+    sceneManager.draw((float)vpWidth / (float)vpHeight, uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], uniforms[UNIFORM_NORMAL_MATRIX]);
+}
+
+void GLESRenderer::reset(){
+    sceneManager.reset();
+}
+
+// ========================================================================================
+
+
+// ----------------------------------------------------------------
+// Model loading - ADD RENDERABLES HERE
+// ----------------------------------------------------------------
+void GLESRenderer::LoadModels()
+{
+    sceneManager.assignScene(sceneManager.MAZE);
+}
+
+// ========================================================================================
+
+
+// ----------------------------------------------------------------
+// Shader loading
+// ----------------------------------------------------------------
+bool GLESRenderer::SetupShaders(const char *vertexShaderFile, const char *fragmentShaderFile)
+{
+    // Load shaders
+    char *vShaderStr = LoadShaderFile(vertexShaderFile);
+    char *fShaderStr = LoadShaderFile(fragmentShaderFile);
+    programObject = LoadProgram(vShaderStr, fShaderStr);
+    if (programObject == 0)
+        return false;
+    
+    // Set up uniform variables
+    uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(programObject, "modelViewProjectionMatrix");
+    uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(programObject, "normalMatrix");
+    uniforms[UNIFORM_PASSTHROUGH] = glGetUniformLocation(programObject, "passThrough");
+    uniforms[UNIFORM_SHADEINFRAG] = glGetUniformLocation(programObject, "shadeInFrag");
+    uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(programObject, "texSampler");
+
+    return true;
+}
+
+GLuint GLESRenderer::SetupTexture(GLubyte *spriteData, size_t width, size_t height)
+{
+    GLuint texName;
+    glGenTextures(1, &texName);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
+    
+    return texName;
+}
 
 char *GLESRenderer::LoadShaderFile(const char *shaderFileName)
 {
@@ -112,190 +222,4 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
     glDeleteShader(fragmentShader);
 
     return programObject;
-}
-
-
-int GLESRenderer::GenSquare(float scale, float **vertices, int **indices)
-{
-    int i;
-    int numVertices = 4;
-    int numIndices = 6;
-    
-    float cubeVerts[] =
-    {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, 0.5f,  0.0f,
-        -0.5f, 0.5f,  0.0f,
-        0.5f, -0.5f,  0.0f,
-    };
-    
-    // Allocate memory for buffers
-    if ( vertices != NULL )
-    {
-        *vertices = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
-        
-        for ( i = 0; i < numVertices * 3; i++ )
-        {
-            ( *vertices ) [i] *= scale;
-        }
-    }
-    
-    // Generate the indices
-    if ( indices != NULL )
-    {
-        GLuint cubeIndices[] =
-        {
-            0, 1, 2,
-            0, 3, 1,
-        };
-        
-        *indices = (int *)malloc ( sizeof ( int ) * numIndices );
-        memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
-    }
-    
-    return numIndices;
-}
-
-
-int GLESRenderer::GenCube(float scale, float **vertices, float **normals,
-                          float **texCoords, int **indices)
-{
-    int i;
-    int numVertices = 24;
-    int numIndices = 36;
-    
-    float cubeVerts[] =
-    {
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, 0.5f,
-        -0.5f,  0.5f, 0.5f,
-        0.5f,  0.5f, 0.5f,
-        0.5f, -0.5f, 0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f, -0.5f,
-    };
-    
-    float cubeNormals[] =
-    {
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, -1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        -1.0f, 0.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-    };
-    
-    float cubeTex[] =
-    {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-    };
-    
-    // Allocate memory for buffers
-    if ( vertices != NULL )
-    {
-        *vertices = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
-        
-        for ( i = 0; i < numVertices * 3; i++ )
-        {
-            ( *vertices ) [i] *= scale;
-        }
-    }
-    
-    if ( normals != NULL )
-    {
-        *normals = (float *)malloc ( sizeof ( float ) * 3 * numVertices );
-        memcpy ( *normals, cubeNormals, sizeof ( cubeNormals ) );
-    }
-    
-    if ( texCoords != NULL )
-    {
-        *texCoords = (float *)malloc ( sizeof ( float ) * 2 * numVertices );
-        memcpy ( *texCoords, cubeTex, sizeof ( cubeTex ) ) ;
-    }
-    
-    
-    // Generate the indices
-    if ( indices != NULL )
-    {
-        GLuint cubeIndices[] =
-        {
-            0, 2, 1,
-            0, 3, 2,
-            4, 5, 6,
-            4, 6, 7,
-            8, 9, 10,
-            8, 10, 11,
-            12, 15, 14,
-            12, 14, 13,
-            16, 17, 18,
-            16, 18, 19,
-            20, 23, 22,
-            20, 22, 21
-        };
-        
-        *indices = (int *)malloc ( sizeof ( int ) * numIndices );
-        memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
-    }
-    
-    return numIndices;
 }

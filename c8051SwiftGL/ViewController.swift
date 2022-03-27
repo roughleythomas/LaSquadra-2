@@ -1,5 +1,68 @@
+//
+//  Copyright © Borna Noureddin. All rights reserved.
+//
+
+import GLKit
+
+extension ViewController: GLKViewControllerDelegate {
+    func glkViewControllerUpdate(_ controller: GLKViewController) {
+        glesRenderer.update();
+        
+    }
+}
+
+class ViewController: GLKViewController {
+    
+    private var context: EAGLContext?
+    private var glesRenderer: Renderer!
+    
+    private func setupGL() {
+        context = EAGLContext(api: .openGLES3)
+        EAGLContext.setCurrent(context)
+        if let view = self.view as? GLKView, let context = context {
+            view.context = context
+            delegate = self as GLKViewControllerDelegate
+            glesRenderer = Renderer()
+            glesRenderer.setup(view)
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupGL()
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2;
+        view.addGestureRecognizer(doubleTap)
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(self.doPan(_:)))
+        view.addGestureRecognizer(pan)
+    }
+    
+    override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+        glesRenderer.draw(rect);
+    }
+    
+    @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
+        glesRenderer.reset();
+    }
+    
+    @objc func doPan(_ sender: UIPanGestureRecognizer){
+        let changedDistance: CGPoint = sender.translation(in: view)
+        /*print("Change distance{")
+        print("X: \(changedDistance.x)\nY: \(changedDistance.y)")
+        print("}\n")*/
+        glesRenderer.panX = Float(-changedDistance.x)
+        glesRenderer.panY = Float(-changedDistance.y)
+        
+        if(sender.state == .ended){
+            glesRenderer.panX = 0;
+            glesRenderer.panY = 0;
+        }
+    }
+}
+
+/*
+Old view controller
 import GLKit    // use GLKit to treat the iOS display as one that can receive GL draw commands
-import SwiftUI
 
 // This enables using the GLKit update method to call our own update
 extension ViewController: GLKViewControllerDelegate
@@ -11,20 +74,19 @@ extension ViewController: GLKViewControllerDelegate
     }
 }
 
-class ViewController: GLKViewController
-{
+class ViewController: GLKViewController {
     
     private var context: EAGLContext?       // EAGL context for GL draw commands
     private var glesRenderer: Renderer!     // our own C++ GLES renderer object, which is connected through the objective-c renderer.mm class
     var initialCenter = CGPoint()  // The initial center point of the view.
 
     //Any renderable objects using swift UI (the positioning of these items would be in their Cpp class)
-
     
     
-//_________________________ Instantiate View ______________________________
     
-    //*** Set up the GL context and initialize and setup our GLES renderer object
+    //_________________________ Instantiate View ______________________________
+    
+    // Set up the GL context and initialize and setup our GLES renderer object
     private func setupGL()
     {
         context = EAGLContext(api: .openGLES3)
@@ -42,7 +104,7 @@ class ViewController: GLKViewController
             }
     }
     
-    //*** This gets called as soon as the view is loaded
+    // This gets called as soon as the view is loaded
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -51,8 +113,7 @@ class ViewController: GLKViewController
         //view.addSubview(pannableView)
         //pannableView.center = view.center
         
-        //------ Instantiate gesture recognizers ------
-        //Their associated 'selector' functions perform different tasks when gesture action is performed.
+        //Instantiate different gesture recognizers and their associated 'selector' functions to perform different tasks when action is performed.
         
         // Set up a double-tap gesture recognizer
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
@@ -69,7 +130,7 @@ class ViewController: GLKViewController
         
         
         
-        //-----Create different UI elements-----
+        //Create different UI elements
         
         
         // make the button
@@ -78,13 +139,11 @@ class ViewController: GLKViewController
         button.addTarget(self, action: #selector(buttPress), for: .touchUpInside)
         self.view.addSubview(button)
         
-        
-        
     }
-
-//_________________________ Render View ______________________________
     
-    //***Draw all objects that should be displayed on screen
+    //_________________________ Render View ______________________________
+    
+    //Draw all objects that should be displayed on screen
     override func glkView(_ view: GLKView, drawIn rect: CGRect)
     {
         glesRenderer.draw(rect);    // use our custom GLES renderer object to make the actual GL draw calls
@@ -111,9 +170,8 @@ class ViewController: GLKViewController
     }
     
     
-//_________________________ Swift Functions ______________________________
+    //_________________________ Swift Functions ______________________________
     
-    //Perform logic for doubletap gesture
     @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
         // Handle double tap gesture
         glesRenderer.isRed = !glesRenderer.isRed;
@@ -121,7 +179,6 @@ class ViewController: GLKViewController
         glesRenderer.isRotating = !glesRenderer.isRotating;
     }
     
-    //Perform logic for pan gesture
     @objc private func doPan(_ sender: UIPanGestureRecognizer) {
         //view.center = sender.location(in: view)
         
@@ -142,12 +199,10 @@ class ViewController: GLKViewController
         }
     }
     
-    //Perform logic for pinch gesture
     @objc func doPinch(_ sender: UIPinchGestureRecognizer) {
         glesRenderer.scale = sender.scale;
     }
     
-    //Perform logic for buttonPress
     @objc func buttPress(sender: UIButton!) {
         glesRenderer.rotX = 0
         glesRenderer.rotY = 0
@@ -158,3 +213,4 @@ class ViewController: GLKViewController
 
     
 }
+*/
