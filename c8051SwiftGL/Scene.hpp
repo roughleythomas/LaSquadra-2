@@ -15,6 +15,7 @@
 #include "Cube.hpp"
 #include "Sphere.hpp"
 #include "Cylinder.hpp"
+#include "UITimer.hpp"
 #include "Camera.hpp"
 #include "Maze.hpp"
 
@@ -49,6 +50,7 @@ public:
     void moveBall(float, float) override;
     bool isAllCoinsCollected() override;
     void addWall(bool, float, float, float, int = 1);
+    void addTimer(bool, float, float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);
     bool wallCheck(float posX, float posY);
     
