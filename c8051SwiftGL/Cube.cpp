@@ -1,7 +1,9 @@
 #include "Cube.hpp"
 
-Cube::Cube(int textureListIndex)
-:Drawable(textureListIndex, 24, 24, 24, 36)
+//Constructor for cube, which is a child of drawable.
+//When the constructor is called, ensure you specify the textureID that the texture is stored within (based on the texture list in glesrenderer or renderer.mm),
+//and the verts, normals, texture coords, and indices array size.
+Cube::Cube(int textureListIndex):Drawable(textureListIndex, 24, 24, 24, 36)
 {
     loadVertices(0);
     loadNormals(0);

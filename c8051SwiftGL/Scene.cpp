@@ -7,16 +7,23 @@
 
 #include "Scene.hpp"
 
+
+// _______________________   Scene Functions, a parent class to all 'scenes' in the game, as defined in scene.hpp ________________
+
+//Delete all drawables and the camera upon a deconstruction of this class.
 Scene::~Scene(){
     for(Drawable *d : drawables)
         delete d;
     delete camera;
 }
 
+//Add a new 'drawable' element to the scene to be rendered upon a 'draw' call.
 void Scene::addDrawable(Drawable *d){
     drawables.push_back(d);
 }
 
+//Reset scene by resetting the camera to it's default state, thus allowing the objects on screen to render in their default state, since the
+//camera is reset.
 void Scene::reset(){
     //camera->getTransform()->setPosition(vec3(2.5, 0.f, -1.75f));
     //camera->getTransform()->setAngles(vec3(-45.f, 0.f, 90.f));
@@ -42,16 +49,21 @@ void Scene::moveBall(float x, float y) {
 
 }
 
+
+//Update the transform when this scene is updated, and specify when the last frame was calculated (based on current time)
 void Scene::update(){
     updateTransform();
     lastFrame = std::chrono::steady_clock::now();
 }
 
+//Update the transform of each drawable, which is specified in drawable's class definition.
 void Scene::updateTransform(){
     for(Drawable* drawable : drawables)
         drawable->updateTransform();
 }
 
+//Draw current scene's elements, in reference to the MVP Camera position (the start position).
+//Check scene's list of drawables, and for each drawable, get the indices, verts, etc, translate them in reference to the camera, so they are positioned based on where the camera is located.
 void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform, GLint normalMatrixUniform){
     mvp = glm::translate(mat4(1.f), camera->getTransform()->getPosition());
     
@@ -75,11 +87,20 @@ void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform
     }
 }
 
+//Load models based on camera instance. The camera would be reset it to it's default state before drawables are rendered.
 void Scene::loadModels(){
     camera = Camera::GetInstance();
     reset();
 }
 
+
+
+
+//___________ Maze Scene functions and attributes (all a child of the maze class, as defined in maze.hpp) _____________
+
+
+// ------- Add drawables to scene ----------
+//Add new wall drawable to the maze.
 void MazeScene::addWall(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex){
     addDrawable(new Cube(1));
     int lindex = drawables.size() - 1;
@@ -90,6 +111,7 @@ void MazeScene::addWall(bool horizontal, float posX, float posY, float alternate
         drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
 }
 
+//Add new coin to the maze.
 void MazeScene::addCoin(float posX, float posY, float radius, float thickness, int textureListIndex, int sectorCount){
     Drawable *coinDrawable = new Cylinder(textureListIndex, radius, thickness, sectorCount);
     addDrawable(coinDrawable);
@@ -100,6 +122,24 @@ void MazeScene::addCoin(float posX, float posY, float radius, float thickness, i
     coinDrawable->anim->setEnabled(true);
 }
 
+//Add new UI Timer to the maze
+void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex)
+{
+    //Add new drawable with texture element
+    addDrawable(new UITimer(0));
+    int lindex = drawables.size() - 1;
+    drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
+    
+    if(horizontal)
+        drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
+    else
+        drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
+    
+}
+
+// -------- Load all drawables from scene (initializer) ------
+
+//Load all maze models into the scnee.
 void MazeScene::loadModels(){
     Scene::loadModels();
     addDrawable(new Cube(0));
@@ -142,6 +182,10 @@ void MazeScene::loadModels(){
     printf("loadModels");
 }
 
+
+// ---------- Other scene specific functions -------------
+
+//Translate ball to x,y instead of current x,y position.
 void MazeScene::moveBall(float x, float y) {
     Scene::moveBall(x, y);
     
