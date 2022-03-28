@@ -146,13 +146,15 @@ void MazeScene::loadModels(){
     drawables[0]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
     
     srand (time(NULL));
-    float wallNum = rand() % 4 + 8;
-    Maze* maze = new Maze(wallNum);//random maze size
+//    float wallNum = rand() % 4 + 8;
+//    Maze* maze = new Maze(wallNum);//random maze size
+    float wallNum = 8;
+    Maze* maze = new Maze(wallNum);
     maze->print();
     
-    float sector = 2.f / wallNum;
-    addWall(true, 0.f, 2.f, 2.f);
-    addWall(false, -2.f, -sector, 2.f - sector);
+    float sector = 2.f / wallNum; // set the size of each cell, should be 0.25 per cell in this version
+    addWall(true, 0.f, 2.f, 2.f); // add horizontal walls
+    addWall(false, -2.f, -sector, 2.f - sector); //add vertical walls
     for(int i = 0; i < wallNum; i++){
         int wallTypeHor = ((i > 0) ? 1 : 2),
             wallTypeVer = ((i > 0) ? 0 : 1);
@@ -178,6 +180,14 @@ void MazeScene::loadModels(){
     ballDrawable->globalTransform->setPosition(vec3(0, 1.f, 0.f));
     ballDrawable->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
     ballDrawable->anim->setEnabled(true);
+    
+    // draw enemy (currently a ball)
+    float radius = 0.25f;
+    enemy = new Sphere(2, radius, 10, 10); // give it temp texture & values for now, changed later with a model?
+    addDrawable(enemy);
+    enemy->globalTransform->setPosition(vec3(-1.75f, (0.25f + radius), 1.75));
+    enemy->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
+    enemy->anim->setEnabled(true);
     
     printf("loadModels");
 }

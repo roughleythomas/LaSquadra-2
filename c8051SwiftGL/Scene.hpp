@@ -55,6 +55,7 @@ public:
     
 protected:
     Drawable* ballDrawable;
+    Drawable* enemy;
     vector<Drawable*> coinDrawables;
     
 };
