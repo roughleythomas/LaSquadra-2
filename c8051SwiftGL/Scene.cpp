@@ -214,7 +214,16 @@ bool MazeScene::wallCheck(float posX, float posY)
 {
     bool collision = false;
     
-    int row = posX;
+    int row = floor(posX * 2 + 4);
+    int column = floor(posY * 2 + 4);
+    
+    MazeSector sector = maze->getSector(row, column);
+    for(int i  = 0; i < 4; i++)
+    {
+        if(!sector.getWallHidden(i))
+        {
+        }
+    }
     
     return collision;
 }

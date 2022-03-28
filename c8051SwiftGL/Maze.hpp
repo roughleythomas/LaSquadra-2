@@ -44,12 +44,12 @@ class Maze{
     int size;
     int bridgeUnvisitedCell(int);
     void load();
-    MazeSector getSector(int row, int column);
     
 public:
     vector<MazeSector> maze;
     Maze(int);
     void print();
+    MazeSector getSector(int row, int column);
 };
 
 #endif /* Maze_hpp */
