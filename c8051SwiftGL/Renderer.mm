@@ -7,278 +7,103 @@
 #import <GLKit/GLKit.h>
 #include <chrono>
 #include "GLESRenderer.hpp"
-#include "Joystick.hpp"
 
-// These are GL indices for uniform variables used by GLSL shaders.
-// You can add additional ones, for example for a normal matrix,
-//  textures, toggles, or for any other data to pass on to the shaders.
-enum
-{
-    UNIFORM_MODELVIEWPROJECTION_MATRIX,
-    // ### insert additional uniforms here
-    UNIFORM_NORMAL_MATRIX,
-    UNIFORM_PASSTHROUGH,
-    UNIFORM_SHADEINFRAG,
-    UNIFORM_TEXTURE,
-    NUM_UNIFORMS
-};
-GLint uniforms[NUM_UNIFORMS];
-
-// These are GL indices for vertex attributes
-//  (e.g., vertex normals, texture coordinates, etc.)
-enum
-{
-    ATTRIB_VERTEX,
-    // ### insert additional vertex data here
-    ATTRIB_NORMAL,
-    NUM_ATTRIBUTES
-};
-
-//Renderer interface used to interact with C++ objects.
 @interface Renderer () {
-    GLKView *theView;   // used to access view properties (e.g., its size)
-    GLESRenderer glesRenderer;  // our GLES renderer object
-    
-    //Joystick object with x, y coords, background image and w/h, joystick image and w/h, and screen w/h
-    Joystick joystick; //Joystick object
-    GLuint programObject;   // GLSL shader program that has the vertex and fragment shaders
-    std::chrono::time_point<std::chrono::steady_clock> lastTime;
-
-    // GL variables to associate with uniforms
-    GLKMatrix4 mvp;
-    // ### add additional ones (e.g., texture IDs, normal matrices, etc.) here
-    GLKMatrix3 normalMatrix;
-    GLuint crateTexture;
-
-    // GL vertex data (minimum X,Y,Z location)
-    float *vertices;
-    // ### add additional vertex data (e.g., vertex normals, texture coordinates, etc.) here
-    float *normals, *texCoords;
-    int *indices, numIndices;
-    
-    // ### add any other variables (e.g., current rotation angle for auto-rotating cube) here
-    float rotAngle;
+    GLKView *theView;               // to access some iOS-specific parameters needed to set up OpenGL
+    GLESRenderer *glesRenderer;     // the OpenGL ES C++ render class
 }
 
 @end
 
 @implementation Renderer
 
-@synthesize isRed;
-// ### add any other properties that need to be synthesized
-@synthesize isRotating;
-@synthesize rotX;
-@synthesize rotY;
+@synthesize isRotating; // each public property needs to be synthesized
 @synthesize panX;
 @synthesize panY;
-@synthesize scale;
+@synthesize moveBallX, moveBallY;
 
 - (void)dealloc
 {
-    glDeleteProgram(programObject);
-}
-
-- (void)loadModels
-{
-//    numIndices = glesRenderer.GenSquare(1.0f, &vertices, &indices);
-    // ### instead of a cube, you can load any other model
-    numIndices = glesRenderer.GenCube(1.0f, &vertices, &normals, &texCoords, &indices);
+    delete glesRenderer;    // free up the memory of the GLESRenderer object
 }
 
 - (void)setup:(GLKView *)view
 {
+    // These lines of code set up the OpenGL context using Objective-C/iOS code
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
-    
-    joystick = Joystick(0.0f,0.0f,5.0f,5.0f,5.0f,5.0f,10.0f,10.0f);
-    
     if (!view.context) {
         NSLog(@"Failed to create ES context");
     }
-    
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     theView = view;
     [EAGLContext setCurrentContext:view.context];
-    if (![self setupShaders])
-        return;
 
-    isRed = true;
-    // ### any other properties and variables that need to be initialized (e.g., auto-rotation toggle value, initial rotation angle, etc.)
-    rotAngle = 0.0f;
-    rotX = 0.0;
-    rotY = 0.0;
-    isRotating = 1;
-    scale = 1;
-
-    // ### you should also load any textures needed here (you can use the setupTexture method below to load in a JPEG image and assign it to a GL texture)
-    crateTexture = [self setupTexture:@"crate.jpg"];
-    joystick.joystickCont = [self setupTexture:@"crate.jpg"];
-    joystick.joystickBack = [self setupTexture:@"crate.jpg"];
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, crateTexture);
-    glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D,joystick.joystickCont);
+    // The next lines of code also use the Core Graphics library in iOS to read in a
+    //  texture image so that it can be passed on to the C++ class.
+    // This code could be moved into the C++ class, which would then need to
+    //  load in the image (possibly using some other API/library).
+    // Note in that case the need still to construct the path to the file in the iOS bundle
+    //  just like in the case of the shader files (see below).
+    vector<NSString*> textureNames;
+    textureNames.push_back(@"dirt.jpg");
+    textureNames.push_back(@"iron.jpg");
+    textureNames.push_back(@"coin.jpg");
+    vector<GLubyte*> textureDataList;
+    vector<size_t> textureWidthList, textureHeightList;
     
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D,joystick.joystickBack);
+    for(int i = 0; i < textureNames.size(); i++){
+        CGImageRef textureImage = [UIImage imageNamed:textureNames[i]].CGImage;
+        if (!textureImage) {
+            NSLog(@"Failed to load image %@", textureNames[i]);
+            exit(1);
+        }
+        //size_t textureWidth = CGImageGetWidth(textureImage);
+        //size_t textureHeight = CGImageGetHeight(textureImage);
+        textureWidthList.push_back(CGImageGetWidth(textureImage));
+        textureHeightList.push_back(CGImageGetHeight(textureImage));
+        GLubyte *textureData = (GLubyte *) calloc(textureWidthList[i]*textureHeightList[i]*4, sizeof(GLubyte));
+        CGContextRef textureContext = CGBitmapContextCreate(textureData, textureWidthList[i], textureHeightList[i], 8, textureWidthList[i]*4, CGImageGetColorSpace(textureImage), kCGImageAlphaPremultipliedLast);
+        CGContextDrawImage(textureContext, CGRectMake(0, 0, textureWidthList[i], textureHeightList[i]), textureImage);
+        CGContextRelease(textureContext);
+        textureDataList.push_back(textureData);
+    }
     
-    glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f ); // background color
-    glEnable(GL_DEPTH_TEST);
-    lastTime = std::chrono::steady_clock::now();
+    // Construct the C++ object, passing in the path to the shader files and the one texture data
+    glesRenderer = new GLESRenderer([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.vsh"] pathExtension]] cStringUsingEncoding:1],
+                                    [[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.fsh"] pathExtension]] cStringUsingEncoding:1],
+                                    textureDataList.data(), textureWidthList.data(), textureHeightList.data());
+    isRotating = glesRenderer->isRotating;
+    panX = glesRenderer->panX;
+    panY = glesRenderer->panY;
+
+    // Once we have passed on the data from the image file for the texture, we can free up the memory
+    for(int i = 0; i < textureDataList.size(); i++)
+        free(textureDataList[i]);
 }
 
 - (void)update
 {
-    auto currentTime = std::chrono::steady_clock::now();
-    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
-    lastTime = currentTime;
-    
-    // ### do any other updating (e.g., changing the rotation angle of an auto-rotating cube) here
-    if (isRotating)
-    {
-        rotAngle += 0.001f * elapsedTime;
-        if (rotAngle >= 360.0f)
-            rotAngle = 0.0f;
-    }
-
-    // Set up a perspective view
-    mvp = GLKMatrix4Translate(GLKMatrix4Identity, 0.0, 0.0, -5.0);
-    // ### add any other transformations here (e.g., adding a rotation for a cube, or setting up a normal matrix for the shader)
-    mvp = GLKMatrix4Translate(mvp, panX/80, panY/-80, 0.0);
-    mvp = GLKMatrix4Scale(mvp, scale, scale, scale);
-    
-
-    if (isRotating) {
-        mvp = GLKMatrix4Rotate(mvp, rotAngle, 0.0, 1.0 , 0.0);
-    }
-    else {
-        bool isInvertible;
-        if (rotX != 0.0){
-            // multiply matrix by inverse to place in world space instead of object space and avoid gimble lock
-            GLKVector3 xAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(mvp, &isInvertible), GLKVector3Make(0, 1, 0));
-            // do the rotation
-            mvp = GLKMatrix4Rotate(mvp, rotX/100, xAxis.x, xAxis.y, 0.0);
-        }
-        if (rotY != 0.0){
-            // multiply matrix by inverse to place in world space instead of object space and avoid gimble lock
-            GLKVector3 yAxis = GLKMatrix4MultiplyVector3(GLKMatrix4Invert(mvp, &isInvertible), GLKVector3Make(1, 0, 0));
-            // do the rotation
-            mvp = GLKMatrix4Rotate(mvp, rotY/100, yAxis.x, yAxis.y, 0.0);
-        }
-    }
-    
-    normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(mvp), NULL);
-
-    float aspect = (float)theView.drawableWidth / (float)theView.drawableHeight;
-    joystick.screenWidth = (float)theView.drawableWidth;
-    joystick.screenHeight = (float)theView.drawableHeight;
-    GLKMatrix4 perspective = GLKMatrix4MakePerspective(60.0f * M_PI / 180.0f, aspect, 1.0f, 20.0f);
-
-    mvp = GLKMatrix4Multiply(perspective, mvp);
+    glesRenderer->SetViewport(theView.drawableWidth, theView.drawableHeight);
+    glesRenderer->isRotating = isRotating;
+    glesRenderer->panX = panX;
+    glesRenderer->panY = panY;
+    glesRenderer->moveBallX = moveBallX;
+    glesRenderer->moveBallY = moveBallY;
+    glesRenderer->Update();
 }
 
-//Draw function that requires a CGRect parameter called drawRect, functionally acting as the canvas for this program.
 - (void)draw:(CGRect)drawRect;
 {
-    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)mvp.m);
-    // ### load any additional uniforms with relevant data here
-    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, normalMatrix.m);
-    glUniform1i(uniforms[UNIFORM_PASSTHROUGH], false);
-    glUniform1i(uniforms[UNIFORM_SHADEINFRAG], true);
-
-    glViewport(0, 0, (int)theView.drawableWidth, (int)theView.drawableHeight);
-    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glUseProgram ( programObject );
-
-    glVertexAttribPointer ( 0, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), vertices );
-    glEnableVertexAttribArray ( 0 );
-    
-    
-    // ### set up and enable any additional vertex attributes (e.g., normals, texture coordinates, etc.) here
-
-    glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
-
-    glVertexAttribPointer ( 2, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), normals );
-    glEnableVertexAttribArray ( 2 );
-
-    glVertexAttribPointer ( 3, 2, GL_FLOAT,
-                           GL_FALSE, 2 * sizeof ( GLfloat ), texCoords );
-    glEnableVertexAttribArray ( 3 );
-    if (isRed)
-        glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
-    else
-        glVertexAttrib4f ( 1, 0.0f, 1.0f, 0.0f, 1.0f );
-    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, FALSE, (const float *)mvp.m);
-    
-    
-    glActiveTexture(GL_TEXTURE0);
-    
-    //Draw numIndicies number of triangles, and use indices as the data
-    glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
-    
-    glActiveTexture(GL_TEXTURE1);
-    
-    joystick.draw();
-    
+    glesRenderer->Draw();
 }
 
-
-- (bool)setupShaders
+- (void)reset
 {
-    // Load shaders
-    char *vShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.vsh"] pathExtension]] cStringUsingEncoding:1]);
-    char *fShaderStr = glesRenderer.LoadShaderFile([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.fsh"] pathExtension]] cStringUsingEncoding:1]);
-    programObject = glesRenderer.LoadProgram(vShaderStr, fShaderStr);
-    if (programObject == 0)
-        return false;
-    
-    // Set up uniform variables
-    uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(programObject, "modelViewProjectionMatrix");
-    // ### set up any additional uniform variables here
-    uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(programObject, "normalMatrix");
-    uniforms[UNIFORM_PASSTHROUGH] = glGetUniformLocation(programObject, "passThrough");
-    uniforms[UNIFORM_SHADEINFRAG] = glGetUniformLocation(programObject, "shadeInFrag");
-    uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(programObject, "texSampler");
-
-    return true;
+    glesRenderer->reset();
 }
 
-
-// Load in and set up texture image (adapted from Ray Wenderlich)
-- (GLuint)setupTexture:(NSString *)fileName
-{
-    CGImageRef spriteImage = [UIImage imageNamed:fileName].CGImage;
-    if (!spriteImage) {
-        NSLog(@"Failed to load image %@", fileName);
-        exit(1);
-    }
-    
-    size_t width = CGImageGetWidth(spriteImage);
-    size_t height = CGImageGetHeight(spriteImage);
-    
-    GLubyte *spriteData = (GLubyte *) calloc(width*height*4, sizeof(GLubyte));
-    
-    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4, CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
-    
-    CGContextDrawImage(spriteContext, CGRectMake(0, 0, width, height), spriteImage);
-    
-    CGContextRelease(spriteContext);
-    
-    GLuint texName;
-    glGenTextures(1, &texName);
-    glBindTexture(GL_TEXTURE_2D, texName);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
-    
-    free(spriteData);
-    return texName;
+- (bool)isAllCoinsCollected {
+    return glesRenderer->isAllCoinsCollected();
 }
 
 @end
-
