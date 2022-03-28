@@ -22,6 +22,7 @@
 using namespace glm;
 
 class Scene {
+    const float PLAYER_SPEED = 0.01f, PLAYER_SLIP = 0.001f;
     Camera* camera;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
     mat4 mvp;
@@ -29,6 +30,7 @@ class Scene {
     void updateTransform();
     
 protected:
+    Drawable* playerDrawable;
     vector<Drawable*> drawables;
     void addDrawable(Drawable* d);
     
@@ -54,7 +56,6 @@ public:
     void addCoin(float, float, float, float, int, int = 30);
     
 protected:
-    Drawable* ballDrawable;
     vector<Drawable*> coinDrawables;
     
 };

@@ -102,6 +102,11 @@ class ViewController: GLKViewController {
         glesRenderer.moveBallX = moveBallX
         glesRenderer.moveBallY = moveBallY
     }
+    
+    //release
+    @IBAction func onMouseButtonRelease(_ sender: UIButton){
+        
+    }
 }
 
 /*
