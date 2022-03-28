@@ -89,12 +89,17 @@ void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform
 
 //Load models based on camera instance. The camera would be reset it to it's default state before drawables are rendered.
 void Scene::loadModels(){
+    playerDrawable = new Sphere(1, 0.15f, 10, 10);
+    addDrawable(playerDrawable);
+    Transform* transformSpeed = new Transform();
+    transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    playerDrawable->assignAnimator(new Animator(transformSpeed));
+    playerDrawable->anim->setEnabled(true);
     camera = Camera::GetInstance();
     reset();
 }
-
-
-
 
 //___________ Maze Scene functions and attributes (all a child of the maze class, as defined in maze.hpp) _____________
 
@@ -117,8 +122,11 @@ void MazeScene::addCoin(float posX, float posY, float radius, float thickness, i
     addDrawable(coinDrawable);
     coinDrawables.push_back(coinDrawable);
     
-    coinDrawable->globalTransform->setPosition(vec3(posX, 1.f, posY));
-    coinDrawable->assignAnimator(new Animator(vec3(0, 0.00000005f, 0.00000005f)));
+    coinDrawable->globalTransform->setPosition(vec3(posX, 0.5f, posY));
+    Transform* transformSpeed = new Transform();
+    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    coinDrawable->assignAnimator(new Animator(transformSpeed));
     coinDrawable->anim->setEnabled(true);
 }
 
@@ -143,7 +151,7 @@ void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternat
 void MazeScene::loadModels(){
     Scene::loadModels();
     addDrawable(new Cube(0));
-    drawables[0]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
+    drawables[1]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
     
     srand (time(NULL));
 //    float wallNum = rand() % 4 + 8;
@@ -190,6 +198,7 @@ void MazeScene::loadModels(){
     enemy->anim->setEnabled(true);
     
     printf("loadModels");
+    playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
 }
 
 
@@ -199,11 +208,11 @@ void MazeScene::loadModels(){
 void MazeScene::moveBall(float x, float y) {
     Scene::moveBall(x, y);
     
-    if (!ballDrawable) {
+    if (!playerDrawable) {
         return;
     }
     
-    ballDrawable->globalTransform->setPosition(vec3(x, 1.0, y));
+    playerDrawable->globalTransform->setPosition(vec3(x, 0.5f, y));
     
     // check collision
     for (int i = 0; i < coinDrawables.size(); i++) {
@@ -219,7 +228,7 @@ void MazeScene::moveBall(float x, float y) {
         }
     }
     
-    update();
+    //update();
 }
 
 bool MazeScene::isAllCoinsCollected() {

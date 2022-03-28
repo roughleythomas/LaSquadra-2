@@ -16,12 +16,13 @@ using namespace std;
 
 class Animator{
     Transform* contextTransform;
+    Transform* transformSpeed;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
-    vec3 rotateSpeed;
     bool enabled = false;
     
 public:
-    Animator(vec3 = vec3(1.f, 1.f, 1.f));
+    Animator();
+    Animator(Transform*);
     void assignTransform(Transform*);
     void update();
     void setEnabled(bool);
