@@ -67,7 +67,14 @@ void GLESRenderer::Draw()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram ( programObject );
 
-    sceneManager.draw((float)vpWidth / (float)vpHeight, uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], uniforms[UNIFORM_NORMAL_MATRIX]);
+    // check the height is not 0 to avoid divide-by-0 NaN errors
+    float aspectRatio;
+    if (vpHeight != 0) {
+        aspectRatio = (float)vpWidth / (float)vpHeight;
+    } else {
+        aspectRatio = 4.f / 3.f;
+    }
+    sceneManager.draw(aspectRatio, uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], uniforms[UNIFORM_NORMAL_MATRIX]);
 }
 
 void GLESRenderer::reset(){
