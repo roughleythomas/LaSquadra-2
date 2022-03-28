@@ -25,7 +25,7 @@ GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentSha
             return;
     }
 
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < 3; i++){
         GLuint textureId = SetupTexture(spriteData[i], width[i], height[i]);
         glBindTexture(GL_TEXTURE_2D, textureId);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
@@ -49,8 +49,11 @@ GLESRenderer::~GLESRenderer()
 // ----------------------------------------------------------------
 void GLESRenderer::Update()
 {
-    if(panX != 0 || panY != 0)
+    if (panX != 0 || panY != 0)
         sceneManager.pan(panX, panY);
+    
+    if (moveBallX != 0 || moveBallY != 0)
+        sceneManager.moveBall(moveBallX, moveBallY);
     
     sceneManager.update();
 }
@@ -222,4 +225,8 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
     glDeleteShader(fragmentShader);
 
     return programObject;
+}
+
+bool GLESRenderer::isAllCoinsCollected() {
+    return sceneManager.isAllCoinsCollected();
 }

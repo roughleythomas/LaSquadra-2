@@ -8,13 +8,22 @@ extension ViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
         glesRenderer.update();
         
+        if (!isGameEnded) {
+            if (glesRenderer.isAllCoinsCollected()) {
+                isGameEnded = true;
+                
+                showGameOver();
+            }
+        }
     }
 }
 
 class ViewController: GLKViewController {
-    
     private var context: EAGLContext?
     private var glesRenderer: Renderer!
+    private var moveBallX: Float = 0
+    private var moveBallY: Float = 0
+    private var isGameEnded: Bool = false;
     
     private func setupGL() {
         context = EAGLContext(api: .openGLES3)
@@ -27,14 +36,24 @@ class ViewController: GLKViewController {
         }
     }
     
+    private func showGameOver() {
+        let alertController = UIAlertController(title: "Game Over!", message: "You have collected all coins!", preferredStyle: .alert)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupGL()
+        
+        let tapView = UIView(frame: UIScreen.main.bounds)
+        self.view.addSubview(tapView)
+        self.view.sendSubviewToBack(tapView)
+        
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
         doubleTap.numberOfTapsRequired = 2;
-        view.addGestureRecognizer(doubleTap)
+        tapView.addGestureRecognizer(doubleTap)
         let pan = UIPanGestureRecognizer(target: self, action: #selector(self.doPan(_:)))
-        view.addGestureRecognizer(pan)
+        tapView.addGestureRecognizer(pan)
     }
     
     override func glkView(_ view: GLKView, drawIn rect: CGRect) {
@@ -57,6 +76,31 @@ class ViewController: GLKViewController {
             glesRenderer.panX = 0;
             glesRenderer.panY = 0;
         }
+    }
+    
+    // - Actions
+    @IBAction func onMoveLeftButtonClick(_ sender: UIButton) {
+        moveBallX -= 0.05
+        glesRenderer.moveBallX = moveBallX
+        glesRenderer.moveBallY = moveBallY
+    }
+    
+    @IBAction func onMoveRightButtonClick(_ sender: UIButton) {
+        moveBallX += 0.05
+        glesRenderer.moveBallX = moveBallX
+        glesRenderer.moveBallY = moveBallY
+    }
+    
+    @IBAction func onMoveUpButtonClick(_ sender: UIButton) {
+        moveBallY -= 0.05
+        glesRenderer.moveBallX = moveBallX
+        glesRenderer.moveBallY = moveBallY
+    }
+    
+    @IBAction func onMoveDownButtonClick(_ sender: UIButton) {
+        moveBallY += 0.05
+        glesRenderer.moveBallX = moveBallX
+        glesRenderer.moveBallY = moveBallY
     }
 }
 

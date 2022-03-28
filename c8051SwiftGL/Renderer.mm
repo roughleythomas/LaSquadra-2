@@ -20,6 +20,7 @@
 @synthesize isRotating; // each public property needs to be synthesized
 @synthesize panX;
 @synthesize panY;
+@synthesize moveBallX, moveBallY;
 
 - (void)dealloc
 {
@@ -46,6 +47,7 @@
     vector<NSString*> textureNames;
     textureNames.push_back(@"dirt.jpg");
     textureNames.push_back(@"iron.jpg");
+    textureNames.push_back(@"coin.jpg");
     vector<GLubyte*> textureDataList;
     vector<size_t> textureWidthList, textureHeightList;
     
@@ -85,6 +87,8 @@
     glesRenderer->isRotating = isRotating;
     glesRenderer->panX = panX;
     glesRenderer->panY = panY;
+    glesRenderer->moveBallX = moveBallX;
+    glesRenderer->moveBallY = moveBallY;
     glesRenderer->Update();
 }
 
@@ -96,6 +100,10 @@
 - (void)reset
 {
     glesRenderer->reset();
+}
+
+- (bool)isAllCoinsCollected {
+    return glesRenderer->isAllCoinsCollected();
 }
 
 @end
