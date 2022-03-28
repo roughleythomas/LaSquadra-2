@@ -14,6 +14,7 @@
 #include <chrono>
 #include "Cube.hpp"
 #include "Sphere.hpp"
+#include "Cylinder.hpp"
 #include "Camera.hpp"
 #include "Maze.hpp"
 
@@ -34,16 +35,26 @@ public:
     ~Scene();
     void reset();
     virtual void pan(float, float);
+    virtual void moveBall(float, float);
     virtual void update();
     virtual void draw(vector<GLuint>, float, GLint, GLint);
     virtual void loadModels();
+    virtual bool isAllCoinsCollected() { return false; }
 };
 
 class MazeScene : public Scene {
     
 public:
     void loadModels() override;
+    void moveBall(float, float) override;
+    bool isAllCoinsCollected() override;
     void addWall(bool, float, float, float, int = 1);
+    void addCoin(float, float, float, float, int, int = 30);
+    
+protected:
+    Drawable* ballDrawable;
+    vector<Drawable*> coinDrawables;
+    
 };
 
 #endif /* Scene_hpp */

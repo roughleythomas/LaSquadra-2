@@ -38,6 +38,10 @@ void Scene::pan(float panX, float panY){
     }
 }
 
+void Scene::moveBall(float x, float y) {
+
+}
+
 void Scene::update(){
     updateTransform();
     lastFrame = std::chrono::steady_clock::now();
@@ -86,6 +90,16 @@ void MazeScene::addWall(bool horizontal, float posX, float posY, float alternate
         drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
 }
 
+void MazeScene::addCoin(float posX, float posY, float radius, float thickness, int textureListIndex, int sectorCount){
+    Drawable *coinDrawable = new Cylinder(textureListIndex, radius, thickness, sectorCount);
+    addDrawable(coinDrawable);
+    coinDrawables.push_back(coinDrawable);
+    
+    coinDrawable->globalTransform->setPosition(vec3(posX, 1.f, posY));
+    coinDrawable->assignAnimator(new Animator(vec3(0, 0.00000005f, 0.00000005f)));
+    coinDrawable->anim->setEnabled(true);
+}
+
 void MazeScene::loadModels(){
     Scene::loadModels();
     addDrawable(new Cube(0));
@@ -104,15 +118,56 @@ void MazeScene::loadModels(){
             wallTypeVer = ((i > 0) ? 0 : 1);
         
         for(int j = 0; j < wallNum; j++){
+            float centerX = -2.f + 2 * sector * (j + 1) - sector;
+            float centerY = 2.f - 2 * sector * (i + 1) + sector;
+            
             if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeHor))
-                addWall(true, -2.f + 2 * sector * (j + 1) - sector, 2.f - 2 * sector * (i + 1), sector);
+                addWall(true, centerX, centerY - sector, sector);
             if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeVer))
-                addWall(false, -2.f + 2 * sector * (j + 1), 2.f - 2 * sector * (i + 1) + sector, sector);
+                addWall(false, centerX + sector, centerY, sector);
+            
+            bool coinExists = rand() % 8 == 0; // coin generator
+            if (coinExists) {
+                addCoin(centerX, centerY, sector / 2, 0.015, 2);
+            }
         }
     }
     
-    addDrawable(new Sphere(1, 0.15f, 10, 10));
-    drawables[drawables.size() - 1]->globalTransform->setPosition(vec3(0, 1.f, 0.f));
-    drawables[drawables.size() - 1]->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
-    drawables[drawables.size() - 1]->anim->setEnabled(true);
+    ballDrawable = new Sphere(1, 0.15f, 10, 10);
+    addDrawable(ballDrawable);
+    ballDrawable->globalTransform->setPosition(vec3(0, 1.f, 0.f));
+    ballDrawable->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
+    ballDrawable->anim->setEnabled(true);
+    
+    printf("loadModels");
+}
+
+void MazeScene::moveBall(float x, float y) {
+    Scene::moveBall(x, y);
+    
+    if (!ballDrawable) {
+        return;
+    }
+    
+    ballDrawable->globalTransform->setPosition(vec3(x, 1.0, y));
+    
+    // check collision
+    for (int i = 0; i < coinDrawables.size(); i++) {
+        Drawable *drawable = coinDrawables[i];
+        vec3 position = drawable->globalTransform->getPosition();
+        float deltaX = position.x - x;
+        float deltaY = position.z - y;
+        float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (distance < 0.2) {
+            // remove collide coin
+            coinDrawables.erase(coinDrawables.begin() + i);
+            remove(drawables.begin(), drawables.end(), drawable);
+        }
+    }
+    
+    update();
+}
+
+bool MazeScene::isAllCoinsCollected() {
+    return coinDrawables.empty();
 }
