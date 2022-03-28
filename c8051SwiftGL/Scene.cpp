@@ -52,6 +52,9 @@ void Scene::moveBall(float x, float y) {
 
 //Update the transform when this scene is updated, and specify when the last frame was calculated (based on current time)
 void Scene::update(){
+    cout << "Checked goal condition";
+    checkGoalCondition();
+    cout << "Checked goal condition";
     updateTransform();
     lastFrame = std::chrono::steady_clock::now();
 }
@@ -96,7 +99,7 @@ void Scene::loadModels(){
 
 
 
-//___________ Maze Scene functions and attributes (all a child of the maze class, as defined in maze.hpp) _____________
+//___________ Maze Scene functions and attributes (all a child of the maze class, as defined in scene.hpp) _____________
 
 
 // ------- Add drawables to scene ----------
@@ -128,12 +131,12 @@ void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternat
     //Add new drawable with texture element
     addDrawable(new UITimer(0));
     int lindex = drawables.size() - 1;
-    drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
+    //drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
     
-    if(horizontal)
-        drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
-    else
-        drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
+    //if(horizontal)
+        //drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
+    //else
+        //drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
     
 }
 
@@ -153,6 +156,12 @@ void MazeScene::loadModels(){
     float sector = 2.f / wallNum;
     addWall(true, 0.f, 2.f, 2.f);
     addWall(false, -2.f, -sector, 2.f - sector);
+    
+    cout << "\nCurrent goal condition: " << maze->goalCondition << "\n";
+    
+    //HARD CODE GOAL CONDITION, REMOVE THIS AFTER TESTING!!!!!!  *******************
+    maze->goalCondition = 0;
+    
     for(int i = 0; i < wallNum; i++){
         int wallTypeHor = ((i > 0) ? 1 : 2),
             wallTypeVer = ((i > 0) ? 0 : 1);
@@ -230,4 +239,27 @@ bool MazeScene::wallCheck(float posX, float posY)
 
 bool MazeScene::isAllCoinsCollected() {
     return coinDrawables.empty();
+}
+
+void MazeScene::checkGoalCondition()
+{
+    cout << "No win :<\n yet ;)\n";
+    
+   switch(maze->goalCondition)
+   {
+    //Collect the coins!
+       case 0:
+           if(coinDrawables.empty())
+               cout << "You win!";
+           break;
+       //Escape the maze!
+       case 1:
+           cout << "You win! But not really because this needs to be set once collisions are in.";
+           break;
+       default:
+           cout<<"Error: MazeScene does not have a goalCondition set. Please check Scene.cpp, as the current condition is " << maze->goalCondition;
+           break;
+           
+           
+   }
 }

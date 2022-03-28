@@ -22,10 +22,10 @@ bool UITimer::loadVertices(void* info)
 {
     float cubeVerts[] =
     {// X Y Z
-        -1.f, -1.f, 0.0f,
-        -1.f, -1.f,  0.0f,
-        1.f, -1.f,  0.0f,
-        1.f, -1.f, 0.0f,
+        -1.f, -1.f, //0.0f,
+        1.f, -1.f, //0.0f,
+        1.f, 1.f,  //0.0f,
+        -1.f, 1.f,  //0.0f,
     };
     
     for(int i = 0; i < numVertices * 3; i++)
@@ -41,10 +41,10 @@ bool UITimer::loadNormals(void* info)
 {
     float cubeNormals[] =
     {
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.0f, -1.0f, 0.0f,
+        0.0f, -1.0f,// 0.0f,
+        0.0f, -1.0f, //0.0f,
+        0.0f, -1.0f, //0.0f,
+        0.0f, -1.0f, //0.0f,
     };
     
     for(int i = 0; i < numNormals * 3; i++)
@@ -61,9 +61,9 @@ bool UITimer::loadTextureCoords(void* info)
     float cubeTex[] =
     {
         0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
         1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
     };
     
     for(int i = 0; i < numTexCoords * 2; i++)
@@ -80,7 +80,7 @@ bool UITimer::loadIndices(void* info)
     int cubeIndices[] =
     {
         0, 2, 1,
-        0, 3, 2,
+        0, 2, 3,
     };
     
     for(int i = 0; i < numIndices; i++)

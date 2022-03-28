@@ -38,6 +38,7 @@ public:
     virtual void pan(float, float);
     virtual void moveBall(float, float);
     virtual void update();
+    virtual void checkGoalCondition();
     virtual void draw(vector<GLuint>, float, GLint, GLint);
     virtual void loadModels();
     virtual bool isAllCoinsCollected() { return false; }
@@ -49,11 +50,11 @@ public:
     void loadModels() override;
     void moveBall(float, float) override;
     bool isAllCoinsCollected() override;
+    void checkGoalCondition() override;
     void addWall(bool, float, float, float, int = 1);
     void addTimer(bool, float, float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);
     bool wallCheck(float posX, float posY);
-    
 protected:
     Drawable* ballDrawable;
     vector<Drawable*> coinDrawables;
