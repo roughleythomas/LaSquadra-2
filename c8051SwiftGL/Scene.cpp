@@ -107,7 +107,7 @@ void MazeScene::loadModels(){
     
     srand (time(NULL));
     float wallNum = rand() % 4 + 8;
-    Maze* maze = new Maze(wallNum);//random maze size
+    maze = new Maze(wallNum);//random maze size
     maze->print();
     
     float sector = 2.f / wallNum;
@@ -164,8 +164,15 @@ void MazeScene::moveBall(float x, float y) {
             remove(drawables.begin(), drawables.end(), drawable);
         }
     }
+}
+
+bool MazeScene::wallCheck(float posX, float posY)
+{
+    bool collision = false;
     
-    update();
+    int row = posX;
+    
+    return collision;
 }
 
 bool MazeScene::isAllCoinsCollected() {

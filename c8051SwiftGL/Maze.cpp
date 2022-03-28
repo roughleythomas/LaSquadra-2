@@ -246,3 +246,15 @@ void Maze::print(){
         cout << endl;
     }
 }
+
+MazeSector Maze::getSector(int row, int column)
+{
+    int index = column * size + row;
+    
+    if(index < 0 || index >= maze.size())
+    {
+        index = 0;
+    }
+    
+    return maze[index];
+}

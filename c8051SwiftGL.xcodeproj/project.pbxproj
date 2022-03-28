@@ -27,6 +27,7 @@
 		648DD80727E23FAC00E9FBF0 /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 648DD80527E23FAC00E9FBF0 /* Sphere.cpp */; };
 		648DD81227E24CFE00E9FBF0 /* Animator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 648DD81027E24CFE00E9FBF0 /* Animator.cpp */; };
 		977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977F3A5127C5619A00AB8A7B /* Transform.cpp */; };
+		97AAE93B27F257FD00801490 /* Physics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 97AAE93927F257FD00801490 /* Physics.cpp */; };
 		97F1259327E27A400040AEF8 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 97F1259127E27A400040AEF8 /* Camera.cpp */; };
 		E917551F27C60FF800FA6B90 /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917551D27C60FF800FA6B90 /* GameObject.cpp */; };
 		E917552227C6121F00FA6B90 /* Drawable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E917552027C6121F00FA6B90 /* Drawable.cpp */; };
@@ -66,6 +67,9 @@
 		648DD81127E24CFE00E9FBF0 /* Animator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Animator.hpp; sourceTree = "<group>"; };
 		977F3A5127C5619A00AB8A7B /* Transform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
 		977F3A5227C5619A00AB8A7B /* Transform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Transform.hpp; sourceTree = "<group>"; };
+		97AAE93927F257FD00801490 /* Physics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Physics.cpp; sourceTree = "<group>"; };
+		97AAE93A27F257FD00801490 /* Physics.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Physics.hpp; sourceTree = "<group>"; };
+		97AAE93C27F260A100801490 /* Global.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Global.h; sourceTree = "<group>"; };
 		97F1259127E27A400040AEF8 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		97F1259227E27A400040AEF8 /* Camera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		E917551D27C60FF800FA6B90 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameObject.cpp; sourceTree = "<group>"; };
@@ -145,6 +149,9 @@
 				3D30932727EF464D00F3B6CD /* coin.jpg */,
 				97F1259127E27A400040AEF8 /* Camera.cpp */,
 				97F1259227E27A400040AEF8 /* Camera.hpp */,
+				97AAE93927F257FD00801490 /* Physics.cpp */,
+				97AAE93A27F257FD00801490 /* Physics.hpp */,
+				97AAE93C27F260A100801490 /* Global.h */,
 			);
 			path = c8051SwiftGL;
 			sourceTree = "<group>";
@@ -236,6 +243,7 @@
 				3D30932427EEF92700F3B6CD /* Cylinder.cpp in Sources */,
 				025AE9BC277337DF00A45ADB /* AppDelegate.swift in Sources */,
 				6419068227E383DC00D8EA00 /* Scene.cpp in Sources */,
+				97AAE93B27F257FD00801490 /* Physics.cpp in Sources */,
 				025AE9D42773396300A45ADB /* Renderer.mm in Sources */,
 				648DD80727E23FAC00E9FBF0 /* Sphere.cpp in Sources */,
 				E917552227C6121F00FA6B90 /* Drawable.cpp in Sources */,

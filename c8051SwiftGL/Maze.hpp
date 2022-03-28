@@ -44,6 +44,7 @@ class Maze{
     int size;
     int bridgeUnvisitedCell(int);
     void load();
+    MazeSector getSector(int row, int column);
     
 public:
     vector<MazeSector> maze;

@@ -50,11 +50,12 @@ public:
     bool isAllCoinsCollected() override;
     void addWall(bool, float, float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);
+    bool wallCheck(float posX, float posY);
     
 protected:
     Drawable* ballDrawable;
     vector<Drawable*> coinDrawables;
-    
+    Maze* maze;
 };
 
 #endif /* Scene_hpp */
