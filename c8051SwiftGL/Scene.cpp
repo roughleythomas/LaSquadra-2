@@ -92,7 +92,7 @@ void Scene::loadModels(){
     playerDrawable = new Sphere(1, 0.15f, 10, 10);
     addDrawable(playerDrawable);
     Transform* transformSpeed = new Transform();
-    transformSpeed->setPosition(vec3(0.f, 0.f, 0.001f));
+    transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
     transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
     playerDrawable->assignAnimator(new Animator(transformSpeed));
