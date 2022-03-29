@@ -183,18 +183,16 @@ void MazeScene::loadModels(){
         }
     }
     
-    ballDrawable = new Sphere(1, 0.15f, 10, 10);
-    addDrawable(ballDrawable);
-    ballDrawable->globalTransform->setPosition(vec3(0, 1.f, 0.f));
-    ballDrawable->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
-    ballDrawable->anim->setEnabled(true);
     
     // draw enemy (currently a ball)
-    float radius = 0.25f;
+    float radius = 0.f;
     enemy = new Sphere(2, radius, 10, 10); // give it temp texture & values for now, changed later with a model?
     addDrawable(enemy);
-    enemy->globalTransform->setPosition(vec3(-1.75f, (0.25f + radius), 1.75));
-    enemy->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
+    Transform* transformSpeed = new Transform();
+    transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    playerDrawable->assignAnimator(new Animator(transformSpeed));
     enemy->anim->setEnabled(true);
     
     printf("loadModels");
