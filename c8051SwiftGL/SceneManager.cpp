@@ -35,8 +35,8 @@ void SceneManager::pan(float panX, float panY){
     scene->pan(panX, panY);
 }
 
-void SceneManager::moveBall(float moveBallX, float moveBallY) {
-    scene->moveBall(moveBallX, moveBallY);
+void SceneManager::movePlayer(int playerDir) {
+    scene->movePlayer(playerDir);
 }
 
 void SceneManager::update(){

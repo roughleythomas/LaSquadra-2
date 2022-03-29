@@ -30,7 +30,8 @@
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="arrow.left" catalog="system"/>
                                         <connections>
-                                            <action selector="onMoveLeftButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="NPt-Ff-V0y"/>
+                                            <action selector="onMouseButtonRelease:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BRu-oH-pC8"/>
+                                            <action selector="onMoveLeftButtonClick:" destination="BYZ-38-t0r" eventType="touchDown" id="AF5-r3-ASE"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hQl-CE-TDn">
@@ -38,7 +39,8 @@
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="arrow.right" catalog="system"/>
                                         <connections>
-                                            <action selector="onMoveRightButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WFx-cR-H2J"/>
+                                            <action selector="onMouseButtonRelease:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rts-Dc-Hle"/>
+                                            <action selector="onMoveRightButtonClick:" destination="BYZ-38-t0r" eventType="touchDown" id="Thq-g3-ZsA"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gC-gU-aEN">
@@ -49,7 +51,8 @@
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="arrow.up" catalog="system"/>
                                         <connections>
-                                            <action selector="onMoveUpButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zHq-JP-cIF"/>
+                                            <action selector="onMouseButtonRelease:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cxj-BT-xgs"/>
+                                            <action selector="onMoveUpButtonClick:" destination="BYZ-38-t0r" eventType="touchDown" id="CEO-23-3Um"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wtT-jp-I2K">
@@ -60,7 +63,8 @@
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="arrow.down" catalog="system"/>
                                         <connections>
-                                            <action selector="onMoveDownButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="73c-FT-Imq"/>
+                                            <action selector="onMouseButtonRelease:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ngT-bf-rmb"/>
+                                            <action selector="onMoveDownButtonClick:" destination="BYZ-38-t0r" eventType="touchDown" id="MtD-hn-iYE"/>
                                         </connections>
                                     </button>
                                 </subviews>
