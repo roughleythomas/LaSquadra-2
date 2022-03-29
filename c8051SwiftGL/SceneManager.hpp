@@ -30,7 +30,7 @@ public:
     void update();
     void draw(float, GLint, GLint);
     void pushTexture(GLuint);
-    bool isAllCoinsCollected();
+    bool checkGoalCondition();
     
 private:
     SceneName curSceneName;

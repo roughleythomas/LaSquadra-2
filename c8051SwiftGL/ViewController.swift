@@ -9,8 +9,8 @@ extension ViewController: GLKViewControllerDelegate {
         glesRenderer.update();
         
         if (!isGameEnded) {
-            if (glesRenderer.isAllCoinsCollected()) {
-                isGameEnded = true;
+            if (glesRenderer.achievedGoal()) {
+                
                 
                 showGameOver();
             }

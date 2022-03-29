@@ -99,8 +99,8 @@
     glesRenderer->reset();
 }
 
-- (bool)isAllCoinsCollected {
-    return glesRenderer->isAllCoinsCollected();
+- (bool)achievedGoal {
+    return glesRenderer->achievedGoal();
 }
 
 - (void)setPlayerDir:(int)playerDir;

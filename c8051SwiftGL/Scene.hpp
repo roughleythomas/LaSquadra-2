@@ -38,10 +38,12 @@ protected:
 public:
     ~Scene();
     void reset();
+    int sceneGoalCondition;
+    bool sceneWon = false;
     virtual void pan(float, float);
     virtual void movePlayer(int);
     virtual void update();
-    virtual void checkGoalCondition() = 0;
+    virtual bool achievedGoal() = 0;
     virtual void draw(vector<GLuint>, float, GLint, GLint);
     virtual void loadModels();
     virtual bool isAllCoinsCollected() { return false; }
@@ -54,7 +56,7 @@ public:
     void update() override;
     void movePlayer(int) override;
     bool isAllCoinsCollected() override;
-    void checkGoalCondition() override;
+    bool achievedGoal() override;
     void addWall(bool, float, float, float, int = 1);
     void addTimer(bool, float, float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);

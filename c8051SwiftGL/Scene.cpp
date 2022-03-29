@@ -186,7 +186,7 @@ void MazeScene::loadModels(){
     cout << "\nCurrent goal condition: " << maze->goalCondition << "\n";
     
     //HARD CODE GOAL CONDITION, REMOVE THIS AFTER TESTING!!!!!!  *******************
-    maze->goalCondition = 0;
+    sceneGoalCondition = 0; //maze->goalCondition;
     
     for(int i = 0; i < wallNum; i++){
         int wallTypeHor = ((i > 0) ? 1 : 2),
@@ -405,25 +405,27 @@ bool MazeScene::isAllCoinsCollected() {
     return coinDrawables.empty();
 }
 
-void MazeScene::checkGoalCondition()
+bool MazeScene::achievedGoal()
 {
-    cout << "No win :<\n yet ;)\n";
-    
-   switch(maze->goalCondition)
+   switch(sceneGoalCondition)
    {
     //Collect the coins!
        case 0:
            if(coinDrawables.empty())
+           {
                cout << "You win!";
+               sceneWon = true;
+               return sceneWon;
+           }
            break;
        //Escape the maze!
        case 1:
            cout << "You win! But not really because this needs to be set once collisions are in.";
            break;
        default:
-           cout<<"Error: MazeScene does not have a goalCondition set. Please check Scene.cpp, as the current condition is " << maze->goalCondition;
+           cout<<"Error: MazeScene does not have a goalCondition set. Please check Scene.cpp, as the current condition is " << sceneGoalCondition;
            break;
-           
-           
    }
+    
+    return sceneWon;
 }

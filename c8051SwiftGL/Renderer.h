@@ -18,7 +18,7 @@
 - (void)update;                 // wrapper for C++ update function
 - (void)draw:(CGRect)drawRect;  // wrapper for C++ draw function
 - (void)reset;                  // wrapper for C++ reset function
-- (bool)isAllCoinsCollected;
+- (bool)achievedGoal;
 - (void)setPlayerDir:(int)playerDir;
 
 @end

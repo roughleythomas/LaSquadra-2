@@ -56,7 +56,7 @@ public:
     void Update();
     void Draw();
     void reset();
-    bool isAllCoinsCollected();
+    bool achievedGoal();
     void setPlayerDir(int);
 
 private:

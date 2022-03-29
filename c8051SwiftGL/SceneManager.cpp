@@ -51,6 +51,6 @@ void SceneManager::pushTexture(GLuint textureId){
     textureIds.push_back(textureId);
 }
 
-bool SceneManager::isAllCoinsCollected() {
-    return scene->isAllCoinsCollected();
+bool SceneManager::checkGoalCondition() {
+    return scene->achievedGoal();
 }

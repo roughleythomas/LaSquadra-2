@@ -228,6 +228,6 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
     return programObject;
 }
 
-bool GLESRenderer::isAllCoinsCollected() {
-    return sceneManager.isAllCoinsCollected();
+bool GLESRenderer::achievedGoal(){
+    return sceneManager.checkGoalCondition();
 }
