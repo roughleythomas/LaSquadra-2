@@ -26,11 +26,12 @@ void Animator::assignTransformSpeed(Transform* transformSpeed){
 
 void Animator::update(){
     if(enabled){
-        auto elapsedTime = chrono::duration_cast<std::chrono::milliseconds>(chrono::steady_clock::now() - lastFrame).count() * 0.00000001f;
+        auto elapsedTime = chrono::duration_cast<std::chrono::milliseconds>(chrono::steady_clock::now() - lastFrame).count() * 0.0000001f;
         vec3 positionSpeed  = transformSpeed->getPosition(), rotationSpeed = transformSpeed->getAngles();
         
         contextTransform->translate(vec3(positionSpeed.x * elapsedTime, positionSpeed.y * elapsedTime, positionSpeed.z * elapsedTime));
         contextTransform->rotate(vec3(rotationSpeed.x * elapsedTime, rotationSpeed.y * elapsedTime, rotationSpeed.z * elapsedTime));
+        cout << "rotX: " << rotationSpeed.x * elapsedTime << endl;
     }
 }
 

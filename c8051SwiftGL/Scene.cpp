@@ -52,21 +52,22 @@ void Scene::movePlayer(int playerDir) {
     }
     
     Transform* transformSpeed = playerDrawable->anim->getTransformSpeed();
+    float speed = 0.2f;
     switch(playerDir){
         case -1:
             transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
             break;
         case 0:
-            transformSpeed->setPosition(vec3(0.f, 0.f, -0.005f));
+            transformSpeed->setPosition(vec3(0.f, 0.f, -speed));
             break;
         case 1:
-            transformSpeed->setPosition(vec3(0.005f, 0.f, 0.f));
+            transformSpeed->setPosition(vec3(speed, 0.f, 0.f));
             break;
         case 2:
-            transformSpeed->setPosition(vec3(0.f, 0.f, 0.005f));
+            transformSpeed->setPosition(vec3(0.f, 0.f, speed));
             break;
         case 3:
-            transformSpeed->setPosition(vec3(-0.005f, 0.f, 0.f));
+            transformSpeed->setPosition(vec3(-speed, 0.f, 0.f));
             break;
     }
     playerDrawable->anim->assignTransformSpeed(transformSpeed);
@@ -117,7 +118,7 @@ void Scene::loadModels(){
     Transform* transformSpeed = new Transform();
     transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
-    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    transformSpeed->setAngles(vec3(0, 5.f, 5.f));
     playerDrawable->assignAnimator(new Animator(transformSpeed));
     playerDrawable->anim->assignTransform(playerDrawable->globalTransform);
     playerDrawable->anim->setEnabled(true);
@@ -146,8 +147,9 @@ void MazeScene::addCoin(float posX, float posY, float radius, float thickness, i
     coinDrawable->globalTransform->setPosition(vec3(posX, 0.5f, posY));
     Transform* transformSpeed = new Transform();
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
-    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    transformSpeed->setAngles(vec3(0, 5.f, 0.f));
     coinDrawable->assignAnimator(new Animator(transformSpeed));
+    coinDrawable->anim->assignTransform(coinDrawable->localTransform);
     coinDrawable->anim->setEnabled(true);
 }
 
