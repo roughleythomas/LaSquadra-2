@@ -221,7 +221,7 @@ void MazeScene::loadModels(){
     transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
     transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
-    playerDrawable->assignAnimator(new Animator(transformSpeed));
+    enemy->assignAnimator(new Animator(transformSpeed));
     enemy->anim->setEnabled(true);
     
     printf("loadModels");
