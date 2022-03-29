@@ -22,6 +22,7 @@
 using namespace glm;
 
 class Scene {
+    const float PLAYER_SPEED = 0.01f, PLAYER_SLIP = 0.001f;
     Camera* camera;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
     mat4 mvp;
@@ -29,6 +30,8 @@ class Scene {
     void updateTransform();
     
 protected:
+    Drawable* playerDrawable;
+    int playerDir = -1;
     vector<Drawable*> drawables;
     void addDrawable(Drawable* d);
     
@@ -36,7 +39,7 @@ public:
     ~Scene();
     void reset();
     virtual void pan(float, float);
-    virtual void moveBall(float, float);
+    virtual void movePlayer(int);
     virtual void update();
     virtual void checkGoalCondition() = 0;
     virtual void draw(vector<GLuint>, float, GLint, GLint);
@@ -48,15 +51,14 @@ class MazeScene : public Scene {
     
 public:
     void loadModels() override;
-    void moveBall(float, float) override;
+    void update() override;
+    void movePlayer(int) override;
     bool isAllCoinsCollected() override;
     void checkGoalCondition() override;
     void addWall(bool, float, float, float, int = 1);
     void addTimer(bool, float, float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);
-    bool wallCheck(float posX, float posY);
 protected:
-    Drawable* ballDrawable;
     vector<Drawable*> coinDrawables;
     Maze* maze;
 };

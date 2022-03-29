@@ -45,8 +45,31 @@ void Scene::pan(float panX, float panY){
     }
 }
 
-void Scene::moveBall(float x, float y) {
-
+void Scene::movePlayer(int playerDir) {
+    this->playerDir = playerDir;
+    if (!playerDrawable) {
+        return;
+    }
+    
+    Transform* transformSpeed = playerDrawable->anim->getTransformSpeed();
+    switch(playerDir){
+        case -1:
+            transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+            break;
+        case 0:
+            transformSpeed->setPosition(vec3(0.f, 0.f, -0.005f));
+            break;
+        case 1:
+            transformSpeed->setPosition(vec3(0.005f, 0.f, 0.f));
+            break;
+        case 2:
+            transformSpeed->setPosition(vec3(0.f, 0.f, 0.005f));
+            break;
+        case 3:
+            transformSpeed->setPosition(vec3(-0.005f, 0.f, 0.f));
+            break;
+    }
+    playerDrawable->anim->assignTransformSpeed(transformSpeed);
 }
 
 
@@ -89,15 +112,18 @@ void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform
 
 //Load models based on camera instance. The camera would be reset it to it's default state before drawables are rendered.
 void Scene::loadModels(){
+    playerDrawable = new Sphere(1, 0.15f, 10, 10);
+    addDrawable(playerDrawable);
+    Transform* transformSpeed = new Transform();
+    transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    playerDrawable->assignAnimator(new Animator(transformSpeed));
+    playerDrawable->anim->assignTransform(playerDrawable->globalTransform);
+    playerDrawable->anim->setEnabled(true);
     camera = Camera::GetInstance();
     reset();
 }
-
-
-
-
-//___________ Maze Scene functions and attributes (all a child of the maze class, as defined in scene.hpp) _____________
-
 
 // ------- Add drawables to scene ----------
 //Add new wall drawable to the maze.
@@ -117,8 +143,11 @@ void MazeScene::addCoin(float posX, float posY, float radius, float thickness, i
     addDrawable(coinDrawable);
     coinDrawables.push_back(coinDrawable);
     
-    coinDrawable->globalTransform->setPosition(vec3(posX, 1.f, posY));
-    coinDrawable->assignAnimator(new Animator(vec3(0, 0.00000005f, 0.00000005f)));
+    coinDrawable->globalTransform->setPosition(vec3(posX, 0.5f, posY));
+    Transform* transformSpeed = new Transform();
+    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    coinDrawable->assignAnimator(new Animator(transformSpeed));
     coinDrawable->anim->setEnabled(true);
 }
 
@@ -143,11 +172,11 @@ void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternat
 void MazeScene::loadModels(){
     Scene::loadModels();
     addDrawable(new Cube(0));
-    drawables[0]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
+    drawables[1]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
     
     srand (time(NULL));
-    float wallNum = rand() % 4 + 8;
-    maze = new Maze(wallNum);//random maze size
+    float wallNum = 8;
+    Maze* maze = new Maze(wallNum);//random maze size
     maze->print();
     
     float sector = 2.f / wallNum;
@@ -179,34 +208,41 @@ void MazeScene::loadModels(){
         }
     }
     
-    ballDrawable = new Sphere(1, 0.15f, 10, 10);
-    addDrawable(ballDrawable);
-    ballDrawable->globalTransform->setPosition(vec3(0, 1.f, 0.f));
-    ballDrawable->assignAnimator(new Animator(vec3(0, 0.000001f, 0.000001f)));
-    ballDrawable->anim->setEnabled(true);
-    
-    printf("loadModels");
+    playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
 }
 
+void MazeScene::update(){
+    Scene::update();
+    if(playerDir != -1){
+        vec3 playerPos = playerDrawable->globalTransform->getPosition();
+        for (int i = 0; i < coinDrawables.size(); i++) {
+            Drawable *drawable = coinDrawables[i];
+            vec3 position = drawable->globalTransform->getPosition();
+            float deltaX = position.x - playerPos.x;
+            float deltaY = position.z - playerPos.z;
+            float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (distance < 0.2) {
+                // remove collide coin
+                coinDrawables.erase(coinDrawables.begin() + i);
+                remove(drawables.begin(), drawables.end(), drawable);
+            }
+        }
+    }
+}
 
 // ---------- Other scene specific functions -------------
 
 //Translate ball to x,y instead of current x,y position.
-void MazeScene::moveBall(float x, float y) {
-    Scene::moveBall(x, y);
+void MazeScene::movePlayer(int playerDir) {
+    Scene::movePlayer(playerDir);
     
-    if (!ballDrawable) {
-        return;
-    }
-    
-    ballDrawable->globalTransform->setPosition(vec3(x, 1.0, y));
-    
+    vec3 playerPos = playerDrawable->globalTransform->getPosition();
     // check collision
     for (int i = 0; i < coinDrawables.size(); i++) {
         Drawable *drawable = coinDrawables[i];
         vec3 position = drawable->globalTransform->getPosition();
-        float deltaX = position.x - x;
-        float deltaY = position.z - y;
+        float deltaX = position.x - playerPos.x;
+        float deltaY = position.z - playerPos.y;
         float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
         if (distance < 0.2) {
             // remove collide coin
@@ -214,16 +250,6 @@ void MazeScene::moveBall(float x, float y) {
             remove(drawables.begin(), drawables.end(), drawable);
         }
     }
-}
-
-bool MazeScene::wallCheck(float posX, float posY)
-{
-    bool collision = false;
-    
-    int row = posX;
-    
-    checkGoalCondition();
-    return collision;
 }
 
 bool MazeScene::isAllCoinsCollected() {
