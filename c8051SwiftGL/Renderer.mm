@@ -20,6 +20,7 @@
 @synthesize isRotating; // each public property needs to be synthesized
 @synthesize panX;
 @synthesize panY;
+@synthesize score;
 
 - (void)dealloc
 {
@@ -74,6 +75,7 @@
     isRotating = glesRenderer->isRotating;
     panX = glesRenderer->panX;
     panY = glesRenderer->panY;
+    score = 0;
 
     // Once we have passed on the data from the image file for the texture, we can free up the memory
     for(int i = 0; i < textureDataList.size(); i++)

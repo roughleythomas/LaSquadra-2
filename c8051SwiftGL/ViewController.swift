@@ -11,6 +11,7 @@ extension ViewController: GLKViewControllerDelegate {
         if (!isGameEnded) {
             if (glesRenderer.achievedGoal()) {
                 
+                glesRenderer.score+=1;
                 
                 showGameOver();
             }
@@ -37,7 +38,7 @@ class ViewController: GLKViewController {
     }
     
     private func showGameOver() {
-        let alertController = UIAlertController(title: "Game Over!", message: "You have collected all coins!", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Finished Minigame!", message: "You have finished \(glesRenderer.score) games", preferredStyle: .alert)
         self.present(alertController, animated: true, completion: nil)
     }
     
