@@ -38,7 +38,7 @@ public:
     virtual void pan(float, float);
     virtual void moveBall(float, float);
     virtual void update();
-    virtual void checkGoalCondition();
+    virtual void checkGoalCondition() = 0;
     virtual void draw(vector<GLuint>, float, GLint, GLint);
     virtual void loadModels();
     virtual bool isAllCoinsCollected() { return false; }

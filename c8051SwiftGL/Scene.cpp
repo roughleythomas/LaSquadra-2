@@ -52,9 +52,6 @@ void Scene::moveBall(float x, float y) {
 
 //Update the transform when this scene is updated, and specify when the last frame was calculated (based on current time)
 void Scene::update(){
-    cout << "Checked goal condition";
-    checkGoalCondition();
-    cout << "Checked goal condition";
     updateTransform();
     lastFrame = std::chrono::steady_clock::now();
 }
@@ -130,7 +127,7 @@ void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternat
 {
     //Add new drawable with texture element
     addDrawable(new UITimer(0));
-    int lindex = drawables.size() - 1;
+    //int lindex = drawables.size() - 1;
     //drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
     
     //if(horizontal)
@@ -225,6 +222,7 @@ bool MazeScene::wallCheck(float posX, float posY)
     
     int row = posX;
     
+    checkGoalCondition();
     return collision;
 }
 
