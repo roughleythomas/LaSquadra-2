@@ -14,14 +14,12 @@
 @property float panX;
 @property float panY;
 
-@property float moveBallX;
-@property float moveBallY;
-
 - (void)setup:(GLKView *)view;  // do some basic GL setup
 - (void)update;                 // wrapper for C++ update function
 - (void)draw:(CGRect)drawRect;  // wrapper for C++ draw function
 - (void)reset;                  // wrapper for C++ reset function
-- (bool)isAllCoinsCollected;
+- (bool)achievedGoal;
+- (void)setPlayerDir:(int)playerDir;
 
 @end
 

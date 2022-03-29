@@ -52,9 +52,6 @@ void GLESRenderer::Update()
     if (panX != 0 || panY != 0)
         sceneManager.pan(panX, panY);
     
-    if (moveBallX != 0 || moveBallY != 0)
-        sceneManager.moveBall(moveBallX, moveBallY);
-    
     sceneManager.update();
 }
 
@@ -79,6 +76,10 @@ void GLESRenderer::Draw()
 
 void GLESRenderer::reset(){
     sceneManager.reset();
+}
+
+void GLESRenderer::setPlayerDir(int playerDir){
+    sceneManager.movePlayer(playerDir);
 }
 
 // ========================================================================================
@@ -234,6 +235,6 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
     return programObject;
 }
 
-bool GLESRenderer::isAllCoinsCollected() {
-    return sceneManager.isAllCoinsCollected();
+bool GLESRenderer::achievedGoal(){
+    return sceneManager.checkGoalCondition();
 }

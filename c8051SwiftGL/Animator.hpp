@@ -24,8 +24,10 @@ public:
     Animator();
     Animator(Transform*);
     void assignTransform(Transform*);
+    void assignTransformSpeed(Transform*);
     void update();
     void setEnabled(bool);
+    Transform* getTransformSpeed();
 };
 
 #endif /* Animator_hpp */

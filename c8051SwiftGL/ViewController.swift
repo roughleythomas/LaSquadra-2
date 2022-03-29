@@ -9,8 +9,8 @@ extension ViewController: GLKViewControllerDelegate {
         glesRenderer.update();
         
         if (!isGameEnded) {
-            if (glesRenderer.isAllCoinsCollected()) {
-                isGameEnded = true;
+            if (glesRenderer.achievedGoal()) {
+                
                 
                 showGameOver();
             }
@@ -80,32 +80,24 @@ class ViewController: GLKViewController {
     
     // - Actions
     @IBAction func onMoveLeftButtonClick(_ sender: UIButton) {
-        moveBallX -= 0.05
-        glesRenderer.moveBallX = moveBallX
-        glesRenderer.moveBallY = moveBallY
+        glesRenderer.setPlayerDir(3)
     }
     
     @IBAction func onMoveRightButtonClick(_ sender: UIButton) {
-        moveBallX += 0.05
-        glesRenderer.moveBallX = moveBallX
-        glesRenderer.moveBallY = moveBallY
+        glesRenderer.setPlayerDir(1)
     }
     
     @IBAction func onMoveUpButtonClick(_ sender: UIButton) {
-        moveBallY -= 0.05
-        glesRenderer.moveBallX = moveBallX
-        glesRenderer.moveBallY = moveBallY
+        glesRenderer.setPlayerDir(0)
     }
     
     @IBAction func onMoveDownButtonClick(_ sender: UIButton) {
-        moveBallY += 0.05
-        glesRenderer.moveBallX = moveBallX
-        glesRenderer.moveBallY = moveBallY
+        glesRenderer.setPlayerDir(2)
     }
     
     //release
     @IBAction func onMouseButtonRelease(_ sender: UIButton){
-        
+        glesRenderer.setPlayerDir(-1)
     }
 }
 

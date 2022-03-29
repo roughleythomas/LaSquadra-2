@@ -6,7 +6,7 @@
 //
 
 #include "Scene.hpp"
-
+#include "Global.h"
 
 // _______________________   Scene Functions, a parent class to all 'scenes' in the game, as defined in scene.hpp ________________
 
@@ -45,8 +45,32 @@ void Scene::pan(float panX, float panY){
     }
 }
 
-void Scene::moveBall(float x, float y) {
-
+void Scene::movePlayer(int playerDir) {
+    this->playerDir = playerDir;
+    if (!playerDrawable) {
+        return;
+    }
+    
+    Transform* transformSpeed = playerDrawable->anim->getTransformSpeed();
+    float speed = 0.2f;
+    switch(playerDir){
+        case -1:
+            transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+            break;
+        case 0:
+            transformSpeed->setPosition(vec3(0.f, 0.f, -speed));
+            break;
+        case 1:
+            transformSpeed->setPosition(vec3(speed, 0.f, 0.f));
+            break;
+        case 2:
+            transformSpeed->setPosition(vec3(0.f, 0.f, speed));
+            break;
+        case 3:
+            transformSpeed->setPosition(vec3(-speed, 0.f, 0.f));
+            break;
+    }
+    playerDrawable->anim->assignTransformSpeed(transformSpeed);
 }
 
 
@@ -94,15 +118,13 @@ void Scene::loadModels(){
     Transform* transformSpeed = new Transform();
     transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
-    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    transformSpeed->setAngles(vec3(0, 5.f, 5.f));
     playerDrawable->assignAnimator(new Animator(transformSpeed));
+    playerDrawable->anim->assignTransform(playerDrawable->globalTransform);
     playerDrawable->anim->setEnabled(true);
     camera = Camera::GetInstance();
     reset();
 }
-
-//___________ Maze Scene functions and attributes (all a child of the maze class, as defined in maze.hpp) _____________
-
 
 // ------- Add drawables to scene ----------
 //Add new wall drawable to the maze.
@@ -125,8 +147,9 @@ void MazeScene::addCoin(float posX, float posY, float radius, float thickness, i
     coinDrawable->globalTransform->setPosition(vec3(posX, 0.5f, posY));
     Transform* transformSpeed = new Transform();
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
-    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    transformSpeed->setAngles(vec3(0, 5.f, 0.f));
     coinDrawable->assignAnimator(new Animator(transformSpeed));
+    coinDrawable->anim->assignTransform(coinDrawable->localTransform);
     coinDrawable->anim->setEnabled(true);
 }
 
@@ -135,13 +158,13 @@ void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternat
 {
     //Add new drawable with texture element
     addDrawable(new UITimer(0));
-    int lindex = drawables.size() - 1;
-    drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
+    //int lindex = drawables.size() - 1;
+    //drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
     
-    if(horizontal)
-        drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
-    else
-        drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
+    //if(horizontal)
+        //drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
+    //else
+        //drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
     
 }
 
@@ -163,6 +186,12 @@ void MazeScene::loadModels(){
     float sector = 2.f / wallNum; // set the size of each cell, should be 0.25 per cell in this version
     addWall(true, 0.f, 2.f, 2.f); // add horizontal walls
     addWall(false, -2.f, -sector, 2.f - sector); //add vertical walls
+    
+    cout << "\nCurrent goal condition: " << maze->goalCondition << "\n";
+    
+    //HARD CODE GOAL CONDITION, REMOVE THIS AFTER TESTING!!!!!!  *******************
+    sceneGoalCondition = 0; //maze->goalCondition;
+    
     for(int i = 0; i < wallNum; i++){
         int wallTypeHor = ((i > 0) ? 1 : 2),
             wallTypeVer = ((i > 0) ? 0 : 1);
@@ -199,25 +228,38 @@ void MazeScene::loadModels(){
     playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
 }
 
+void MazeScene::update(){
+    Scene::update();
+    if(playerDir != -1){
+        vec3 playerPos = playerDrawable->globalTransform->getPosition();
+        for (int i = 0; i < coinDrawables.size(); i++) {
+            Drawable *drawable = coinDrawables[i];
+            vec3 position = drawable->globalTransform->getPosition();
+            float deltaX = position.x - playerPos.x;
+            float deltaY = position.z - playerPos.z;
+            float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (distance < 0.2) {
+                // remove collide coin
+                coinDrawables.erase(coinDrawables.begin() + i);
+                remove(drawables.begin(), drawables.end(), drawable);
+            }
+        }
+    }
+}
 
 // ---------- Other scene specific functions -------------
 
 //Translate ball to x,y instead of current x,y position.
-void MazeScene::moveBall(float x, float y) {
-    Scene::moveBall(x, y);
+void MazeScene::movePlayer(int playerDir) {
+    Scene::movePlayer(playerDir);
     
-    if (!playerDrawable) {
-        return;
-    }
-    
-    playerDrawable->globalTransform->setPosition(vec3(x, 0.5f, y));
-    
+    vec3 playerPos = playerDrawable->globalTransform->getPosition();
     // check collision
     for (int i = 0; i < coinDrawables.size(); i++) {
         Drawable *drawable = coinDrawables[i];
         vec3 position = drawable->globalTransform->getPosition();
-        float deltaX = position.x - x;
-        float deltaY = position.z - y;
+        float deltaX = position.x - playerPos.x;
+        float deltaY = position.z - playerPos.y;
         float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
         if (distance < 0.2) {
             // remove collide coin
@@ -225,10 +267,182 @@ void MazeScene::moveBall(float x, float y) {
             remove(drawables.begin(), drawables.end(), drawable);
         }
     }
+}
+
+int MazeScene::collisionCheck(float posX, float posY)
+{
+    int collision = 0;
+    int row = floor(posX * 2 + 4);
+    int column = floor(posY * 2 + 4);
     
-    //update();
+    float deltaX = (row * (MAZE_CELL_SIZE / 2.0f)) - posX;
+    float deltaY = (column * (MAZE_CELL_SIZE / 2.0f)) - posY;
+    
+    collision = wallCheck(row, column, posX, posY);
+    if(deltaX > 0 && row < maze->getSize())
+        collision &= wallCheck(row - 1, column, posX, posY);
+    else if(deltaX < 0 && row > 0)
+        collision &= wallCheck(row + 1, column, posX, posY);
+    if(deltaY > 0 && column < maze->getSize())
+        collision &= wallCheck(row, column - 1, posX, posY);
+    else if(deltaY < 0 && column > 0)
+        collision &= wallCheck(row, column + 1, posX, posY);
+    
+    return collision;
+}
+
+int MazeScene::wallCheck(int row, int column, float posX, float posY)
+{
+    int collision = 0;
+    int topC = column > 0 ? column - 1 : column;
+    int leftR = row > 0 ? row - 1 : row;
+    
+    float cellCenterX = row * 0.5 - 1.75;
+    float cellCenterY = column * 0.5 - 1.75;
+    
+    float deltaX = posX - cellCenterX;
+    float deltaY = posY - cellCenterY;
+    
+    MazeSector curCell = maze->getSector(row, column);
+    MazeSector topCell = maze->getSector(row, topC);
+    MazeSector leftCell = maze->getSector(leftR, column);
+    
+    switch(curCell.getType())
+    {
+        case 0:
+            if(!curCell.getWallHidden(0))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(1))
+            {
+                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(2))
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(3))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            break;
+        case 1:
+            if(!curCell.getWallHidden(0))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(1))
+            {
+                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(2))
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!leftCell.getWallHidden(1))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            break;
+        case 2:
+            if(!curCell.getWallHidden(0))
+            {
+                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(1))
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(2))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!topCell.getWallHidden(1))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            break;
+        case 3:
+            if(!curCell.getWallHidden(0) && deltaX > 0)
+            {
+                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(1) && deltaY < 0)
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!topCell.getWallHidden(1))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!leftCell.getWallHidden(1))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            break;
+    }
+    
+    return collision;
 }
 
 bool MazeScene::isAllCoinsCollected() {
     return coinDrawables.empty();
+}
+
+bool MazeScene::achievedGoal()
+{
+   switch(sceneGoalCondition)
+   {
+    //Collect the coins!
+       case 0:
+           if(coinDrawables.empty())
+           {
+               cout << "You win!";
+               sceneWon = true;
+               return sceneWon;
+           }
+           break;
+       //Escape the maze!
+       case 1:
+           cout << "You win! But not really because this needs to be set once collisions are in.";
+           break;
+       default:
+           cout<<"Error: MazeScene does not have a goalCondition set. Please check Scene.cpp, as the current condition is " << sceneGoalCondition;
+           break;
+   }
+    
+    return sceneWon;
 }

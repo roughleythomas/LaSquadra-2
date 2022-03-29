@@ -46,7 +46,6 @@ class GLESRenderer
 public:
     bool isRotating;// publicly available member variable (in this case whether the cube is auto-rotating
     float panX = 0, panY = 0;
-    float moveBallX = 0, moveBallY = 0;
 
     // Constructor and destructor
     GLESRenderer(const char *vertexShaderFile = NULL, const char *fragmentShaderFile = NULL,
@@ -57,7 +56,8 @@ public:
     void Update();
     void Draw();
     void reset();
-    bool isAllCoinsCollected();
+    bool achievedGoal();
+    void setPlayerDir(int);
 
 private:
     int vpWidth, vpHeight;  // viewport width/height

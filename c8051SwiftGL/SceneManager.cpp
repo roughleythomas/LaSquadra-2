@@ -35,8 +35,8 @@ void SceneManager::pan(float panX, float panY){
     scene->pan(panX, panY);
 }
 
-void SceneManager::moveBall(float moveBallX, float moveBallY) {
-    scene->moveBall(moveBallX, moveBallY);
+void SceneManager::movePlayer(int playerDir) {
+    scene->movePlayer(playerDir);
 }
 
 void SceneManager::update(){
@@ -51,6 +51,6 @@ void SceneManager::pushTexture(GLuint textureId){
     textureIds.push_back(textureId);
 }
 
-bool SceneManager::isAllCoinsCollected() {
-    return scene->isAllCoinsCollected();
+bool SceneManager::checkGoalCondition() {
+    return scene->achievedGoal();
 }

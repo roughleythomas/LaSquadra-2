@@ -16,6 +16,7 @@
 #include <time.h>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
 
 using namespace std;
 
@@ -46,9 +47,12 @@ class Maze{
     void load();
     
 public:
+    int goalCondition;
     vector<MazeSector> maze;
     Maze(int);
     void print();
+    MazeSector getSector(int row, int column);
+    int getSize();
 };
 
 #endif /* Maze_hpp */

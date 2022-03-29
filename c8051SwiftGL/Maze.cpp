@@ -133,6 +133,7 @@ Maze::Maze(int size){
     load();
 }
 
+//On unvisited cells, generate cell.
 int Maze::bridgeUnvisitedCell(int curCell){
     //process navigatable directions (clockwise)
     bool directionsAvailable[4] = {
@@ -207,15 +208,21 @@ int Maze::bridgeUnvisitedCell(int curCell){
     return secNo;
 }
 
+
+//Instantiate maze scene, and generate maze.
 void Maze::load(){
     maze[0].setWallHidden(3);
     maze[maze.size() - 1].setWallHidden(0);
+    
+    //Generate goal condition value on rand value from 0-1
+    goalCondition = rand() % 2;
     
     srand(time(NULL));
     stack.clear();
     visited.clear();
     stack.push_back(0);
     visited.push_back(0);
+    
     //generates maze using the recursive implementation
     do{
         int neighbour = bridgeUnvisitedCell(stack[stack.size() - 1]);
@@ -246,3 +253,17 @@ void Maze::print(){
         cout << endl;
     }
 }
+
+MazeSector Maze::getSector(int row, int column)
+{
+    int index = column * size + row;
+    
+    if(index < 0 || index >= maze.size())
+    {
+        index = 0;
+    }
+    
+    return maze[index];
+}
+
+int Maze::getSize() { return size; }

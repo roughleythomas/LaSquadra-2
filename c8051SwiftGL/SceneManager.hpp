@@ -26,11 +26,11 @@ public:
     void reset();
     void assignScene(SceneName);
     void pan(float, float);
-    void moveBall(float, float);
+    void movePlayer(int);
     void update();
     void draw(float, GLint, GLint);
     void pushTexture(GLuint);
-    bool isAllCoinsCollected();
+    bool checkGoalCondition();
     
 private:
     SceneName curSceneName;
