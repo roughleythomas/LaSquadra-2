@@ -31,6 +31,7 @@ class Scene {
     
 protected:
     Drawable* playerDrawable;
+    int playerDir = -1;
     vector<Drawable*> drawables;
     void addDrawable(Drawable* d);
     
@@ -38,7 +39,7 @@ public:
     ~Scene();
     void reset();
     virtual void pan(float, float);
-    virtual void moveBall(float, float);
+    virtual void movePlayer(int);
     virtual void update();
     virtual void draw(vector<GLuint>, float, GLint, GLint);
     virtual void loadModels();
@@ -49,7 +50,8 @@ class MazeScene : public Scene {
     
 public:
     void loadModels() override;
-    void moveBall(float, float) override;
+    void update() override;
+    void movePlayer(int) override;
     bool isAllCoinsCollected() override;
     void addWall(bool, float, float, float, int = 1);
     void addTimer(bool, float, float, float, int = 1);

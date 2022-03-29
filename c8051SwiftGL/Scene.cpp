@@ -45,8 +45,31 @@ void Scene::pan(float panX, float panY){
     }
 }
 
-void Scene::moveBall(float x, float y) {
-
+void Scene::movePlayer(int playerDir) {
+    this->playerDir = playerDir;
+    if (!playerDrawable) {
+        return;
+    }
+    
+    Transform* transformSpeed = playerDrawable->anim->getTransformSpeed();
+    switch(playerDir){
+        case -1:
+            transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+            break;
+        case 0:
+            transformSpeed->setPosition(vec3(0.f, 0.f, -0.005f));
+            break;
+        case 1:
+            transformSpeed->setPosition(vec3(0.005f, 0.f, 0.f));
+            break;
+        case 2:
+            transformSpeed->setPosition(vec3(0.f, 0.f, 0.005f));
+            break;
+        case 3:
+            transformSpeed->setPosition(vec3(-0.005f, 0.f, 0.f));
+            break;
+    }
+    playerDrawable->anim->assignTransformSpeed(transformSpeed);
 }
 
 
@@ -96,6 +119,7 @@ void Scene::loadModels(){
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
     transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
     playerDrawable->assignAnimator(new Animator(transformSpeed));
+    playerDrawable->anim->assignTransform(playerDrawable->globalTransform);
     playerDrawable->anim->setEnabled(true);
     camera = Camera::GetInstance();
     reset();
@@ -184,25 +208,38 @@ void MazeScene::loadModels(){
     playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
 }
 
+void MazeScene::update(){
+    Scene::update();
+    if(playerDir != -1){
+        vec3 playerPos = playerDrawable->globalTransform->getPosition();
+        for (int i = 0; i < coinDrawables.size(); i++) {
+            Drawable *drawable = coinDrawables[i];
+            vec3 position = drawable->globalTransform->getPosition();
+            float deltaX = position.x - playerPos.x;
+            float deltaY = position.z - playerPos.z;
+            float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (distance < 0.2) {
+                // remove collide coin
+                coinDrawables.erase(coinDrawables.begin() + i);
+                remove(drawables.begin(), drawables.end(), drawable);
+            }
+        }
+    }
+}
 
 // ---------- Other scene specific functions -------------
 
 //Translate ball to x,y instead of current x,y position.
-void MazeScene::moveBall(float x, float y) {
-    Scene::moveBall(x, y);
+void MazeScene::movePlayer(int playerDir) {
+    Scene::movePlayer(playerDir);
     
-    if (!playerDrawable) {
-        return;
-    }
-    
-    playerDrawable->globalTransform->setPosition(vec3(x, 0.5f, y));
-    
+    vec3 playerPos = playerDrawable->globalTransform->getPosition();
     // check collision
     for (int i = 0; i < coinDrawables.size(); i++) {
         Drawable *drawable = coinDrawables[i];
         vec3 position = drawable->globalTransform->getPosition();
-        float deltaX = position.x - x;
-        float deltaY = position.z - y;
+        float deltaX = position.x - playerPos.x;
+        float deltaY = position.z - playerPos.y;
         float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
         if (distance < 0.2) {
             // remove collide coin

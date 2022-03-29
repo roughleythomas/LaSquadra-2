@@ -20,7 +20,6 @@
 @synthesize isRotating; // each public property needs to be synthesized
 @synthesize panX;
 @synthesize panY;
-@synthesize moveBallX, moveBallY;
 
 - (void)dealloc
 {
@@ -87,8 +86,6 @@
     glesRenderer->isRotating = isRotating;
     glesRenderer->panX = panX;
     glesRenderer->panY = panY;
-    glesRenderer->moveBallX = moveBallX;
-    glesRenderer->moveBallY = moveBallY;
     glesRenderer->Update();
 }
 
@@ -104,6 +101,11 @@
 
 - (bool)isAllCoinsCollected {
     return glesRenderer->isAllCoinsCollected();
+}
+
+- (void)setPlayerDir:(int)playerDir;
+{
+    glesRenderer->setPlayerDir(playerDir);
 }
 
 @end

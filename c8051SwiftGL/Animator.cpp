@@ -20,6 +20,10 @@ void Animator::assignTransform(Transform* contextTransform){
     this->contextTransform = contextTransform;
 }
 
+void Animator::assignTransformSpeed(Transform* transformSpeed){
+    this->transformSpeed = transformSpeed;
+}
+
 void Animator::update(){
     if(enabled){
         auto elapsedTime = chrono::duration_cast<std::chrono::milliseconds>(chrono::steady_clock::now() - lastFrame).count() * 0.00000001f;
@@ -32,4 +36,8 @@ void Animator::update(){
 
 void Animator::setEnabled(bool enabled){
     this->enabled = enabled;
+}
+
+Transform* Animator::getTransformSpeed(){
+    return transformSpeed;
 }
