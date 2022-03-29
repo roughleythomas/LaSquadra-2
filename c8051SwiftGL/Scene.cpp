@@ -52,10 +52,11 @@ void Scene::movePlayer(int playerDir) {
     }
     
     Transform* transformSpeed = playerDrawable->anim->getTransformSpeed();
-    float speed = 0.2f;
+    float speed = 0.1f;
+    bool enabled = true;
     switch(playerDir){
         case -1:
-            transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+            enabled = false;
             break;
         case 0:
             transformSpeed->setPosition(vec3(0.f, 0.f, -speed));
@@ -71,6 +72,7 @@ void Scene::movePlayer(int playerDir) {
             break;
     }
     playerDrawable->anim->assignTransformSpeed(transformSpeed);
+    playerDrawable->anim->setEnabled(enabled);
 }
 
 
@@ -116,11 +118,12 @@ void Scene::loadModels(){
     playerDrawable = new Sphere(1, 0.15f, 10, 10);
     addDrawable(playerDrawable);
     Transform* transformSpeed = new Transform();
-    transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
+    //transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
     transformSpeed->setAngles(vec3(0, 5.f, 5.f));
     playerDrawable->assignAnimator(new Animator(transformSpeed));
     playerDrawable->anim->assignTransform(playerDrawable->globalTransform);
+    playerDrawable->anim->setBuildupSpeed(25.f);
     playerDrawable->anim->setEnabled(true);
     camera = Camera::GetInstance();
     reset();
@@ -230,7 +233,7 @@ void MazeScene::loadModels(){
 
 void MazeScene::update(){
     Scene::update();
-    if(playerDir != -1){
+    if(playerDrawable->anim->isMoving()){
         vec3 playerPos = playerDrawable->globalTransform->getPosition();
         for (int i = 0; i < coinDrawables.size(); i++) {
             Drawable *drawable = coinDrawables[i];
