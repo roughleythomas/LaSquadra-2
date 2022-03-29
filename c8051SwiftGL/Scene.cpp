@@ -6,7 +6,7 @@
 //
 
 #include "Scene.hpp"
-
+#include "Global.h"
 
 // _______________________   Scene Functions, a parent class to all 'scenes' in the game, as defined in scene.hpp ________________
 
@@ -219,19 +219,150 @@ void MazeScene::moveBall(float x, float y) {
     }
 }
 
-bool MazeScene::wallCheck(float posX, float posY)
+int MazeScene::collisionCheck(float posX, float posY)
 {
-    bool collision = false;
-    
+    int collision = 0;
     int row = floor(posX * 2 + 4);
     int column = floor(posY * 2 + 4);
     
-    MazeSector sector = maze->getSector(row, column);
-    for(int i  = 0; i < 4; i++)
+    float deltaX = (row * (MAZE_CELL_SIZE / 2.0f)) - posX;
+    float deltaY = (column * (MAZE_CELL_SIZE / 2.0f)) - posY;
+    
+    collision = wallCheck(row, column, posX, posY);
+    if(deltaX > 0 && row < maze->getSize())
+        collision &= wallCheck(row - 1, column, posX, posY);
+    else if(deltaX < 0 && row > 0)
+        collision &= wallCheck(row + 1, column, posX, posY);
+    if(deltaY > 0 && column < maze->getSize())
+        collision &= wallCheck(row, column - 1, posX, posY);
+    else if(deltaY < 0 && column > 0)
+        collision &= wallCheck(row, column + 1, posX, posY);
+    
+    return collision;
+}
+
+int MazeScene::wallCheck(int row, int column, float posX, float posY)
+{
+    int collision = 0;
+    int topC = column > 0 ? column - 1 : column;
+    int leftR = row > 0 ? row - 1 : row;
+    
+    float cellCenterX = row * 0.5 - 1.75;
+    float cellCenterY = column * 0.5 - 1.75;
+    
+    float deltaX = posX - cellCenterX;
+    float deltaY = posY - cellCenterY;
+    
+    MazeSector curCell = maze->getSector(row, column);
+    MazeSector topCell = maze->getSector(row, topC);
+    MazeSector leftCell = maze->getSector(leftR, column);
+    
+    switch(curCell.getType())
     {
-        if(!sector.getWallHidden(i))
-        {
-        }
+        case 0:
+            if(!curCell.getWallHidden(0))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(1))
+            {
+                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(2))
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(3))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            break;
+        case 1:
+            if(!curCell.getWallHidden(0))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(1))
+            {
+                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(2))
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!leftCell.getWallHidden(1))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            break;
+        case 2:
+            if(!curCell.getWallHidden(0))
+            {
+                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(1))
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!curCell.getWallHidden(2))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!topCell.getWallHidden(1))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            break;
+        case 3:
+            if(!curCell.getWallHidden(0) && deltaX > 0)
+            {
+                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            if(!curCell.getWallHidden(1) && deltaY < 0)
+            {
+                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!topCell.getWallHidden(1))
+            {
+                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+            }
+            if(!leftCell.getWallHidden(1))
+            {
+                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
+                if(check > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+            }
+            break;
     }
     
     return collision;

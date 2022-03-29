@@ -265,3 +265,5 @@ MazeSector Maze::getSector(int row, int column)
     
     return maze[index];
 }
+
+int Maze::getSize() { return size; }

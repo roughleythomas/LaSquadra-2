@@ -52,6 +52,7 @@ public:
     Maze(int);
     void print();
     MazeSector getSector(int row, int column);
+    int getSize();
 };
 
 #endif /* Maze_hpp */
