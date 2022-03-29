@@ -8,7 +8,7 @@
 #include "Animator.hpp"
 
 Animator::Animator(){
-    transformSpeed = new Transform();
+    transformSpeed = new Transform(); // transformSpeed gets added to the contextTransform attached to this animator
     transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
 }
 

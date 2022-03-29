@@ -15,8 +15,8 @@
 using namespace std;
 
 class Animator{
-    Transform* contextTransform;
-    Transform* transformSpeed;
+    Transform* contextTransform; // holds transform data for the object this is attached to
+    Transform* transformSpeed; // transformSpeed gets added to the contextTransform attached to this animator
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
     bool enabled = false;
     
