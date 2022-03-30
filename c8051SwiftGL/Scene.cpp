@@ -169,9 +169,13 @@ void Scene::loadModels(){
 
 void MazeScene::reset(){
     Scene::reset();
+    sceneWon = false;
+    gameStarted = false;
+    
     cout << "Goal condition: " << sceneGoalCondition << endl;
     Maze* maze = new Maze(WALL_NUM);//random maze size
     maze->print();
+    
     bool goalNotAdded = true;
     float sector = 2.f / WALL_NUM;
     
