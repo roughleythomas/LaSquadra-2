@@ -94,8 +94,10 @@ void Scene::update(){
     
     double duration = std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrame).count();
     
-    if(duration >= 1.0 && gameStarted)
+    if(duration >= 1.0 && gameStarted && timeLeft > 0.0f)
         timeLeft -= 1.0f;
+    
+    
     
     
     lastFrame = std::chrono::steady_clock::now();
