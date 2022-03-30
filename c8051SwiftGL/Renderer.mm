@@ -7,10 +7,12 @@
 #import <GLKit/GLKit.h>
 #include <chrono>
 #include "GLESRenderer.hpp"
+#include "AudioWrapper.h"
 
 @interface Renderer () {
     GLKView *theView;               // to access some iOS-specific parameters needed to set up OpenGL
     GLESRenderer *glesRenderer;     // the OpenGL ES C++ render class
+    AudioWrapper *audio;
 }
 
 @end
@@ -80,6 +82,9 @@
     // Once we have passed on the data from the image file for the texture, we can free up the memory
     for(int i = 0; i < textureDataList.size(); i++)
         free(textureDataList[i]);
+    
+    audio = [[AudioWrapper alloc] init];
+    [audio setup];
 }
 
 - (void)update
@@ -89,6 +94,7 @@
     glesRenderer->panX = panX;
     glesRenderer->panY = panY;
     glesRenderer->Update();
+    [audio update];
 }
 
 - (void)draw:(CGRect)drawRect;
