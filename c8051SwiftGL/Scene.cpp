@@ -126,7 +126,7 @@ void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform
             transform = drawable->draw(mvp);
         
         normalMatrix = glm::inverseTranspose(glm::mat3(transform));
-
+        
         mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
         vec3 angles = camera->getTransform()->getAngles();
         
