@@ -205,7 +205,7 @@ void MazeScene::reset(){
             if(sceneGoalCondition == 0)
             {
             
-                bool coinExists = rand() % 8 == 0; // coin generator
+                bool coinExists = rand() % 12 == 0; // coin generator
                 if (coinExists) {
                     addCoin(centerX, centerY, sector / 2, 0.015, 2);
                 }
@@ -526,12 +526,15 @@ bool MazeScene::achievedGoal()
            if(coinDrawables.empty())
            {
                cout << "All coins collected!";
+               gameStarted = false;
                sceneWon = true;
            }
            return sceneWon;
            break;
        //Escape the maze!
        case 1:
+           if (sceneWon)
+               gameStarted = false;
            return sceneWon;
            //cout << "You win! But not really because this needs to be set once collisions are in.";
            break;
