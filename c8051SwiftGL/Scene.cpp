@@ -213,7 +213,7 @@ void MazeScene::reset(){
             }//goal condition 1, render goal
             else if (sceneGoalCondition == 1 && goalNotAdded && ((i == (int)WALL_NUM/2) && (j == (int)WALL_NUM/2)))
             {
-                addGoal(centerX, centerY, sector/2, 0.01, 3);
+                addGoal((WALL_NUM - 1) * sector, -(WALL_NUM - 1) * sector, sector/2, 0.01, 3);
                 goalNotAdded = false;
             }
         }

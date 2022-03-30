@@ -52,7 +52,7 @@ GLESRenderer::~GLESRenderer()
 void GLESRenderer::Update()
 {
     if (panX != 0 || panY != 0)
-        sceneManager.pan(panX, panY);
+        sceneManager.pan(panX * 5, panY * 5);
     
     sceneManager.update();
 }
