@@ -9,17 +9,23 @@
 
 #include <stdio.h>
 #include "Drawable.hpp"
+#include "Font support/GLESText.hpp"
 
 class UIElement: public Drawable
 {
 public:
-    UIElement(int);
+    UIElement(float, float, int);
+    
+    GLESText text;
+    
+    char * font;
     
     bool loadVertices(void* info);
     bool loadNormals(void* info);
     bool loadTextureCoords(void* info);
     bool loadIndices(void* info);
 protected:
+    float xScale, yScale;
 private:
 };
 

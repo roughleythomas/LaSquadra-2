@@ -26,6 +26,7 @@ class Scene {
     Camera* camera;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
     mat4 mvp;
+    mat4 mvpUI;
     mat3 normalMatrix;
     void updateTransform();
     
@@ -40,6 +41,7 @@ public:
     ~Scene();
     void reset();
     int sceneGoalCondition;
+    
     bool sceneWon = false;
     virtual void pan(float, float);
     virtual void movePlayer(int);

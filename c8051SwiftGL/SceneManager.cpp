@@ -54,3 +54,7 @@ void SceneManager::pushTexture(GLuint textureId){
 bool SceneManager::checkGoalCondition() {
     return scene->achievedGoal();
 }
+
+void SceneManager::setSceneFont(char * newFont){
+    
+}

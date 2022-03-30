@@ -10,13 +10,19 @@
 //Constructor for UITimer, which is a child of drawable.
 //When the constructor is called, ensure you specify the textureID that the texture is stored within (based on the texture list in glesrenderer or renderer.mm),
 //and the verts, normals, texture coords, and indices array size.
-UIElement::UIElement(int textureListIndex):Drawable(textureListIndex, 4, 4, 4, 6)
+UIElement::UIElement(float scaleX, float scaleY, int textureListIndex):Drawable(textureListIndex, 4, 4, 4, 6)
 {
+    
+    isUI = true;
+    //cout << "\nUI X Scale: " << scaleX;
+    //cout << "\nUI Y Scale: " << scaleY << endl;
+    xScale = scaleX;
+    yScale = scaleY;
+    
     loadVertices(0);
     loadNormals(0);
     loadTextureCoords(0);
     loadIndices(0);
-    isUI = true;
 }
 
 bool UIElement::loadVertices(void* info)
@@ -25,10 +31,10 @@ bool UIElement::loadVertices(void* info)
     //X, Y, Z
     float cubeVerts[] =
     {
-        -1.0f, -1.0f, 0.0f, // Lower left corner
-        1.0f, 1.0f,  0.0f, //Upper right corner
-        -1.0f, 1.0f,  0.0f, // Upper left corner
-        1.0f, -1.0f,  0.0f, //lower right corner
+        -1.0f * xScale, -1.0f * yScale, 0.0f, // Lower left corner
+        1.0f * xScale, 1.0f * yScale, 0.0f, //Upper right corner
+        -1.0f * xScale, 1.0f * yScale, 0.0f, // Upper left corner
+        1.0f * xScale, -1.0f * yScale, 0.0f, //lower right corner
     };
     
     for(int i = 0; i < numVertices * 3; i++)

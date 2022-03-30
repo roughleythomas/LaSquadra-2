@@ -31,6 +31,7 @@ public:
     void draw(float, GLint, GLint);
     void pushTexture(GLuint);
     bool checkGoalCondition();
+    void setSceneFont(char *);
     
 private:
     SceneName curSceneName;

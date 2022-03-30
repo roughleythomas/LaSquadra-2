@@ -4,6 +4,7 @@
 //
 //  Created by Michael Sinclair on 2022-03-17.
 //
+//If we want to make backdrops, try this https://learnopengl.com/Advanced-OpenGL/Cubemaps
 
 #include "Scene.hpp"
 #include "Global.h"
@@ -92,12 +93,21 @@ void Scene::updateTransform(){
 //Draw current scene's elements, in reference to the MVP Camera position (the start position).
 //Check scene's list of drawables, and for each drawable, get the indices, verts, etc, translate them in reference to the camera, so they are positioned based on where the camera is located.
 void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform, GLint normalMatrixUniform){
-    mvp = glm::translate(mat4(1.f), camera->getTransform()->getPosition());
+    
+    //Make the base mvp matrix equal to the identity matrix, translated by the camera position.Identity matrix is essentially a matrix with nothing in it.
+    mvp = glm::translate(mat4(1.0f), camera->getTransform()->getPosition());
+    mvpUI = glm::translate(mat4(1.0f), vec3(0.0f,0.0f,-2.0f));
     
     for(Drawable *drawable : drawables){
         int *indices = drawable->getIndices(), numIndices = drawable->getNumIndices();
-
-        mat4 transform = drawable->draw(mvp);
+        
+        mat4 transform;
+        
+        if(drawable->isUI == true)
+            transform = drawable->draw(mvpUI);
+        else
+            transform = drawable->draw(mvp);
+        
         normalMatrix = glm::inverseTranspose(glm::mat3(transform));
 
         mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
@@ -113,11 +123,13 @@ void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform
         }
         
         transform = perspective * transform;
+
         glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, value_ptr(transform));
         glUniformMatrix3fv(normalMatrixUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
         
         glBindTexture(GL_TEXTURE_2D, textureIds[drawable->getTextureListIndex()]);
         //glUniform1i(textureUniform, textureIds[drawable->getTextureListIndex()]);
+        
         glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
     }
 }
@@ -183,15 +195,10 @@ void MazeScene::addGoal(float posX, float posY, float radius, float thickness, i
 void MazeScene::addTimer(float posX, float posY, int textureListIndex)
 {
     //Add new drawable with texture element
-    addDrawable(new UIElement(textureListIndex));
-    //int lindex = drawables.size() - 1;
-    //drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
+    addDrawable(new UIElement(0.25f, 0.15f, textureListIndex));
     
-    //if(horizontal)
-        //drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
-    //else
-        //drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
-    
+    int lindex = drawables.size() - 1;
+    drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, posY, 0.0f));
 }
 
 // -------- Load all drawables from scene (initializer) ------
@@ -202,7 +209,7 @@ void MazeScene::loadModels(){
     addDrawable(new Cube(0));
     drawables[1]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
     
-    addTimer(1.0f,1.0f,3);
+    addTimer(0.0f,1.0f,3);
     
     srand (time(NULL));
     float wallNum = 8;

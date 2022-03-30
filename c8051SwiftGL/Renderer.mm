@@ -68,7 +68,7 @@
         CGContextRelease(textureContext);
         textureDataList.push_back(textureData);
     }
-    
+  
     // Construct the C++ object, passing in the path to the shader files and the one texture data
     glesRenderer = new GLESRenderer([[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.vsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.vsh"] pathExtension]] cStringUsingEncoding:1],
                                     [[[NSBundle mainBundle] pathForResource:[[NSString stringWithUTF8String:"Shader.fsh"] stringByDeletingPathExtension] ofType:[[NSString stringWithUTF8String:"Shader.fsh"] pathExtension]] cStringUsingEncoding:1],
@@ -78,6 +78,28 @@
     panY = glesRenderer->panY;
     score = 0;
 
+    
+    
+    vector<NSString*> fontNames;
+    fontNames.push_back(@"times");
+    //fontNames.push_back(@"Vonique 64");
+    //fontNames.push_back(@"arial");
+    
+    for(int i = 0; i < fontNames.size(); i++)
+    {
+        
+        NSString *fontPath = [[NSBundle mainBundle] pathForResource:fontNames[i] ofType:@"ttf"];
+        
+        //if (!fontPath) {
+          //  NSLog(@"Failed to load font %@", fontNames[i]);
+        //}
+        
+        //glesRenderer->fonts.push_back((char *)[fontPath cStringUsingEncoding:NSUTF8StringEncoding]);
+        
+    }
+    
+    
+    
     // Once we have passed on the data from the image file for the texture, we can free up the memory
     for(int i = 0; i < textureDataList.size(); i++)
         free(textureDataList[i]);

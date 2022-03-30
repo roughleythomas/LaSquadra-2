@@ -19,6 +19,8 @@
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		3CBC5A5E27F257EC0027E41A /* UIElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CBC5A5C27F257EC0027E41A /* UIElement.cpp */; };
 		3CF7CA1A27F44425000F9B92 /* ExitPortal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CF7CA1927F44425000F9B92 /* ExitPortal.png */; };
+		3CF7CA1D27F47B4D000F9B92 /* Font support in Resources */ = {isa = PBXBuildFile; fileRef = 3CF7CA1C27F47B4D000F9B92 /* Font support */; };
+		3CF7CA2027F47B69000F9B92 /* freetype in Resources */ = {isa = PBXBuildFile; fileRef = 3CF7CA1E27F47B69000F9B92 /* freetype */; };
 		3D30932427EEF92700F3B6CD /* Cylinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D30932327EEF92700F3B6CD /* Cylinder.cpp */; };
 		3D30932827EF464D00F3B6CD /* coin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3D30932727EF464D00F3B6CD /* coin.jpg */; };
 		6419068227E383DC00D8EA00 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6419068027E383DC00D8EA00 /* Scene.cpp */; };
@@ -53,7 +55,11 @@
 		025AE9D7277339AF00A45ADB /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		3CBC5A5C27F257EC0027E41A /* UIElement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = UIElement.cpp; sourceTree = "<group>"; };
 		3CBC5A5D27F257EC0027E41A /* UIElement.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UIElement.hpp; sourceTree = "<group>"; };
+		3CC5C4D627F48AF6003F734C /* times.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = times.ttf; sourceTree = "<group>"; };
 		3CF7CA1927F44425000F9B92 /* ExitPortal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ExitPortal.png; sourceTree = "<group>"; };
+		3CF7CA1B27F47777000F9B92 /* ft2build.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ft2build.h; sourceTree = "<group>"; };
+		3CF7CA1C27F47B4D000F9B92 /* Font support */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Font support"; sourceTree = "<group>"; };
+		3CF7CA1E27F47B69000F9B92 /* freetype */ = {isa = PBXFileReference; lastKnownFileType = folder; path = freetype; sourceTree = "<group>"; };
 		3D30932227EEF92700F3B6CD /* Cylinder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cylinder.hpp; sourceTree = "<group>"; };
 		3D30932327EEF92700F3B6CD /* Cylinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cylinder.cpp; sourceTree = "<group>"; };
 		3D30932727EF464D00F3B6CD /* coin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = coin.jpg; sourceTree = "<group>"; };
@@ -112,6 +118,7 @@
 		025AE9BA277337DF00A45ADB /* c8051SwiftGL */ = {
 			isa = PBXGroup;
 			children = (
+				3CF7CA1C27F47B4D000F9B92 /* Font support */,
 				3CBC5A5C27F257EC0027E41A /* UIElement.cpp */,
 				3CBC5A5D27F257EC0027E41A /* UIElement.hpp */,
 				025AE9D32773396300A45ADB /* GLESRenderer.cpp */,
@@ -137,6 +144,7 @@
 				E917551D27C60FF800FA6B90 /* GameObject.cpp */,
 				E917551E27C60FF800FA6B90 /* GameObject.hpp */,
 				E917552027C6121F00FA6B90 /* Drawable.cpp */,
+				3CC5C4D627F48AF6003F734C /* times.ttf */,
 				E917552127C6121F00FA6B90 /* Drawable.hpp */,
 				E917552327C61CA000FA6B90 /* Cube.cpp */,
 				E917552427C61CA000FA6B90 /* Cube.hpp */,
@@ -152,6 +160,8 @@
 				648DD80227E232C800E9FBF0 /* iron.jpg */,
 				648DD80127E232C800E9FBF0 /* dirt.jpg */,
 				3D30932727EF464D00F3B6CD /* coin.jpg */,
+				3CF7CA1B27F47777000F9B92 /* ft2build.h */,
+				3CF7CA1E27F47B69000F9B92 /* freetype */,
 				97F1259127E27A400040AEF8 /* Camera.cpp */,
 				97F1259227E27A400040AEF8 /* Camera.hpp */,
 				97AAE93C27F260A100801490 /* Global.h */,
@@ -224,6 +234,8 @@
 				025AE9C8277337E200A45ADB /* LaunchScreen.storyboard in Resources */,
 				025AE9C5277337E200A45ADB /* Assets.xcassets in Resources */,
 				648DD80327E232C800E9FBF0 /* dirt.jpg in Resources */,
+				3CF7CA2027F47B69000F9B92 /* freetype in Resources */,
+				3CF7CA1D27F47B4D000F9B92 /* Font support in Resources */,
 				025AE9C3277337DF00A45ADB /* Main.storyboard in Resources */,
 				648DD80427E232C800E9FBF0 /* iron.jpg in Resources */,
 				025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */,
@@ -424,6 +436,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
@@ -454,6 +467,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "c8051SwiftGL/c8051SwiftGL-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/$(TARGET_NAME)";
 			};
 			name = Release;
 		};
