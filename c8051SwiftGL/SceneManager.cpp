@@ -55,6 +55,11 @@ bool SceneManager::checkGoalCondition() {
     return scene->achievedGoal();
 }
 
+float SceneManager::getGameTime()
+{
+    return scene->getTimeLeft();
+}
+
 void SceneManager::setSceneFont(char * newFont){
     
 }

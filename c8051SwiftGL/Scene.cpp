@@ -78,9 +78,24 @@ void Scene::movePlayer(int playerDir) {
 }
 
 
+//Get game timer for the scene
+float Scene::getTimeLeft()
+{
+    return timeLeft;
+    
+}
+
 //Update the transform when this scene is updated, and specify when the last frame was calculated (based on current time)
 void Scene::update(){
     updateTransform();
+    now = std::chrono::steady_clock::now();
+    
+    double duration = std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrame).count();
+    
+    if(duration >= 1.0 && gameStarted)
+        timeLeft -= 1.0f;
+    
+    
     lastFrame = std::chrono::steady_clock::now();
 }
 
@@ -209,7 +224,8 @@ void MazeScene::loadModels(){
     addDrawable(new Cube(0));
     drawables[1]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
     
-    addTimer(0.0f,1.0f,3);
+    //When text is working, add a timer to the screen and render text to it.
+    //addTimer(0.0f,1.0f,3);
     
     srand (time(NULL));
     float wallNum = 8;
@@ -262,6 +278,9 @@ void MazeScene::loadModels(){
     }
     
     playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
+    
+    timeLeft = 500.0f;
+    gameStarted = true;
 }
 
 void MazeScene::update(){

@@ -4,6 +4,7 @@
 
 import GLKit
 
+// This enables using the GLKit update method to call our own update
 extension ViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
         glesRenderer.update();
@@ -53,6 +54,7 @@ class ViewController: GLKViewController {
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
         doubleTap.numberOfTapsRequired = 2;
         tapView.addGestureRecognizer(doubleTap)
+        
         let pan = UIPanGestureRecognizer(target: self, action: #selector(self.doPan(_:)))
         tapView.addGestureRecognizer(pan)
     }

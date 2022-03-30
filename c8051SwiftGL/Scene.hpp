@@ -24,6 +24,7 @@ using namespace glm;
 class Scene {
     const float PLAYER_SPEED = 0.01f, PLAYER_SLIP = 0.001f;
     Camera* camera;
+    std::chrono::time_point<std::chrono::steady_clock> now;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
     mat4 mvp;
     mat4 mvpUI;
@@ -42,6 +43,9 @@ public:
     void reset();
     int sceneGoalCondition;
     
+    float timeLeft;
+    
+    bool gameStarted = false;
     bool sceneWon = false;
     virtual void pan(float, float);
     virtual void movePlayer(int);
@@ -49,7 +53,8 @@ public:
     virtual bool achievedGoal() = 0;
     virtual void draw(vector<GLuint>, float, GLint, GLint);
     virtual void loadModels();
-    virtual bool isAllCoinsCollected() { return false; }
+    float getTimeLeft();
+    
 };
 
 class MazeScene : public Scene {
@@ -58,7 +63,7 @@ public:
     void loadModels() override;
     void update() override;
     void movePlayer(int) override;
-    bool isAllCoinsCollected() override;
+    bool isAllCoinsCollected();
     bool achievedGoal() override;
     void addWall(bool, float, float, float, int = 1);
     void addTimer(float, float, int = 1);
@@ -67,6 +72,8 @@ public:
     int collisionCheck(float posX, float posY);
     //Given position and cell is there a collision?
     int wallCheck(int row, int column, float posX, float posY);
+    
+    
 protected:
     vector<Drawable*> coinDrawables;
     Maze* maze;

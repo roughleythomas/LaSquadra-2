@@ -128,6 +128,10 @@
     return glesRenderer->achievedGoal();
 }
 
+- (float)getGameTime {
+    return glesRenderer->getGameTime();
+}
+
 - (void)setPlayerDir:(int)playerDir;
 {
     glesRenderer->setPlayerDir(playerDir);

@@ -20,6 +20,7 @@
 - (void)draw:(CGRect)drawRect;  // wrapper for C++ draw function
 - (void)reset;                  // wrapper for C++ reset function
 - (bool)achievedGoal;
+- (float)getGameTime;
 - (void)setPlayerDir:(int)playerDir;
 
 @end

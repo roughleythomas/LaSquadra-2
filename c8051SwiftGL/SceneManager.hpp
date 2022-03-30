@@ -33,6 +33,8 @@ public:
     bool checkGoalCondition();
     void setSceneFont(char *);
     
+    float getGameTime();
+    
 private:
     SceneName curSceneName;
 };

@@ -57,6 +57,7 @@ public:
     void Draw();
     void reset();
     bool achievedGoal();
+    float getGameTime();
     void setPlayerDir(int);
 
 private:

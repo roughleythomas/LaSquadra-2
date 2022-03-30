@@ -233,3 +233,8 @@ GLuint GLESRenderer::LoadProgram(const char *vertShaderSrc, const char *fragShad
 bool GLESRenderer::achievedGoal(){
     return sceneManager.checkGoalCondition();
 }
+
+float GLESRenderer::getGameTime()
+{
+    return sceneManager.getGameTime();
+}
