@@ -6,6 +6,7 @@ import GLKit
 
 // This enables using the GLKit update method to call our own update
 extension ViewController: GLKViewControllerDelegate {
+    
     func glkViewControllerUpdate(_ controller: GLKViewController) {
         glesRenderer.update();
         
@@ -25,8 +26,10 @@ extension ViewController: GLKViewControllerDelegate {
         self.view.addSubview(label)
         
         if (!isGameEnded) {
-            if (glesRenderer.achievedGoal()) {
-                    
+            if (glesRenderer.achievedGoal() && !showMessage) {
+                
+                showMessage = true;
+                
                 glesRenderer.score+=1;
                 
                 showGamePassed();
@@ -46,6 +49,7 @@ class ViewController: GLKViewController {
     private var moveBallX: Float = 0
     private var moveBallY: Float = 0
     private var isGameEnded: Bool = false;
+    private var showMessage: Bool = false;
     
     private func setupGL() {
         context = EAGLContext(api: .openGLES3)
@@ -115,6 +119,7 @@ class ViewController: GLKViewController {
     // - Actions
     @IBAction func nextGame(_ sender: UIAlertAction) {
         glesRenderer.reset()
+        showMessage = false;
     }
     
     @IBAction func onMoveLeftButtonClick(_ sender: UIButton) {
