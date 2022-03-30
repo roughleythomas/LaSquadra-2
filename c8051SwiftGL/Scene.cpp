@@ -11,6 +11,10 @@
 
 // _______________________   Scene Functions, a parent class to all 'scenes' in the game, as defined in scene.hpp ________________
 
+Scene::Scene(){
+    srand (time(NULL));
+}
+
 //Delete all drawables and the camera upon a deconstruction of this class.
 Scene::~Scene(){
     for(Drawable *d : drawables)
@@ -26,10 +30,9 @@ void Scene::addDrawable(Drawable *d){
 //Reset scene by resetting the camera to it's default state, thus allowing the objects on screen to render in their default state, since the
 //camera is reset.
 void Scene::reset(){
-    //camera->getTransform()->setPosition(vec3(2.5, 0.f, -1.75f));
-    //camera->getTransform()->setAngles(vec3(-45.f, 0.f, 90.f));
     camera->getTransform()->setPosition(vec3(0.f, -2.25f, -4.5f));
     camera->getTransform()->setAngles(vec3(25.f, 0.f, 0.f));
+    sceneGoalCondition = rand() % 2;
 }
 
 void Scene::pan(float panX, float panY){
@@ -161,7 +164,53 @@ void Scene::loadModels(){
     playerDrawable->anim->setBuildupSpeed(25.f);
     playerDrawable->anim->setEnabled(true);
     camera = Camera::GetInstance();
-    reset();
+    //reset();
+}
+
+void MazeScene::reset(){
+    Scene::reset();
+    cout << "Goal condition: " << sceneGoalCondition << endl;
+    Maze* maze = new Maze(WALL_NUM);//random maze size
+    maze->print();
+    bool goalNotAdded = true;
+    float sector = 2.f / WALL_NUM;
+    
+    for(int i = 0; i < WALL_NUM; i++){
+        int wallTypeHor = ((i > 0) ? 1 : 2),
+            wallTypeVer = ((i > 0) ? 0 : 1);
+        
+        for(int j = 0; j < WALL_NUM; j++){
+            float centerX = -2.f + 2 * sector * (j + 1) - sector;
+            float centerY = 2.f - 2 * sector * (i + 1) + sector;
+            
+            if(!maze->maze[i * WALL_NUM + j].getWallHidden(wallTypeHor))
+                addWall(true, centerX, centerY - sector, sector);
+            if(!maze->maze[i * WALL_NUM + j].getWallHidden(wallTypeVer))
+                addWall(false, centerX + sector, centerY, sector);
+            
+            //Render specific objects based on goal condition
+            //goal condition 0, render coins
+            if(sceneGoalCondition == 0)
+            {
+            
+                bool coinExists = rand() % 8 == 0; // coin generator
+                if (coinExists) {
+                    addCoin(centerX, centerY, sector / 2, 0.015, 2);
+                }
+            
+            }//goal condition 1, render goal
+            else if (sceneGoalCondition == 1 && goalNotAdded && ((i == (int)WALL_NUM/2) && (j == (int)WALL_NUM/2)))
+            {
+                addGoal(centerX, centerY, sector/2, 0.01, 3);
+                goalNotAdded = false;
+            }
+        }
+    }
+    
+    playerDrawable->globalTransform->setPosition(vec3(-(float)WALL_NUM * sector + sector, 0.5f, (float)WALL_NUM * sector - sector));
+    
+    timeLeft = 500.0f;
+    gameStarted = true;
 }
 
 // ------- Add drawables to scene ----------
@@ -227,61 +276,12 @@ void MazeScene::loadModels(){
     
     //When text is working, add a timer to the screen and render text to it.
     //addTimer(0.0f,1.0f,3);
-    
-    srand (time(NULL));
     float wallNum = 8;
-    Maze* maze = new Maze(wallNum);//random maze size
-    maze->print();
-    
     float sector = 2.f / wallNum;
     addWall(true, 0.f, 2.f, 2.f);
     addWall(false, -2.f, -sector, 2.f - sector);
     
-    cout << "\nCurrent goal condition: " << maze->goalCondition << "\n";
-    
-    //Set the scene goal condition to whatever generated number condition was provided by maze.
-    sceneGoalCondition = maze->goalCondition;
-    
-    
-    
-    bool goalNotAdded = true;
-    
-    for(int i = 0; i < wallNum; i++){
-        int wallTypeHor = ((i > 0) ? 1 : 2),
-            wallTypeVer = ((i > 0) ? 0 : 1);
-        
-        for(int j = 0; j < wallNum; j++){
-            float centerX = -2.f + 2 * sector * (j + 1) - sector;
-            float centerY = 2.f - 2 * sector * (i + 1) + sector;
-            
-            if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeHor))
-                addWall(true, centerX, centerY - sector, sector);
-            if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeVer))
-                addWall(false, centerX + sector, centerY, sector);
-            
-            //Render specific objects based on goal condition
-            //goal condition 0, render coins
-            if(sceneGoalCondition == 0)
-            {
-            
-                bool coinExists = rand() % 8 == 0; // coin generator
-                if (coinExists) {
-                    addCoin(centerX, centerY, sector / 2, 0.015, 2);
-                }
-            
-            }//goal condition 1, render goal
-            else if (sceneGoalCondition == 1 && goalNotAdded && ((i == (int)wallNum/2) && (j == (int)wallNum/2)))
-            {
-                addGoal(centerX, centerY, sector/2, 0.01, 3);
-                goalNotAdded = false;
-            }
-        }
-    }
-    
-    playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
-    
-    timeLeft = 500.0f;
-    gameStarted = true;
+    reset();
 }
 
 void MazeScene::update(){

@@ -47,7 +47,6 @@ class Maze{
     void load();
     
 public:
-    int goalCondition;
     vector<MazeSector> maze;
     Maze(int);
     void print();

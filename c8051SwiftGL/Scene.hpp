@@ -39,8 +39,9 @@ protected:
     void addDrawable(Drawable* d);
     
 public:
+    Scene();
     ~Scene();
-    void reset();
+    virtual void reset();
     int sceneGoalCondition;
     
     float timeLeft;
@@ -58,8 +59,10 @@ public:
 };
 
 class MazeScene : public Scene {
+    const int WALL_NUM = 8;
     
 public:
+    void reset() override;
     void loadModels() override;
     void update() override;
     void movePlayer(int) override;

@@ -214,9 +214,6 @@ void Maze::load(){
     maze[0].setWallHidden(3);
     maze[maze.size() - 1].setWallHidden(0);
     
-    //Generate goal condition value on rand value from 0-1
-    goalCondition = rand() % 2;
-    
     srand(time(NULL));
     stack.clear();
     visited.clear();

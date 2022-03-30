@@ -42,7 +42,6 @@ void Animator::update(){
         vec3 positionSpeed  = transformSpeed->getPosition(), rotationSpeed = transformSpeed->getAngles();
         contextTransform->translate(vec3(bRatio * positionSpeed.x * elapsedTime, 0.f, bRatio * positionSpeed.z * elapsedTime));
         contextTransform->rotate(vec3(rotationSpeed.x * elapsedTime, rotationSpeed.y * elapsedTime, rotationSpeed.z * elapsedTime));
-        cout << "bRatio: " << bRatio << endl;
     }
     
     lastFrame = chrono::steady_clock::now();
