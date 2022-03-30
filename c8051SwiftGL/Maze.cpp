@@ -262,6 +262,8 @@ MazeSector Maze::getSector(int row, int column)
     {
         index = 0;
     }
+    cerr << "Grabbing sector: " << index << " ";
+    maze[index].print(); cerr << std::endl;
     
     return maze[index];
 }

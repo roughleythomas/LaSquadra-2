@@ -66,6 +66,7 @@ public:
 protected:
     vector<Drawable*> coinDrawables;
     Maze* maze;
+    vec3 prevPlayerPos;
 };
 
 #endif /* Scene_hpp */

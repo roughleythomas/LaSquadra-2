@@ -176,7 +176,7 @@ void MazeScene::loadModels(){
     
     srand (time(NULL));
     float wallNum = 8;
-    Maze* maze = new Maze(wallNum);//random maze size
+    maze = new Maze(wallNum);//random maze size
     maze->print();
     
     float sector = 2.f / wallNum;
@@ -209,12 +209,37 @@ void MazeScene::loadModels(){
     }
     
     playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
+    prevPlayerPos = playerDrawable->globalTransform->getPosition();
 }
 
 void MazeScene::update(){
     Scene::update();
     if(playerDir != -1){
         vec3 playerPos = playerDrawable->globalTransform->getPosition();
+        std::cerr << "PrevPos: " << prevPlayerPos.x << " " << prevPlayerPos.z << std::endl;
+        std::cerr << "Pos: " << playerPos.x << " " << playerPos.z << std::endl;
+        int collision = collisionCheck(playerPos.x, playerPos.z);
+        Transform* rebound = new Transform();
+        vec3 deltaV = prevPlayerPos - playerPos;
+        switch(collision)
+        {
+            case 1:
+                playerPos.x = prevPlayerPos.x;
+                break;
+            case 2:
+                playerPos.z = prevPlayerPos.z;
+                break;
+            case 3:
+                playerPos.x = prevPlayerPos.x;
+                playerPos.z = prevPlayerPos.z;
+                break;
+        }
+        if(collision != 0)
+        {
+            playerDrawable->anim->assignTransformSpeed(rebound);
+            playerDrawable->globalTransform->setPosition(playerPos);
+            std::cerr << "Delta: " << deltaV.x << " " << deltaV.z << std::endl;
+        }
         for (int i = 0; i < coinDrawables.size(); i++) {
             Drawable *drawable = coinDrawables[i];
             vec3 position = drawable->globalTransform->getPosition();
@@ -227,6 +252,7 @@ void MazeScene::update(){
                 remove(drawables.begin(), drawables.end(), drawable);
             }
         }
+        prevPlayerPos = playerPos;
     }
 }
 
@@ -256,20 +282,40 @@ int MazeScene::collisionCheck(float posX, float posY)
 {
     int collision = 0;
     int row = floor(posX * 2 + 4);
-    int column = floor(posY * 2 + 4);
+    int column = 7 - floor(posY * 2 + 4);
     
-    float deltaX = (row * (MAZE_CELL_SIZE / 2.0f)) - posX;
-    float deltaY = (column * (MAZE_CELL_SIZE / 2.0f)) - posY;
+    float deltaX = ((row * (MAZE_CELL_SIZE)) - 1.75f) - posX;
+    float deltaY = (1.75f - (column * (MAZE_CELL_SIZE))) - posY;
+    
+    cerr << "Original Cell: " << row  << " " << column << std::endl;
+    cerr << "Collision Delta: " << deltaX << " " << deltaY << std::endl;
     
     collision = wallCheck(row, column, posX, posY);
     if(deltaX > 0 && row < maze->getSize())
-        collision &= wallCheck(row - 1, column, posX, posY);
+    {
+        cerr << "Right Cell: " << row + 1 << " " << column << std::endl;
+        collision |= wallCheck(row + 1, column, posX, posY);
+    }
     else if(deltaX < 0 && row > 0)
-        collision &= wallCheck(row + 1, column, posX, posY);
-    if(deltaY > 0 && column < maze->getSize())
-        collision &= wallCheck(row, column - 1, posX, posY);
-    else if(deltaY < 0 && column > 0)
-        collision &= wallCheck(row, column + 1, posX, posY);
+    {
+        cerr << "Left Cell: " << row - 1 << " " << column << std::endl;
+        collision |= wallCheck(row - 1, column, posX, posY);
+    }
+    if(deltaY > 0 && column > 0)//column < maze->getSize())
+    {
+        cerr << "Bot Cell: " << row << " " << column - 1 << std::endl;
+        collision |= wallCheck(row , column - 1, posX, posY);
+    }
+    else if(deltaY < 0 && column < maze->getSize())
+    {
+        cerr << "Top Cell: " << row << " " << column + 1 << std::endl;
+        collision |= wallCheck(row, column + 1, posX, posY);
+    }
+    
+    if(collision != 0)
+    {
+        cerr << "***COLLISION: " << collision << "***" << std::endl;
+    }
     
     return collision;
 }
@@ -277,125 +323,143 @@ int MazeScene::collisionCheck(float posX, float posY)
 int MazeScene::wallCheck(int row, int column, float posX, float posY)
 {
     int collision = 0;
-    int topC = column > 0 ? column - 1 : column;
     int leftR = row > 0 ? row - 1 : row;
+    int botC = column > 0 ? column - 1 : column;
     
-    float cellCenterX = row * 0.5 - 1.75;
-    float cellCenterY = column * 0.5 - 1.75;
+    /*int topC = column > 0 ? column - 1 : column;
+    int leftR = row > 0 ? row - 1 : row;*/
+    
+    float cellCenterX = row * MAZE_CELL_SIZE - 1.75;
+    float cellCenterY = 1.75 - column * MAZE_CELL_SIZE;
     
     float deltaX = posX - cellCenterX;
     float deltaY = posY - cellCenterY;
     
     MazeSector curCell = maze->getSector(row, column);
-    MazeSector topCell = maze->getSector(row, topC);
-    MazeSector leftCell = maze->getSector(leftR, column);
+    MazeSector botCell = maze->getSector(leftR, column);
+    MazeSector leftCell = maze->getSector(row, botC);
+    
+    float leftCheck = deltaX - PLAYER_RADIUS - SAFE_DISTANCE;
+    float topCheck = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
+    float rightCheck = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
+    float botCheck = deltaY - PLAYER_RADIUS - SAFE_DISTANCE;
     
     switch(curCell.getType())
     {
         case 0:
-            if(!curCell.getWallHidden(0))
-            {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!curCell.getWallHidden(1))
-            {
-                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            if(!curCell.getWallHidden(2))
-            {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
             if(!curCell.getWallHidden(3))
             {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(abs(leftCheck) > MAZE_CELL_SIZE / 2.0f)
                     collision |= 1;
+                cerr << "LEFT CHECK: " << collision << std::endl;
             }
-            break;
-        case 1:
             if(!curCell.getWallHidden(0))
             {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(topCheck > MAZE_CELL_SIZE / 2.0f)
                     collision |= 2;
+                cerr << "TOP CHECK: " << collision << std::endl;
             }
             if(!curCell.getWallHidden(1))
             {
-                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(rightCheck > MAZE_CELL_SIZE / 2.0f)
                     collision |= 1;
+                cerr << "RIGHT CHECK: " << collision << std::endl;
             }
             if(!curCell.getWallHidden(2))
             {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(abs(botCheck) > MAZE_CELL_SIZE)
                     collision |= 2;
-            }
-            if(!leftCell.getWallHidden(1))
-            {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
+                cerr << "BOT CHECK: " << collision << std::endl;
             }
             break;
         case 2:
             if(!curCell.getWallHidden(0))
             {
-                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(abs(leftCheck) > MAZE_CELL_SIZE / 2.0f)
                     collision |= 1;
+                cerr << "LEFT CHECK: " << collision << std::endl;
             }
             if(!curCell.getWallHidden(1))
             {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(topCheck > MAZE_CELL_SIZE / 2.0f)
                     collision |= 2;
+                cerr << "TOP CHECK: " << collision << std::endl;
             }
             if(!curCell.getWallHidden(2))
             {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(rightCheck > MAZE_CELL_SIZE / 2.0f)
                     collision |= 1;
+                cerr << "RIGHT CHECK: " << collision << std::endl;
             }
-            if(!topCell.getWallHidden(1))
+            if((botCell.getType() == 0 && !botCell.getWallHidden(0)) ||
+               (botCell.getType() == 1 && !botCell.getWallHidden(1)))
+            //if(!botCell.getWallHidden(1))
             {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(abs(botCheck) > MAZE_CELL_SIZE)
                     collision |= 2;
+                cerr << "BOT CHECK: " << collision << std::endl;
+            }
+            break;
+        case 1:
+            if(!leftCell.getWallHidden(1))
+            {
+                if(abs(leftCheck) > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+                cerr << "LEFT CHECK: " << collision << std::endl;
+            }
+            if(!curCell.getWallHidden(0))
+            {
+                if(topCheck > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+                cerr << "TOP CHECK: " << collision << std::endl;
+            }
+            if(!curCell.getWallHidden(1))
+            {
+                if(rightCheck > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 1;
+                cerr << "RIGHT CHECK: " << collision << std::endl;
+            }
+            if(!curCell.getWallHidden(2))
+            {
+                if(abs(botCheck) > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+                cerr << "BOT CHECK: " << collision << std::endl;
             }
             break;
         case 3:
-            if(!curCell.getWallHidden(0) && deltaX > 0)
+            if((leftCell.getType() == 3 && !leftCell.getWallHidden(1))
+               || (leftCell.getType() == 1 && !leftCell.getWallHidden(2)))
             {
-                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(abs(leftCheck) > MAZE_CELL_SIZE / 2.0f)
                     collision |= 1;
+                cerr << "LEFT CHECK: " << collision << std::endl;
             }
-            if(!curCell.getWallHidden(1) && deltaY < 0)
+            if(!curCell.getWallHidden(0))
             {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(topCheck > MAZE_CELL_SIZE / 2.0f)
                     collision |= 2;
+                cerr << "TOP CHECK: " << collision << std::endl;
             }
-            if(!topCell.getWallHidden(1))
+            if(!curCell.getWallHidden(1))
             {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!leftCell.getWallHidden(1))
-            {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
+                if(rightCheck > MAZE_CELL_SIZE / 2.0f)
                     collision |= 1;
+                cerr << "RIGHT CHECK: " << collision << std::endl;
+            }
+            if(!botCell.getWallHidden(0))
+            {
+                if(abs(botCheck) > MAZE_CELL_SIZE / 2.0f)
+                    collision |= 2;
+                cerr << "BOT CHECK: " << collision << std::endl;
             }
             break;
+    }
+    
+    if(collision != 0)
+    {
+        std::cerr << "***COLLISION***\nTYPE: " << collision << "\nCELL TYPE: " << curCell.getType() << "\nCELL POS: " << cellCenterX << " " << cellCenterY << "\nROW: " << row << "\nCOLUMN: " << column << std::endl;
+        std::cerr << abs(leftCheck) << " " << topCheck << " " << rightCheck << " " << abs(botCheck) << std::endl;
+        std::cerr << posX << " " << posY << std::endl;
     }
     
     return collision;
