@@ -169,6 +169,14 @@ void Scene::loadModels(){
 
 void MazeScene::reset(){
     Scene::reset();
+    if(drawables.size() > 4){
+        playerDrawable->anim->setEnabled(false);
+        Transform* transformSpeed = new Transform();
+        playerDrawable->anim->assignTransformSpeed(transformSpeed);
+        coinDrawables.clear();
+        while(drawables.size() > 4)
+            drawables.pop_back();
+    }
     sceneWon = false;
     gameStarted = false;
     
