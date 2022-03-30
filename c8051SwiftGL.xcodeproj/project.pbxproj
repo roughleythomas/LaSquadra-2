@@ -18,7 +18,7 @@
 		025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D6277339AE00A45ADB /* Shader.fsh */; };
 		025AE9D9277339AF00A45ADB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 025AE9D7277339AF00A45ADB /* Shader.vsh */; };
 		3CBC5A5E27F257EC0027E41A /* UITimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CBC5A5C27F257EC0027E41A /* UITimer.cpp */; };
-		3CF7CA1727F42F7B000F9B92 /* ExitPortal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CF7CA1527F42F7B000F9B92 /* ExitPortal.png */; };
+		3CF7CA1A27F44425000F9B92 /* ExitPortal.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CF7CA1927F44425000F9B92 /* ExitPortal.png */; };
 		3D30932427EEF92700F3B6CD /* Cylinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D30932327EEF92700F3B6CD /* Cylinder.cpp */; };
 		3D30932827EF464D00F3B6CD /* coin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3D30932727EF464D00F3B6CD /* coin.jpg */; };
 		6419068227E383DC00D8EA00 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6419068027E383DC00D8EA00 /* Scene.cpp */; };
@@ -53,7 +53,7 @@
 		025AE9D7277339AF00A45ADB /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
 		3CBC5A5C27F257EC0027E41A /* UITimer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = UITimer.cpp; sourceTree = "<group>"; };
 		3CBC5A5D27F257EC0027E41A /* UITimer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UITimer.hpp; sourceTree = "<group>"; };
-		3CF7CA1527F42F7B000F9B92 /* ExitPortal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ExitPortal.png; path = ../../../Downloads/ExitPortal.png; sourceTree = "<group>"; };
+		3CF7CA1927F44425000F9B92 /* ExitPortal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ExitPortal.png; sourceTree = "<group>"; };
 		3D30932227EEF92700F3B6CD /* Cylinder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cylinder.hpp; sourceTree = "<group>"; };
 		3D30932327EEF92700F3B6CD /* Cylinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cylinder.cpp; sourceTree = "<group>"; };
 		3D30932727EF464D00F3B6CD /* coin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = coin.jpg; sourceTree = "<group>"; };
@@ -148,7 +148,7 @@
 				642CBB2227D669FE00448432 /* Maze.hpp */,
 				648DD81027E24CFE00E9FBF0 /* Animator.cpp */,
 				648DD81127E24CFE00E9FBF0 /* Animator.hpp */,
-				3CF7CA1527F42F7B000F9B92 /* ExitPortal.png */,
+				3CF7CA1927F44425000F9B92 /* ExitPortal.png */,
 				648DD80227E232C800E9FBF0 /* iron.jpg */,
 				648DD80127E232C800E9FBF0 /* dirt.jpg */,
 				3D30932727EF464D00F3B6CD /* coin.jpg */,
@@ -219,7 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D30932827EF464D00F3B6CD /* coin.jpg in Resources */,
-				3CF7CA1727F42F7B000F9B92 /* ExitPortal.png in Resources */,
+				3CF7CA1A27F44425000F9B92 /* ExitPortal.png in Resources */,
 				025AE9D8277339AF00A45ADB /* Shader.fsh in Resources */,
 				025AE9C8277337E200A45ADB /* LaunchScreen.storyboard in Resources */,
 				025AE9C5277337E200A45ADB /* Assets.xcassets in Resources */,

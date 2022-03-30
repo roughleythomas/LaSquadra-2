@@ -205,8 +205,8 @@ void MazeScene::loadModels(){
     
     cout << "\nCurrent goal condition: " << maze->goalCondition << "\n";
     
-    //HARD CODE GOAL CONDITION, REMOVE THIS AFTER TESTING!!!!!!  *******************
-    sceneGoalCondition = 1; //maze->goalCondition;
+    //Set the scene goal condition to whatever generated number condition was provided by maze.
+    sceneGoalCondition = maze->goalCondition;
     
     
     
