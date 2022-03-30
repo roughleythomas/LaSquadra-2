@@ -9,14 +9,34 @@ extension ViewController: GLKViewControllerDelegate {
     func glkViewControllerUpdate(_ controller: GLKViewController) {
         glesRenderer.update();
         
+        // make label
+        let labelRect = CGRect(x: 30, y: 80, width: 250, height: 100)
+        let label = UILabel(frame: labelRect)
+        label.textAlignment = .center
+        label.textColor = UIColor.white;
+        label.numberOfLines = 2;
+        label.tag = 1;
+        
+        let time = glesRenderer.getGameTime()
+        
+        label.text = "Time left:\(time)"
+        
+        view.viewWithTag(1)?.removeFromSuperview()
+        self.view.addSubview(label)
+        
         if (!isGameEnded) {
             if (glesRenderer.achievedGoal()) {
                     
                 glesRenderer.score+=1;
                 
-                showGameOver();
+                showGamePassed();
+                
+            }
+            else if(time <= 0.0){
+                    showGameOver();
             }
         }
+        
     }
 }
 
@@ -38,8 +58,18 @@ class ViewController: GLKViewController {
         }
     }
     
-    private func showGameOver() {
+    private func showGamePassed() {
         let alertController = UIAlertController(title: "Finished Minigame!", message: "You have finished \(glesRenderer.score) games", preferredStyle: .alert)
+        
+        alertController.addAction(UIAlertAction(title: "Next Game", style: .default, handler: nextGame))
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    
+    private func showGameOver() {
+        let alertController = UIAlertController(title: "Times up!", message: "You have finished \(glesRenderer.score) games", preferredStyle: .alert)
+        
         self.present(alertController, animated: true, completion: nil)
     }
     
@@ -57,6 +87,7 @@ class ViewController: GLKViewController {
         
         let pan = UIPanGestureRecognizer(target: self, action: #selector(self.doPan(_:)))
         tapView.addGestureRecognizer(pan)
+        
     }
     
     override func glkView(_ view: GLKView, drawIn rect: CGRect) {
@@ -82,6 +113,10 @@ class ViewController: GLKViewController {
     }
     
     // - Actions
+    @IBAction func nextGame(_ sender: UIAlertAction) {
+        glesRenderer.reset()
+    }
+    
     @IBAction func onMoveLeftButtonClick(_ sender: UIButton) {
         glesRenderer.setPlayerDir(3)
     }
