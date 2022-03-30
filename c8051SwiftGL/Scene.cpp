@@ -156,6 +156,21 @@ void MazeScene::addCoin(float posX, float posY, float radius, float thickness, i
     coinDrawable->anim->setEnabled(true);
 }
 
+//Add new trap to the maze.
+void MazeScene::addTrap(float posX, float posY, float radius, float thickness, int textureListIndex, int sectorCount){
+    Drawable *trapDrawable = new Cylinder(textureListIndex, radius, thickness, sectorCount);
+    addDrawable(trapDrawable);
+    trapDrawables.push_back(trapDrawable);
+    
+    trapDrawable->globalTransform->setPosition(vec3(posX, 0.5f, posY));
+    Transform* transformSpeed = new Transform();
+    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+    transformSpeed->setAngles(vec3(0, 5.f, 0.f));
+    trapDrawable->assignAnimator(new Animator(transformSpeed));
+//    trapDrawable->anim->assignTransform(trapDrawable->localTransform);
+    trapDrawable->anim->setEnabled(true);
+}
+
 //Add new UI Timer to the maze
 void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex)
 {
@@ -212,6 +227,14 @@ void MazeScene::loadModels(){
             if (coinExists) {
                 addCoin(centerX, centerY, sector / 2, 0.015, 2);
             }
+            
+            // make trap
+            bool trapExists = rand() % 15 == 0; // 1/15 chance of making a trap
+            if (trapExists) {
+                if (!coinExists) { // Check to avoid generating a trap on the same cell as a coin
+                    addTrap(centerX, centerY, 0.25, 0.02, 3);
+                }
+            }
         }
     }
     
@@ -248,6 +271,19 @@ void MazeScene::update(){
                 remove(drawables.begin(), drawables.end(), drawable);
             }
         }
+        
+        // iterate over the traps, checking if the player is close to each
+        for (int i = 0; i < trapDrawables.size(); i++) {
+            Drawable *drawable = trapDrawables[i];
+            vec3 position = drawable->globalTransform->getPosition();
+            float deltaX = position.x - playerPos.x;
+            float deltaY = position.z - playerPos.z;
+            float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (distance < 0.2) {
+                // player collided with trap, send them back to start
+                playerDrawable->globalTransform->setPosition(vec3(-1.f * 0.25f + 0.25f, 0.5f, 1.f * 0.25f - 0.25f));
+            }
+        }
     }
 }
 
@@ -270,6 +306,19 @@ void MazeScene::movePlayer(int playerDir) {
             // remove collide coin
             coinDrawables.erase(coinDrawables.begin() + i);
             remove(drawables.begin(), drawables.end(), drawable);
+        }
+    }
+    
+    // iterate over the traps, checking if the player is close to each
+    for (int i = 0; i < trapDrawables.size(); i++) {
+        Drawable *drawable = trapDrawables[i];
+        vec3 position = drawable->globalTransform->getPosition();
+        float deltaX = position.x - playerPos.x;
+        float deltaY = position.z - playerPos.z;
+        float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (distance < 0.2) {
+            // player collided with trap, send them back to start
+            playerDrawable->globalTransform->setPosition(vec3(-1.f * 0.25f + 0.25f, 0.5f, 1.f * 0.25f - 0.25f));
         }
     }
 }

@@ -60,6 +60,7 @@ public:
     void addWall(bool, float, float, float, int = 1);
     void addTimer(bool, float, float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);
+    void addTrap(float, float, float, float, int, int = 30);
     int collisionCheck(float posX, float posY);
     //Given position and cell is there a collision?
     int wallCheck(int row, int column, float posX, float posY);
@@ -67,6 +68,7 @@ protected:
     Drawable* ballDrawable;
     Drawable* enemy;
     vector<Drawable*> coinDrawables;
+    vector<Drawable*> trapDrawables;
     Maze* maze;
 };
 

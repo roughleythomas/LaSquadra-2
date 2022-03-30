@@ -25,7 +25,7 @@ GLESRenderer::GLESRenderer(const char *vertexShaderFile, const char *fragmentSha
             return;
     }
 
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
         GLuint textureId = SetupTexture(spriteData[i], width[i], height[i]);
         glBindTexture(GL_TEXTURE_2D, textureId);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
