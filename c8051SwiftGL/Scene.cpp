@@ -216,17 +216,17 @@ void MazeScene::loadModels(){
     }
     
     
-    // draw enemy (currently a ball)
-    float radius = 0.25f;
-    enemy = new Sphere(2, radius, 10, 10); // give it temp texture & values for now, changed later with a model?
-    addDrawable(enemy);
-    enemy->globalTransform->setPosition(vec3(-1.75f, (0.25f + radius), -1.75f));  //start it at back-left corner, just above the ground
-    Transform* transformSpeed = new Transform();
-    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
-    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
-    enemy->assignAnimator(new Animator(transformSpeed));
-    enemy->anim->assignTransform(enemy->globalTransform);
-    enemy->anim->setEnabled(true);
+//    // draw enemy (currently a ball)
+//    float radius = 0.25f;
+//    enemy = new Sphere(2, radius, 10, 10); // give it temp texture & values for now, changed later with a model?
+//    addDrawable(enemy);
+//    enemy->globalTransform->setPosition(vec3(-1.75f, (0.25f + radius), -1.75f));  //start it at back-left corner, just above the ground
+//    Transform* transformSpeed = new Transform();
+//    transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+//    transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+//    enemy->assignAnimator(new Animator(transformSpeed));
+//    enemy->anim->assignTransform(enemy->globalTransform);
+//    enemy->anim->setEnabled(true);
     
     printf("loadModels");
     playerDrawable->globalTransform->setPosition(vec3(-(float)wallNum * sector + sector, 0.5f, (float)wallNum * sector - sector));
@@ -234,7 +234,6 @@ void MazeScene::loadModels(){
 
 void MazeScene::update(){
     Scene::update();
-    moveEnemy();
     if(playerDrawable->anim->isMoving()){
         vec3 playerPos = playerDrawable->globalTransform->getPosition();
         for (int i = 0; i < coinDrawables.size(); i++) {
@@ -252,25 +251,6 @@ void MazeScene::update(){
     }
 }
 
-//Translate ball to x,y instead of current x,y position.
-void MazeScene::moveEnemy(int playerDir) {
-    Scene::movePlayer(playerDir);
-    
-    vec3 playerPos = playerDrawable->globalTransform->getPosition();
-    // check collision
-    for (int i = 0; i < coinDrawables.size(); i++) {
-        Drawable *drawable = coinDrawables[i];
-        vec3 position = drawable->globalTransform->getPosition();
-        float deltaX = position.x - playerPos.x;
-        float deltaY = position.z - playerPos.y;
-        float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
-        if (distance < 0.2) {
-            // remove collide coin
-            coinDrawables.erase(coinDrawables.begin() + i);
-            remove(drawables.begin(), drawables.end(), drawable);
-        }
-    }
-}
 
 // ---------- Other scene specific functions -------------
 
