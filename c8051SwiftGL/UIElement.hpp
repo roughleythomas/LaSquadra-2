@@ -1,19 +1,19 @@
 //
-//  UITimer.hpp
+//  UIElement.hpp
 //  c8051SwiftGL
 //
 //  Created by Kevin Vilanova on 2022-03-28.
 //
-#ifndef UITimer_hpp
-#define UITimer_hpp
+#ifndef UIElement_hpp
+#define UIElement_hpp
 
 #include <stdio.h>
 #include "Drawable.hpp"
 
-class UITimer: public Drawable
+class UIElement: public Drawable
 {
 public:
-    UITimer(int);
+    UIElement(int);
     
     bool loadVertices(void* info);
     bool loadNormals(void* info);

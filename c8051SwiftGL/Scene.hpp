@@ -15,7 +15,7 @@
 #include "Cube.hpp"
 #include "Sphere.hpp"
 #include "Cylinder.hpp"
-#include "UITimer.hpp"
+#include "UIElement.hpp"
 #include "Camera.hpp"
 #include "Maze.hpp"
 
@@ -59,7 +59,7 @@ public:
     bool isAllCoinsCollected() override;
     bool achievedGoal() override;
     void addWall(bool, float, float, float, int = 1);
-    void addTimer(bool, float, float, float, int = 1);
+    void addTimer(float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);
     void addGoal(float, float, float, float, int, int = 30);
     int collisionCheck(float posX, float posY);

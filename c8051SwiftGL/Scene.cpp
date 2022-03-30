@@ -172,10 +172,10 @@ void MazeScene::addGoal(float posX, float posY, float radius, float thickness, i
 }
 
 //Add new UI Timer to the maze
-void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex)
+void MazeScene::addTimer(float posX, float posY, int textureListIndex)
 {
     //Add new drawable with texture element
-    addDrawable(new UITimer(0));
+    addDrawable(new UIElement(textureListIndex));
     //int lindex = drawables.size() - 1;
     //drawables[lindex]->globalTransform->setPosition(glm::vec3(posX, 0.25f, posY));
     
@@ -193,6 +193,8 @@ void MazeScene::loadModels(){
     Scene::loadModels();
     addDrawable(new Cube(0));
     drawables[1]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
+    
+    addTimer(1.0f,1.0f,3);
     
     srand (time(NULL));
     float wallNum = 8;
