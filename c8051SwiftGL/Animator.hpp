@@ -19,6 +19,7 @@ class Animator{
     Transform* transformSpeed;
     std::chrono::time_point<std::chrono::steady_clock> lastFrame;
     bool enabled = false;
+    float slip = 0, buildupSpeed = 0;
     
 public:
     Animator();
@@ -27,7 +28,9 @@ public:
     void assignTransformSpeed(Transform*);
     void update();
     void setEnabled(bool);
+    void setBuildupSpeed(float);
     Transform* getTransformSpeed();
+    bool isMoving();
 };
 
 #endif /* Animator_hpp */
