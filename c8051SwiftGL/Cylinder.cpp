@@ -81,6 +81,8 @@ void Cylinder::loadAll(){
         
         texCoords.push_back(0);
         texCoords.push_back(0);
+        texCoords.push_back(1);
+        texCoords.push_back(1);
     }
     
     // side
@@ -105,8 +107,8 @@ void Cylinder::loadAll(){
         normals.push_back(ny);
         normals.push_back(thickness);
         
-        texCoords.push_back(0);
-        texCoords.push_back(0);
+        texCoords.push_back(nx);
+        texCoords.push_back(ny);
     }
     
     //indices

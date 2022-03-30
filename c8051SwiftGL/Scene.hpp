@@ -31,6 +31,7 @@ class Scene {
     
 protected:
     Drawable* playerDrawable;
+    Drawable* goal;
     int playerDir = -1;
     vector<Drawable*> drawables;
     void addDrawable(Drawable* d);
@@ -60,6 +61,7 @@ public:
     void addWall(bool, float, float, float, int = 1);
     void addTimer(bool, float, float, float, int = 1);
     void addCoin(float, float, float, float, int, int = 30);
+    void addGoal(float, float, float, float, int, int = 30);
     int collisionCheck(float posX, float posY);
     //Given position and cell is there a collision?
     int wallCheck(int row, int column, float posX, float posY);

@@ -51,22 +51,26 @@ void Scene::movePlayer(int playerDir) {
         return;
     }
     
+    cout << "\nFrom scene movePlayer playerDir: " << playerDir;
+    
+    float playerSpeed = 0.005f;
+    
     Transform* transformSpeed = playerDrawable->anim->getTransformSpeed();
     switch(playerDir){
         case -1:
             transformSpeed->setPosition(vec3(0.f, 0.f, 0.f));
             break;
         case 0:
-            transformSpeed->setPosition(vec3(0.f, 0.f, -0.005f));
+            transformSpeed->setPosition(vec3(0.f, 0.f, -1*playerSpeed));
             break;
         case 1:
-            transformSpeed->setPosition(vec3(0.005f, 0.f, 0.f));
+            transformSpeed->setPosition(vec3(playerSpeed, 0.f, 0.f));
             break;
         case 2:
-            transformSpeed->setPosition(vec3(0.f, 0.f, 0.005f));
+            transformSpeed->setPosition(vec3(0.f, 0.f, playerSpeed));
             break;
         case 3:
-            transformSpeed->setPosition(vec3(-0.005f, 0.f, 0.f));
+            transformSpeed->setPosition(vec3(-1*playerSpeed, 0.f, 0.f));
             break;
     }
     playerDrawable->anim->assignTransformSpeed(transformSpeed);
@@ -151,6 +155,22 @@ void MazeScene::addCoin(float posX, float posY, float radius, float thickness, i
     coinDrawable->anim->setEnabled(true);
 }
 
+//Add new goal object to the maze.
+void MazeScene::addGoal(float posX, float posY, float radius, float thickness, int textureListIndex, int sectorCount){
+    Drawable *portalDrawable = new Cylinder(textureListIndex, radius, thickness, sectorCount);
+    addDrawable(portalDrawable);
+    //coinDrawables.push_back(portalDrawable);
+    
+    goal = portalDrawable;
+    
+    portalDrawable->globalTransform->setPosition(vec3(posX, 0.5f, posY));
+    //Transform* transformSpeed = new Transform();
+    //transformSpeed->setScale(vec3(0.f, 0.f, 0.f));
+    //transformSpeed->setAngles(vec3(0, 0.1f, 0.1f));
+    //portalDrawable->assignAnimator(new Animator(transformSpeed));
+    //portalDrawable->anim->setEnabled(true);
+}
+
 //Add new UI Timer to the maze
 void MazeScene::addTimer(bool horizontal, float posX, float posY, float alternateScale, int textureListIndex)
 {
@@ -186,7 +206,11 @@ void MazeScene::loadModels(){
     cout << "\nCurrent goal condition: " << maze->goalCondition << "\n";
     
     //HARD CODE GOAL CONDITION, REMOVE THIS AFTER TESTING!!!!!!  *******************
-    sceneGoalCondition = 0; //maze->goalCondition;
+    sceneGoalCondition = 1; //maze->goalCondition;
+    
+    
+    
+    bool goalNotAdded = true;
     
     for(int i = 0; i < wallNum; i++){
         int wallTypeHor = ((i > 0) ? 1 : 2),
@@ -201,9 +225,21 @@ void MazeScene::loadModels(){
             if(!maze->maze[i * wallNum + j].getWallHidden(wallTypeVer))
                 addWall(false, centerX + sector, centerY, sector);
             
-            bool coinExists = rand() % 8 == 0; // coin generator
-            if (coinExists) {
-                addCoin(centerX, centerY, sector / 2, 0.015, 2);
+            //Render specific objects based on goal condition
+            //goal condition 0, render coins
+            if(sceneGoalCondition == 0)
+            {
+            
+                bool coinExists = rand() % 8 == 0; // coin generator
+                if (coinExists) {
+                    addCoin(centerX, centerY, sector / 2, 0.015, 2);
+                }
+            
+            }//goal condition 1, render goal
+            else if (sceneGoalCondition == 1 && goalNotAdded && ((i == (int)wallNum/2) && (j == (int)wallNum/2)))
+            {
+                addGoal(centerX, centerY, sector/2, 0.01, 3);
+                goalNotAdded = false;
             }
         }
     }
@@ -234,20 +270,47 @@ void MazeScene::update(){
 
 //Translate ball to x,y instead of current x,y position.
 void MazeScene::movePlayer(int playerDir) {
+    //cout << "Player Dir: " << playerDir + "\n";
+    
     Scene::movePlayer(playerDir);
     
+    
     vec3 playerPos = playerDrawable->globalTransform->getPosition();
-    // check collision
-    for (int i = 0; i < coinDrawables.size(); i++) {
-        Drawable *drawable = coinDrawables[i];
-        vec3 position = drawable->globalTransform->getPosition();
+    
+    //collisionCheck(playerPos.x, playerPos.z);
+    // check collision for coins, if not all coins are collected.
+    if(!isAllCoinsCollected())
+    {
+        for (int i = 0; i < coinDrawables.size(); i++)
+        {
+            Drawable *drawable = coinDrawables[i];
+            vec3 position = drawable->globalTransform->getPosition();
+            float deltaX = position.x - playerPos.x;
+            float deltaY = position.z - playerPos.z;
+            float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (distance < 0.2) {
+                // remove collide coin
+                coinDrawables.erase(coinDrawables.begin() + i);
+                remove(drawables.begin(), drawables.end(), drawable);
+            }
+        }
+    }
+    
+    //If the player should be looking for the goal, check if the goal has been collided with.
+    if(sceneGoalCondition == 1)
+    {
+        vec3 position = goal->globalTransform->getPosition();
+        
+        //cout << "\nPlayer Y: " << playerPos.y;
+        
         float deltaX = position.x - playerPos.x;
-        float deltaY = position.z - playerPos.y;
+        float deltaY = position.z - playerPos.z;
         float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        //cout << distance << "\nX: " << deltaX <<"\nY: "<< deltaY;
         if (distance < 0.2) {
-            // remove collide coin
-            coinDrawables.erase(coinDrawables.begin() + i);
-            remove(drawables.begin(), drawables.end(), drawable);
+            cout << "goal found!";
+            sceneWon = true;
         }
     }
 }
@@ -413,14 +476,15 @@ bool MazeScene::achievedGoal()
        case 0:
            if(coinDrawables.empty())
            {
-               cout << "You win!";
+               cout << "All coins collected!";
                sceneWon = true;
-               return sceneWon;
            }
+           return sceneWon;
            break;
        //Escape the maze!
        case 1:
-           cout << "You win! But not really because this needs to be set once collisions are in.";
+           return sceneWon;
+           //cout << "You win! But not really because this needs to be set once collisions are in.";
            break;
        default:
            cout<<"Error: MazeScene does not have a goalCondition set. Please check Scene.cpp, as the current condition is " << sceneGoalCondition;

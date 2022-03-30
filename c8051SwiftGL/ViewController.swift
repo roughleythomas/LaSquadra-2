@@ -10,7 +10,7 @@ extension ViewController: GLKViewControllerDelegate {
         
         if (!isGameEnded) {
             if (glesRenderer.achievedGoal()) {
-                
+                    
                 glesRenderer.score+=1;
                 
                 showGameOver();

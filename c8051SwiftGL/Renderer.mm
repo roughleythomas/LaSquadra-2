@@ -48,6 +48,7 @@
     textureNames.push_back(@"dirt.jpg");
     textureNames.push_back(@"iron.jpg");
     textureNames.push_back(@"coin.jpg");
+    textureNames.push_back(@"ExitPortal.png");
     vector<GLubyte*> textureDataList;
     vector<size_t> textureWidthList, textureHeightList;
     
