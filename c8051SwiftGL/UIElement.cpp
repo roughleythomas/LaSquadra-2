@@ -16,6 +16,7 @@ UIElement::UIElement(int textureListIndex):Drawable(textureListIndex, 4, 4, 4, 6
     loadNormals(0);
     loadTextureCoords(0);
     loadIndices(0);
+    isUI = true;
 }
 
 bool UIElement::loadVertices(void* info)

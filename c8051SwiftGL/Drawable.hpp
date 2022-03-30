@@ -40,6 +40,8 @@ public:
     float* getTextureCoords();
     int getTextureListIndex();
     Animator* anim = NULL;
+    
+    bool isUI = false;
 protected:
     
     GLuint textureListIndex;

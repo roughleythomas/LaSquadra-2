@@ -66,22 +66,22 @@ void Drawable::updateTransform(){
 }
 
 glm::mat4 Drawable::draw(glm::mat4 mvp){
-    glVertexAttribPointer ( 0, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), vertices.data() );
+    glVertexAttribPointer ( 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof ( GLfloat ), vertices.data() );
     glEnableVertexAttribArray ( 0 );
 
     glVertexAttrib4f ( 1, 1.0f, 0.0f, 0.0f, 1.0f );
 
-    glVertexAttribPointer ( 2, 3, GL_FLOAT,
-                           GL_FALSE, 3 * sizeof ( GLfloat ), normals.data() );
+    glVertexAttribPointer ( 2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof ( GLfloat ), normals.data() );
     glEnableVertexAttribArray ( 2 );
 
-    glVertexAttribPointer ( 3, 2, GL_FLOAT,
-                           GL_FALSE, 2 * sizeof ( GLfloat ), texCoords.data() );
+    glVertexAttribPointer ( 3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof ( GLfloat ), texCoords.data() );
     glEnableVertexAttribArray ( 3 );
     
+    glm::mat4 transform;
+    
     //object's properties
-    glm::mat4 transform = mvp * transformMatrix;
+    transform = mvp * transformMatrix;
+    
     return transform;
 }
 

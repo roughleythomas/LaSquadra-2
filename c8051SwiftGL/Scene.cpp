@@ -51,7 +51,7 @@ void Scene::movePlayer(int playerDir) {
         return;
     }
     
-    cout << "\nFrom scene movePlayer playerDir: " << playerDir;
+    //cout << "\nFrom scene movePlayer playerDir: " << playerDir;
     
     float playerSpeed = 0.005f;
     
@@ -96,18 +96,26 @@ void Scene::draw(vector<GLuint> textureIds, float aspect, GLint mvpMatrixUniform
     
     for(Drawable *drawable : drawables){
         int *indices = drawable->getIndices(), numIndices = drawable->getNumIndices();
+
         mat4 transform = drawable->draw(mvp);
-        
         normalMatrix = glm::inverseTranspose(glm::mat3(transform));
+
         mat4 perspective = glm::perspective(60.0f * glm::pi<float>() / 180.f, aspect, 1.0f, 20.0f);
         vec3 angles = camera->getTransform()->getAngles();
-        perspective = glm::rotate(perspective, radians(angles.x), vec3(1, 0, 0));
-        perspective = glm::rotate(perspective, radians(angles.y), vec3(0, 1, 0));
-        perspective = glm::rotate(perspective, radians(angles.z), vec3(0, 0, 1));
-        transform = perspective * transform;
         
+        
+        //If the drawable isnt a UI drawable, then rotate the drawable based on the camera's current perspective
+        if(!drawable->isUI)
+        {
+            perspective = glm::rotate(perspective, radians(angles.x), vec3(1, 0, 0));
+            perspective = glm::rotate(perspective, radians(angles.y), vec3(0, 1, 0));
+            perspective = glm::rotate(perspective, radians(angles.z), vec3(0, 0, 1));
+        }
+        
+        transform = perspective * transform;
         glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, value_ptr(transform));
         glUniformMatrix3fv(normalMatrixUniform, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+        
         glBindTexture(GL_TEXTURE_2D, textureIds[drawable->getTextureListIndex()]);
         //glUniform1i(textureUniform, textureIds[drawable->getTextureListIndex()]);
         glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
