@@ -166,7 +166,7 @@ void Scene::loadModels(){
     //reset();
 }
 
-void Scene::setPlayerStationary(<#bool playerStationary#>){
+void Scene::setPlayerStationary(bool playerStationary){
     this->playerStationary = playerStationary;
 }
 
