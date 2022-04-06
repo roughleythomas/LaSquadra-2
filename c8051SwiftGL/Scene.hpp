@@ -18,6 +18,7 @@
 #include "UIElement.hpp"
 #include "Camera.hpp"
 #include "Maze.hpp"
+#include "PhysicsEngine.hpp"
 
 using namespace glm;
 
@@ -37,7 +38,7 @@ protected:
     int playerDir = -1;
     vector<Drawable*> drawables;
     void addDrawable(Drawable* d);
-    
+    PhysicsEngine* physics;
 public:
     Scene();
     ~Scene();
