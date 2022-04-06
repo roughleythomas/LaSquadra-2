@@ -7,6 +7,8 @@
 
 #include "PhysicsEngine.hpp"
 
+PhysicsEngine* PhysicsEngine::instance = 0;
+
 PhysicsEngine::PhysicsEngine():isInit(false), bodies(new std::vector<b2Body*>()){}
 
 PhysicsEngine::~PhysicsEngine()
@@ -32,12 +34,12 @@ void PhysicsEngine::update(float deltaTime)
     }
 }
 
-b2BodyDef PhysicsEngine::CreatePhysicsBodyDef(b2BodyType type, b2Vec2 position)
+b2BodyDef PhysicsEngine::CreatePhysicsBodyDef(b2BodyType type, float x, float y)
 {
     b2BodyDef bodyDef;
     
     bodyDef.type = type;
-    bodyDef.position.Set(position.x, position.y);
+    bodyDef.position.Set(x, y);
     
     return bodyDef;
 }
@@ -56,7 +58,7 @@ b2PolygonShape PhysicsEngine::CreatePhysicsShape(float width, float height)
 {
     b2PolygonShape shape;
     
-    shape.SetAsBox(height, width);
+    shape.SetAsBox(width / 2.0f, height / 2.0f);
     
     return shape;
 }

@@ -13,6 +13,7 @@
 
 Scene::Scene(){
     srand (time(NULL));
+    physics = PhysicsEngine::GetInstance();
 }
 
 //Delete all drawables and the camera upon a deconstruction of this class.
@@ -20,6 +21,8 @@ Scene::~Scene(){
     for(Drawable *d : drawables)
         delete d;
     delete camera;
+    if(physics)
+        delete physics;
 }
 
 //Add a new 'drawable' element to the scene to be rendered upon a 'draw' call.
@@ -94,6 +97,7 @@ void Scene::update(){
     
     double duration = std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrame).count();
     
+    physics->update((float)duration);
     if(duration >= 1.0 && gameStarted && timeLeft > 0.0f)
         timeLeft -= 1.0f;
     
@@ -168,6 +172,14 @@ void Scene::loadModels(){
 
 void MazeScene::reset(){
     Scene::reset();
+    //Reset phyics engine
+    if(physics)
+        delete physics;
+    physics = PhysicsEngine::GetInstance();
+    //Initialize physics world
+    physics->init(b2Vec2(0,0));
+    //Initialize player physics object
+    //<TO DO>
     camera->getTransform()->setAngles(vec3(20.f, 0.f, 0.f));
     if(drawables.size() > 4){
         playerDrawable->anim->setEnabled(false);
@@ -187,47 +199,30 @@ void MazeScene::reset(){
     bool goalNotAdded = true;
     float sector = 2.f / WALL_NUM;
     
-    /*for(int i = 0; i < WALL_NUM; i++){
-        int wallTypeHor = ((i > 0) ? 1 : 2),
-            wallTypeVer = ((i > 0) ? 0 : 1);
-        
-        for(int j = 0; j < WALL_NUM; j++){
-            float centerX = -2.f + 2 * sector * (j + 1) - sector;
-            float centerY = 2.f - 2 * sector * (i + 1) + sector;
-            
-            if(!maze->maze[i * WALL_NUM + j].getWallHidden(wallTypeHor))
-                addWall(true, centerX, centerY - sector, sector);
-            if(!maze->maze[i * WALL_NUM + j].getWallHidden(wallTypeVer))
-                addWall(false, centerX + sector, centerY, sector);
-            
-            //Render specific objects based on goal condition
-            //goal condition 0, render coins
-            if(sceneGoalCondition == 0)
-            {
-            
-                bool coinExists = rand() % 12 == 0; // coin generator
-                if (coinExists) {
-                    addCoin(centerX, centerY, sector / 2, 0.015, 2);
-                }
-            
-            }//goal condition 1, render goal
-            else if (sceneGoalCondition == 1 && goalNotAdded && ((i == (int)WALL_NUM/2) && (j == (int)WALL_NUM/2)))
-            {
-                addGoal((WALL_NUM - 1) * sector, -(WALL_NUM - 1) * sector, sector/2, 0.01, 3);
-                goalNotAdded = false;
-            }
-        }
-    }*/
-    
+    //Initialize walls and wall hitboxes
     for(int r = 0; r < WALL_NUM; r++){
         for(int c = 0; c < WALL_NUM; c++){
             float centerX = -2.f + 2 * sector * (c + 1) - sector;
             float centerY = -2.f + 2 * sector * (r + 1) - sector;
             
             if(maze->maze[r * WALL_NUM + c].getWallVisible(1))
+            {
                 addWall(false, centerX + sector, centerY, sector);
+                //Initialize wall hitbox
+                b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, centerX + sector, centerY);
+                b2Body* bbody = physics->CreatePhysicsBody(bdef);
+                b2PolygonShape bshape = physics->CreatePhysicsShape(sector, 0.01f);
+                b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);
+            }
             if(maze->maze[r * WALL_NUM + c].getWallVisible(2))
+            {
                 addWall(true, centerX, centerY + sector, sector);
+                //Initialize wall hitbox
+                b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, centerX, centerY + sector);
+                b2Body* bbody = physics->CreatePhysicsBody(bdef);
+                b2PolygonShape bshape = physics->CreatePhysicsShape(0.01f, sector);
+                b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);
+            }
             
             if(sceneGoalCondition == 0)
             {
@@ -314,6 +309,7 @@ void MazeScene::addTimer(float posX, float posY, int textureListIndex)
 //Load all maze models into the scnee.
 void MazeScene::loadModels(){
     Scene::loadModels();
+    //Initialize physics world
     addDrawable(new Cube(0));
     drawables[1]->globalTransform->setScale(vec3(2.f, 0.25f, 2.f));
     drawables[1]->globalTransform->setPosition(vec3(0.f, -2.25f, -4.f));
@@ -395,155 +391,6 @@ void MazeScene::movePlayer(int playerDir) {
             sceneWon = true;
         }
     }
-}
-
-int MazeScene::collisionCheck(float posX, float posY)
-{
-    int collision = 0;
-    int row = floor(posX * 2 + 4);
-    int column = floor(posY * 2 + 4);
-    
-    float deltaX = (row * (MAZE_CELL_SIZE / 2.0f)) - posX;
-    float deltaY = (column * (MAZE_CELL_SIZE / 2.0f)) - posY;
-    
-    collision = wallCheck(row, column, posX, posY);
-    if(deltaX > 0 && row < maze->getSize())
-        collision &= wallCheck(row - 1, column, posX, posY);
-    else if(deltaX < 0 && row > 0)
-        collision &= wallCheck(row + 1, column, posX, posY);
-    if(deltaY > 0 && column < maze->getSize())
-        collision &= wallCheck(row, column - 1, posX, posY);
-    else if(deltaY < 0 && column > 0)
-        collision &= wallCheck(row, column + 1, posX, posY);
-    
-    return collision;
-}
-
-int MazeScene::wallCheck(int row, int column, float posX, float posY)
-{
-    int collision = 0;
-    /*int topC = column > 0 ? column - 1 : column;
-    int leftR = row > 0 ? row - 1 : row;
-    
-    float cellCenterX = row * 0.5 - 1.75;
-    float cellCenterY = column * 0.5 - 1.75;
-    
-    float deltaX = posX - cellCenterX;
-    float deltaY = posY - cellCenterY;
-    
-    MazeSector curCell = maze->getSector(row, column);
-    MazeSector topCell = maze->getSector(row, topC);
-    MazeSector leftCell = maze->getSector(leftR, column);
-    
-    switch(curCell.getType())
-    {
-        case 0:
-            if(!curCell.getWallHidden(0))
-            {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!curCell.getWallHidden(1))
-            {
-                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            if(!curCell.getWallHidden(2))
-            {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!curCell.getWallHidden(3))
-            {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            break;
-        case 1:
-            if(!curCell.getWallHidden(0))
-            {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!curCell.getWallHidden(1))
-            {
-                float check = abs(deltaX + PLAYER_RADIUS + SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            if(!curCell.getWallHidden(2))
-            {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!leftCell.getWallHidden(1))
-            {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            break;
-        case 2:
-            if(!curCell.getWallHidden(0))
-            {
-                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            if(!curCell.getWallHidden(1))
-            {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!curCell.getWallHidden(2))
-            {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            if(!topCell.getWallHidden(1))
-            {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            break;
-        case 3:
-            if(!curCell.getWallHidden(0) && deltaX > 0)
-            {
-                float check = deltaX + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            if(!curCell.getWallHidden(1) && deltaY < 0)
-            {
-                float check = abs(deltaY - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!topCell.getWallHidden(1))
-            {
-                float check = deltaY + PLAYER_RADIUS + SAFE_DISTANCE;
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 2;
-            }
-            if(!leftCell.getWallHidden(1))
-            {
-                float check = abs(deltaX - PLAYER_RADIUS - SAFE_DISTANCE);
-                if(check > MAZE_CELL_SIZE / 2.0f)
-                    collision |= 1;
-            }
-            break;
-    }*/
-    
-    return collision;
 }
 
 bool MazeScene::isAllCoinsCollected() {

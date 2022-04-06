@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include <vector>
-#include "box2d-main/include/box2d/box2d.h"
+#include "include/box2d/box2d.h"
 
 
 class PhysicsEngine
@@ -21,7 +21,7 @@ public:
     void init(b2Vec2 gravity);
     void update(float deltaTime);
     
-    b2BodyDef CreatePhysicsBodyDef(b2BodyType type, b2Vec2 position);
+    b2BodyDef CreatePhysicsBodyDef(b2BodyType type, float x, float y);
     b2Body* CreatePhysicsBody(b2BodyDef def);
     b2PolygonShape CreatePhysicsShape(float width, float height);
     b2Fixture* CreatePhysicsFixture(b2Body* body, b2PolygonShape shape, float density = 0.0f);
