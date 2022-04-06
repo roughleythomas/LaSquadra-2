@@ -30,8 +30,8 @@ void Scene::addDrawable(Drawable *d){
 //Reset scene by resetting the camera to it's default state, thus allowing the objects on screen to render in their default state, since the
 //camera is reset.
 void Scene::reset(){
-    camera->getTransform()->setPosition(vec3(0.f, -2.25f, -4.5f));
-    camera->getTransform()->setAngles(vec3(25.f, 0.f, 0.f));
+    camera->getTransform()->setPosition(vec3(0.f, 0.f, 0.f));
+    camera->getTransform()->setAngles(vec3(0.f, 0.f, 0.f));
     sceneGoalCondition = rand() % 2;
 }
 
@@ -182,7 +182,7 @@ void MazeScene::reset(){
     sceneWon = false;
     gameStarted = false;
     
-    cout << "Goal condition: " << sceneGoalCondition << endl;
+    //cout << "Goal condition: " << sceneGoalCondition << endl;
     Maze* maze = new Maze(WALL_NUM);//random maze size
     maze->print();
     
@@ -391,7 +391,7 @@ int MazeScene::collisionCheck(float posX, float posY)
 int MazeScene::wallCheck(int row, int column, float posX, float posY)
 {
     int collision = 0;
-    int topC = column > 0 ? column - 1 : column;
+    /*int topC = column > 0 ? column - 1 : column;
     int leftR = row > 0 ? row - 1 : row;
     
     float cellCenterX = row * 0.5 - 1.75;
@@ -510,7 +510,7 @@ int MazeScene::wallCheck(int row, int column, float posX, float posY)
                     collision |= 1;
             }
             break;
-    }
+    }*/
     
     return collision;
 }

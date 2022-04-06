@@ -20,23 +20,14 @@
 
 using namespace std;
 
-class MazeSector{
-    /* Type:
-     0 - top left corner (4 sides)
-     1 - top row (3 sides, no left wall)
-     2 - left column (3 sides, no top wall)
-     3 - Remaining sectors (2 sides, no top or left wall)
-     */
-    int type;
-    vector<bool> hidden;//clockwise arrangement of the walls
+class MazeSector {
+    bool walls[4];
     
 public:
-    MazeSector(int);
-    void setWallHidden(int, bool=true);
+    MazeSector();
+    void setWallHidden(int, bool=false);
     bool getWallHidden(int);
-    int getType();
     void print();
-    bool printTop();
 };
 
 class Maze{
