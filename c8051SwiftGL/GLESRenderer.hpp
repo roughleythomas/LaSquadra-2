@@ -59,11 +59,13 @@ public:
     bool achievedGoal();
     float getGameTime();
     void setPlayerDir(int);
+    void togglePlayerStationary();
 
 private:
     int vpWidth, vpHeight;  // viewport width/height
     bool updatedOnce = false;
     SceneManager sceneManager;
+    bool playerStationary = true;
 
     // GL variables
     GLint uniforms[NUM_UNIFORMS];

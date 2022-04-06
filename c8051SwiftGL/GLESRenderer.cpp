@@ -90,6 +90,10 @@ void GLESRenderer::LoadModels()
 
 // ========================================================================================
 
+void GLESRenderer::togglePlayerStationary(){
+    playerStationary = !playerStationary;
+    sceneManager.setPlayerStationary(playerStationary);
+}
 
 // ----------------------------------------------------------------
 // Shader loading

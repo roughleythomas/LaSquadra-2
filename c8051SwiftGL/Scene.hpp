@@ -37,6 +37,7 @@ protected:
     int playerDir = -1;
     vector<Drawable*> drawables;
     void addDrawable(Drawable* d);
+    bool playerStationary = true;
     
 public:
     Scene();
@@ -54,6 +55,7 @@ public:
     virtual bool achievedGoal() = 0;
     virtual void draw(vector<GLuint>, float, GLint, GLint);
     virtual void loadModels();
+    void setPlayerStationary(bool playerStationary);
     float getTimeLeft();
     
 };

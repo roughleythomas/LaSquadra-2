@@ -137,4 +137,8 @@
     glesRenderer->setPlayerDir(playerDir);
 }
 
+- (void)togglePlayerStationary{
+    glesRenderer->togglePlayerStationary();
+}
+
 @end

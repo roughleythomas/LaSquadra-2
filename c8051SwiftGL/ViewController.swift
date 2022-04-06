@@ -11,7 +11,7 @@ extension ViewController: GLKViewControllerDelegate {
         glesRenderer.update();
         
         // make label
-        let labelRect = CGRect(x: 30, y: 80, width: 250, height: 100)
+        /*let labelRect = CGRect(x: 30, y: 80, width: 250, height: 100)
         let label = UILabel(frame: labelRect)
         label.textAlignment = .center
         label.textColor = UIColor.white;
@@ -23,9 +23,9 @@ extension ViewController: GLKViewControllerDelegate {
         label.text = "Time left:\(time)"
         
         view.viewWithTag(1)?.removeFromSuperview()
-        self.view.addSubview(label)
+        self.view.addSubview(label)*/
         
-        if (!isGameEnded) {
+        /*if (!isGameEnded) {
             if (glesRenderer.achievedGoal() && !showMessage) {
                 
                 showMessage = true;
@@ -38,7 +38,7 @@ extension ViewController: GLKViewControllerDelegate {
             else if(time <= 0.0){
                     showGameOver();
             }
-        }
+        }*/
         
     }
 }
@@ -62,7 +62,7 @@ class ViewController: GLKViewController {
         }
     }
     
-    private func showGamePassed() {
+    /*private func showGamePassed() {
         let alertController = UIAlertController(title: "Finished Minigame!", message: "You have finished \(glesRenderer.score) games", preferredStyle: .alert)
         
         alertController.addAction(UIAlertAction(title: "Next Game", style: .default, handler: nextGame))
@@ -75,7 +75,7 @@ class ViewController: GLKViewController {
         let alertController = UIAlertController(title: "Times up!", message: "You have finished \(glesRenderer.score) games", preferredStyle: .alert)
         
         self.present(alertController, animated: true, completion: nil)
-    }
+    }*/
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,7 +86,7 @@ class ViewController: GLKViewController {
         self.view.sendSubviewToBack(tapView)
         
         let doubleTap = UITapGestureRecognizer(target: self, action: #selector(self.doDoubleTap(_:)))
-        doubleTap.numberOfTapsRequired = 2;
+        doubleTap.numberOfTapsRequired = 2
         tapView.addGestureRecognizer(doubleTap)
         
         let pan = UIPanGestureRecognizer(target: self, action: #selector(self.doPan(_:)))
@@ -99,7 +99,7 @@ class ViewController: GLKViewController {
     }
     
     @objc func doDoubleTap(_ sender: UITapGestureRecognizer) {
-        glesRenderer.reset();
+        
     }
     
     @objc func doPan(_ sender: UIPanGestureRecognizer){
@@ -116,31 +116,8 @@ class ViewController: GLKViewController {
         }
     }
     
-    // - Actions
-    @IBAction func nextGame(_ sender: UIAlertAction) {
-        glesRenderer.reset()
-        showMessage = false;
-    }
-    
-    @IBAction func onMoveLeftButtonClick(_ sender: UIButton) {
-        glesRenderer.setPlayerDir(3)
-    }
-    
-    @IBAction func onMoveRightButtonClick(_ sender: UIButton) {
-        glesRenderer.setPlayerDir(1)
-    }
-    
-    @IBAction func onMoveUpButtonClick(_ sender: UIButton) {
-        glesRenderer.setPlayerDir(0)
-    }
-    
-    @IBAction func onMoveDownButtonClick(_ sender: UIButton) {
-        glesRenderer.setPlayerDir(2)
-    }
-    
-    //release
-    @IBAction func onMouseButtonRelease(_ sender: UIButton){
-        glesRenderer.setPlayerDir(-1)
+    @objc func doPinch(_ sender: UIPinchGestureRecognizer){
+        
     }
 }
 

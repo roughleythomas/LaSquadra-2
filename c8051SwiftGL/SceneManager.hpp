@@ -32,6 +32,7 @@ public:
     void pushTexture(GLuint);
     bool checkGoalCondition();
     void setSceneFont(char *);
+    void setPlayerStationary(bool playerStationary);
     
     float getGameTime();
     

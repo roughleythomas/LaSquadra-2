@@ -51,6 +51,10 @@ void SceneManager::pushTexture(GLuint textureId){
     textureIds.push_back(textureId);
 }
 
+void SceneManager::setPlayerStationary(bool playerStationary){
+    scene->setPlayerStationary(playerStationary);
+}
+
 bool SceneManager::checkGoalCondition() {
     return scene->achievedGoal();
 }
