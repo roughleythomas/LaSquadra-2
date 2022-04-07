@@ -9,6 +9,7 @@
 #include "glm-master/glm/gtc/quaternion.hpp"
 #include "glm-master/glm/gtx/quaternion.hpp"
 #include "Animator.hpp"
+#include "include/box2d/b2_body.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ public:
     virtual bool loadIndices(void* info) = 0;
     
     void assignAnimator(Animator*);
+    void assignPhysicsBody(b2Body* body);
     void updateTransform();
     glm::mat4 draw(glm::mat4 mvp);
     
@@ -39,6 +41,7 @@ public:
     float* getNormals();
     float* getTextureCoords();
     int getTextureListIndex();
+    b2Body* getPhysicsBody();
     Animator* anim = NULL;
     
     bool isUI = false;
@@ -51,6 +54,7 @@ protected:
     vector<float> normals;
     vector<float> texCoords;
     glm::mat4 transformMatrix;
+    b2Body* physicsBody;
 };
 
 #endif

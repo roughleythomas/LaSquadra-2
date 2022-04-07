@@ -61,25 +61,43 @@ void Scene::movePlayer(int playerDir) {
     Transform* transformSpeed = playerDrawable->anim->getTransformSpeed();
     float speed = 0.1f;
     bool enabled = true;
+    b2Body* playerBody = playerDrawable->getPhysicsBody();
     switch(playerDir){
         case -1:
             enabled = false;
+            if(playerBody)
+                playerBody->SetLinearVelocity(b2Vec2(0,0));
             break;
         case 0:
-            transformSpeed->setPosition(vec3(0.f, 0.f, -speed));
+            if(playerBody)
+                playerBody->SetLinearVelocity(b2Vec2(0, -speed));
+            else
+                transformSpeed->setPosition(vec3(0.f, 0.f, -speed));
             break;
         case 1:
-            transformSpeed->setPosition(vec3(speed, 0.f, 0.f));
+            if(playerBody)
+                playerBody->SetLinearVelocity(b2Vec2(speed, 0));
+            else
+                transformSpeed->setPosition(vec3(speed, 0.f, 0.f));
             break;
         case 2:
-            transformSpeed->setPosition(vec3(0.f, 0.f, speed));
+            if(playerBody)
+                playerBody->SetLinearVelocity(b2Vec2(0, speed));
+            else
+                transformSpeed->setPosition(vec3(0.f, 0.f, speed));
             break;
         case 3:
-            transformSpeed->setPosition(vec3(-speed, 0.f, 0.f));
+            if(playerBody)
+                playerBody->SetLinearVelocity(b2Vec2(-speed, 0));
+            else
+                transformSpeed->setPosition(vec3(-speed, 0.f, 0.f));
             break;
     }
-    playerDrawable->anim->assignTransformSpeed(transformSpeed);
-    playerDrawable->anim->setEnabled(enabled);
+    if(!playerBody)
+    {
+        playerDrawable->anim->assignTransformSpeed(transformSpeed);
+        playerDrawable->anim->setEnabled(enabled);
+    }
 }
 
 
@@ -173,13 +191,9 @@ void Scene::loadModels(){
 void MazeScene::reset(){
     Scene::reset();
     //Reset phyics engine
-    if(physics)
-        delete physics;
     physics = PhysicsEngine::GetInstance();
     //Initialize physics world
     physics->init(b2Vec2(0,0));
-    //Initialize player physics object
-    //<TO DO>
     camera->getTransform()->setAngles(vec3(20.f, 0.f, 0.f));
     if(drawables.size() > 4){
         playerDrawable->anim->setEnabled(false);
@@ -209,19 +223,19 @@ void MazeScene::reset(){
             {
                 addWall(false, centerX + sector, centerY, sector);
                 //Initialize wall hitbox
-                b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, centerX + sector, centerY);
+                /*b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, centerX + sector, centerY);
                 b2Body* bbody = physics->CreatePhysicsBody(bdef);
                 b2PolygonShape bshape = physics->CreatePhysicsShape(sector, 0.01f);
-                b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);
+                b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);*/
             }
             if(maze->maze[r * WALL_NUM + c].getWallVisible(2))
             {
                 addWall(true, centerX, centerY + sector, sector);
                 //Initialize wall hitbox
-                b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, centerX, centerY + sector);
+                /*b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, centerX, centerY + sector);
                 b2Body* bbody = physics->CreatePhysicsBody(bdef);
                 b2PolygonShape bshape = physics->CreatePhysicsShape(0.01f, sector);
-                b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);
+                b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);*/
             }
             
             if(sceneGoalCondition == 0)
@@ -244,6 +258,15 @@ void MazeScene::reset(){
     vec3 groundPos = drawables[1]->globalTransform->getPosition();
     playerDrawable->globalTransform->setPosition(vec3(groundPos.x + (float)WALL_NUM * sector - sector, groundPos.y + 0.5f, groundPos.z + (float)WALL_NUM * sector - sector));
     
+    //Initialize player physics object
+    glm::vec3 ppos = playerDrawable->globalTransform->getPosition();
+    glm::vec3 pscale = playerDrawable->globalTransform->getScale();
+    b2BodyDef pdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_kinematicBody, ppos.x, ppos.z);
+    b2Body* pbody = physics->CreatePhysicsBody(pdef);
+    b2PolygonShape pshape = physics->CreatePhysicsShape(pscale.x, pscale.z);
+    b2Fixture* pfixture = physics->CreatePhysicsFixture(pbody, pshape);
+    playerDrawable->assignPhysicsBody(pbody);
+    
     timeLeft = 500.0f;
     gameStarted = true;
 }
@@ -256,9 +279,23 @@ void MazeScene::addWall(bool horizontal, float posX, float posY, float alternate
     vec3 groundPos = drawables[1]->globalTransform->getPosition();
     drawables[lindex]->globalTransform->setPosition(glm::vec3(groundPos.x + posX, groundPos.y + 0.5f, groundPos.z + posY));
     if(horizontal)
+    {
         drawables[lindex]->globalTransform->setScale(glm::vec3(alternateScale, 0.25f, 0.01f));
+        b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, groundPos.x + posX, groundPos.z + posY);
+        b2Body* bbody = physics->CreatePhysicsBody(bdef);
+        b2PolygonShape bshape = physics->CreatePhysicsShape(0.01f, alternateScale);
+        b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);
+        drawables[lindex]->assignPhysicsBody(bbody);
+    }
     else
+    {
         drawables[lindex]->globalTransform->setScale(glm::vec3(0.01f, 0.25f, alternateScale));
+        b2BodyDef bdef = physics->CreatePhysicsBodyDef(b2BodyType::b2_staticBody, groundPos.x + posX, groundPos.z + posY);
+        b2Body* bbody = physics->CreatePhysicsBody(bdef);
+        b2PolygonShape bshape = physics->CreatePhysicsShape(alternateScale, 0.01f);
+        b2Fixture* bfix = physics->CreatePhysicsFixture(bbody, bshape);
+        drawables[lindex]->assignPhysicsBody(bbody);
+    }
 }
 
 //Add new coin to the maze.

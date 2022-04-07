@@ -1,7 +1,7 @@
 #include "Drawable.hpp"
 
 Drawable::Drawable(int textureListIndex, int vertNum, int normNum, int texNum, int indexNum)
-: GameObject(), /*vertices(0), normals(0), texCoords(0), indices(0),*/ numIndices(indexNum), numVertices(vertNum), numNormals(normNum), numTexCoords(texNum)
+: GameObject(), /*vertices(0), normals(0), texCoords(0), indices(0),*/ numIndices(indexNum), numVertices(vertNum), numNormals(normNum), numTexCoords(texNum), physicsBody(0)
 {
     this->textureListIndex = textureListIndex;
     /*if(vertNum > 0)
@@ -15,7 +15,7 @@ Drawable::Drawable(int textureListIndex, int vertNum, int normNum, int texNum, i
 }
 
 Drawable::Drawable(const Drawable& obj)
-: GameObject(), /*vertices(0), normals(0), texCoords(0), indices(0),*/ numIndices(obj.numIndices), numVertices(obj.numVertices), numNormals(obj.numNormals), numTexCoords(obj.numTexCoords)
+: GameObject(), /*vertices(0), normals(0), texCoords(0), indices(0),*/ numIndices(obj.numIndices), numVertices(obj.numVertices), numNormals(obj.numNormals), numTexCoords(obj.numTexCoords), physicsBody(0)
 {
     this->textureListIndex = obj.textureListIndex;
     if(obj.vertices.size() != 0)
@@ -58,9 +58,21 @@ void Drawable::assignAnimator(Animator* anim){
     this->anim->assignTransform(localTransform);
 }
 
+void Drawable::assignPhysicsBody(b2Body *body)
+{
+    physicsBody = body;
+}
+
 void Drawable::updateTransform(){
     if(anim != NULL)
         anim->update();
+    if(physicsBody)
+    {
+        b2Vec2 position = physicsBody->GetPosition();
+        glm::vec3 pos = globalTransform->getPosition();
+        pos.x = position.x; pos.z = position.y;
+        globalTransform->setPosition(pos);
+    }
     
     transformMatrix = globalTransform->getMatrix() * localTransform->getMatrix();
 }
@@ -94,3 +106,4 @@ float* Drawable::getVertices() { return vertices.data(); }
 float* Drawable::getNormals() { return normals.data(); }
 float* Drawable::getTextureCoords() { return texCoords.data(); }
 int Drawable::getTextureListIndex() { return textureListIndex; }
+b2Body* Drawable::getPhysicsBody() { return physicsBody; }
