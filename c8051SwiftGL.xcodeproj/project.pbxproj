@@ -23,6 +23,7 @@
 		3CF7CA2027F47B69000F9B92 /* freetype in Resources */ = {isa = PBXBuildFile; fileRef = 3CF7CA1E27F47B69000F9B92 /* freetype */; };
 		3D30932427EEF92700F3B6CD /* Cylinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D30932327EEF92700F3B6CD /* Cylinder.cpp */; };
 		3D30932827EF464D00F3B6CD /* coin.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3D30932727EF464D00F3B6CD /* coin.jpg */; };
+		525185E427FE66130085F588 /* Enemy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 525185E227FE66130085F588 /* Enemy.cpp */; };
 		6419068227E383DC00D8EA00 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6419068027E383DC00D8EA00 /* Scene.cpp */; };
 		6419068527E3903400D8EA00 /* SceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6419068327E3903400D8EA00 /* SceneManager.cpp */; };
 		642CBB2327D669FE00448432 /* Maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 642CBB2127D669FE00448432 /* Maze.cpp */; };
@@ -63,6 +64,8 @@
 		3D30932227EEF92700F3B6CD /* Cylinder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cylinder.hpp; sourceTree = "<group>"; };
 		3D30932327EEF92700F3B6CD /* Cylinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cylinder.cpp; sourceTree = "<group>"; };
 		3D30932727EF464D00F3B6CD /* coin.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = coin.jpg; sourceTree = "<group>"; };
+		525185E227FE66130085F588 /* Enemy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Enemy.cpp; sourceTree = "<group>"; };
+		525185E327FE66130085F588 /* Enemy.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Enemy.hpp; sourceTree = "<group>"; };
 		6419068027E383DC00D8EA00 /* Scene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		6419068127E383DC00D8EA00 /* Scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
 		6419068327E3903400D8EA00 /* SceneManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SceneManager.cpp; sourceTree = "<group>"; };
@@ -163,6 +166,8 @@
 				648DD80127E232C800E9FBF0 /* dirt.jpg */,
 				3D30932727EF464D00F3B6CD /* coin.jpg */,
 				3CF7CA1B27F47777000F9B92 /* ft2build.h */,
+				525185E227FE66130085F588 /* Enemy.cpp */,
+				525185E327FE66130085F588 /* Enemy.hpp */,
 				3CF7CA1E27F47B69000F9B92 /* freetype */,
 				97F1259127E27A400040AEF8 /* Camera.cpp */,
 				97F1259227E27A400040AEF8 /* Camera.hpp */,
@@ -265,6 +270,7 @@
 				E917552527C61CA000FA6B90 /* Cube.cpp in Sources */,
 				025AE9D52773396300A45ADB /* GLESRenderer.cpp in Sources */,
 				642CBB2327D669FE00448432 /* Maze.cpp in Sources */,
+				525185E427FE66130085F588 /* Enemy.cpp in Sources */,
 				977F3A5327C5619A00AB8A7B /* Transform.cpp in Sources */,
 				025AE9C0277337DF00A45ADB /* ViewController.swift in Sources */,
 				3D30932427EEF92700F3B6CD /* Cylinder.cpp in Sources */,

@@ -5,13 +5,31 @@
 #import "Renderer.h"
 #import <Foundation/Foundation.h>
 #import <GLKit/GLKit.h>
+#import "Enemy.hpp"
 #include <chrono>
 #include "GLESRenderer.hpp"
+#include <cstring>
 
 @interface Renderer () {
     GLKView *theView;               // to access some iOS-specific parameters needed to set up OpenGL
     GLESRenderer *glesRenderer;     // the OpenGL ES C++ render class
+    
+    Enemy *enemy;
+    
+    bool    _drawEnemy;
+    float   _enemyXPosition;
+    float   _enemyYPosition;
+    float   _enemyZPosition;
+    float   _enemyXRotation;
+    float   _enemyYRotation;
+    float   _enemyZRotation;
+    float   _enemyXScale;
+    float   _enemyYScale;
+    float   _enemyZScale;
+    
 }
+
+@property (strong, nonatomic) GLKBaseEffect* effect;
 
 @end
 
@@ -29,6 +47,19 @@
 
 - (void)setup:(GLKView *)view
 {
+    
+    _drawEnemy = true;
+    _enemyXPosition = 0.0f;
+    _enemyYPosition = 0.0f;
+    _enemyZPosition = 0.0f;
+    _enemyXRotation = 0.0f;
+    _enemyYRotation = 0.0f;
+    _enemyZRotation = 0.0f;
+    _enemyXScale = 0.0f;
+    _enemyYScale = 0.0f;
+    _enemyZScale = 0.0f;
+    enemy = new Enemy();
+    
     // These lines of code set up the OpenGL context using Objective-C/iOS code
     view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
     if (!view.context) {
@@ -105,6 +136,18 @@
         free(textureDataList[i]);
 }
 
+- (void)createEffect
+{
+    self.effect = [[GLKBaseEffect alloc] init];
+    
+    self.effect.light0.enabled = GL_TRUE;
+    self.effect.light0.position = GLKVector4Make(1.0f, 1.0f, 1.0f, 1.0f);
+    self.effect.lightingType = GLKLightingTypePerPixel;
+    
+    self.effect.light0.specularColor = GLKVector4Make(0.25f, 0.25f, 0.25f, 1.0f);
+    self.effect.light0.diffuseColor = GLKVector4Make(0.75f, 0.75f, 0.75f, 1.0f);
+}
+
 - (void)update
 {
     glesRenderer->SetViewport(theView.drawableWidth, theView.drawableHeight);
@@ -112,11 +155,16 @@
     glesRenderer->panX = panX;
     glesRenderer->panY = panY;
     glesRenderer->Update();
+    _enemyYRotation += 0.1f;
 }
 
 - (void)draw:(CGRect)drawRect;
 {
     glesRenderer->Draw();
+    
+    if (_drawEnemy) {
+        [self drawEnemy:_enemyXPosition :_enemyYPosition :_enemyZPosition :_enemyXRotation :_enemyYRotation :_enemyZRotation :_enemyXScale :_enemyYScale :_enemyZScale];
+    }
 }
 
 - (void)reset
@@ -139,6 +187,40 @@
 
 - (void)togglePlayerStationary{
     glesRenderer->togglePlayerStationary();
+}
+
+- (void)drawEnemy: (float)xPos: (float)yPos: (float)zPos: (float)xRot: (float)yRot: (float)zRot: (float)x_Scale: (float)y_Scale: (float)z_Scale
+{
+    // ModelView Matrix (Perform functions to change position, rotation and scale here)
+    GLKMatrix4 modelViewMatrix = GLKMatrix4Identity;
+    modelViewMatrix = GLKMatrix4Translate(modelViewMatrix, xPos, yPos, zPos); // For Position, Rotation and Scale use individual variables for each object.
+    modelViewMatrix = GLKMatrix4RotateX(modelViewMatrix, GLKMathDegreesToRadians(xRot));
+    modelViewMatrix = GLKMatrix4RotateY(modelViewMatrix, GLKMathDegreesToRadians(yRot));
+    modelViewMatrix = GLKMatrix4RotateZ(modelViewMatrix, GLKMathDegreesToRadians(zRot));
+    modelViewMatrix = GLKMatrix4Scale(modelViewMatrix, x_Scale, y_Scale, z_Scale);
+    self.effect.transform.modelviewMatrix = modelViewMatrix;
+    
+    
+    // Positions
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 0, enemy->EnemyPositions);
+    
+    // Normals
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 0, enemy->EnemyNormals);
+    
+    for(int i=0; i<enemy->EnemyMaterials; i++)
+    {
+        // Set material
+        self.effect.material.diffuseColor = GLKVector4Make(enemy->EnemyDiffuses[i][0], enemy->EnemyDiffuses[i][1], enemy->EnemyDiffuses[i][2], 1.0f);
+        self.effect.material.specularColor = GLKVector4Make(enemy->EnemySpeculars[i][0], enemy->EnemySpeculars[i][1], enemy->EnemySpeculars[i][2], 1.0f);
+
+        // Prepare effect
+        [self.effect prepareToDraw];
+
+        // Draw vertices
+        glDrawArrays(GL_TRIANGLES, enemy->EnemyFirsts[i], enemy->EnemyCounts[i]);
+    }
 }
 
 @end
